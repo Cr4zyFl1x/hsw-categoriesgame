@@ -10,5 +10,7 @@ Client:
 Server:
 - kann Spielern mitteilen, wie viele Personen auf den Start des Spiels warten und wer
 - Personen können sich wieder anmelden
-
+- speichern der Spielstände von den bisher angemeldeten Clients (der letzten Tage/Wochen/...)
+- startet die Zeit für eine Runde
+- verteilt den Spielzettel
 - 
