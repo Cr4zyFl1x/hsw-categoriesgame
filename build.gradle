@@ -1,0 +1,25 @@
+/**
+ * Configuration for all submodules/projects
+ */
+allprojects {
+
+    /**
+     * Buildscript configuration
+     */
+    buildscript {
+        repositories {
+            maven {
+                url "https://nexus.rz.kleine-vorholt.eu/repository/maven-public/"
+            }
+        }
+    }
+
+    /**
+     * Remote-Repositories
+     */
+    repositories {
+        maven {
+            url "https://nexus.rz.kleine-vorholt.eu/repository/maven-public/"
+        }
+    }
+}
