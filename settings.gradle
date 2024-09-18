@@ -21,3 +21,4 @@ rootProject.name = 'hsw-categoriesgame'
  */
 include 'gameserver'
 include 'gameclient'
+include 'gameapi'
