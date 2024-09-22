@@ -1,7 +1,5 @@
 package de.hsw.categoriesgame.gameclient;
 
-import de.hsw.categoriesgame.gameapi.ITest;
-
 /**
  * @author Florian J. Kleine-Vorholt
  */
