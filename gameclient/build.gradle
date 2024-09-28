@@ -22,6 +22,10 @@ version = '0.0.1-SNAPSHOT'
  * Project dependencies
  */
 dependencies {
+
+    // SharedLib (API)
+    implementation project(":gameapi")
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation 'com.formdev:flatlaf:3.2'

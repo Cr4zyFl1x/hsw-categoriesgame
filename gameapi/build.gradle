@@ -1,0 +1,9 @@
+/**
+ * Plugins
+ */
+plugins {
+    id 'java'
+}
+
+group = 'de.hsw.categoriesgame'
+version = '0.0.1-SNAPSHOT'

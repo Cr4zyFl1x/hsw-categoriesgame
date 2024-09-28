@@ -7,10 +7,16 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import javax.swing.*;
 import java.awt.*;
 
+import de.hsw.categoriesgame.gameapi.ITest;
+
+/**
+ * @author Florian J. Kleine-Vorholt
+ */
 public class GameclientApplication {
 
     public static void main(String[] args) {
         System.out.println("Hello World! I'm the Client!");
+        System.out.println("SharedLib works! " + ITest.class.getName());
 
         SwingUtilities.invokeLater(GameclientApplication::setupTheme);
         SwingUtilities.invokeLater(GameclientApplication::createViewManager);
