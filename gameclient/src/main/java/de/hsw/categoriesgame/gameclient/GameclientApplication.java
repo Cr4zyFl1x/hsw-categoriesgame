@@ -22,16 +22,26 @@ public class GameclientApplication {
         SwingUtilities.invokeLater(GameclientApplication::createViewManager);
     }
 
+    /**
+     * Setting up the theme for the application
+     */
     private static void setupTheme() {
         FlatMacDarkLaf.setup();
         UIManager.put("Component.focusColor", Color.GRAY);
     }
 
+    /**
+     * Creating the view manager for enabling navigation between views
+     */
     private static void createViewManager() {
         ViewManager viewManager = new ViewManager(createFrame());
         viewManager.changeView(View.START);
     }
 
+    /**
+     * Creating the frame for the application
+     * @return  JFrame
+     */
     private static JFrame createFrame() {
         JFrame frame = new JFrame();
 
