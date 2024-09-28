@@ -8,4 +8,6 @@ import de.hsw.categoriesgame.gameapi.annotation.Proxyable;
 @Proxyable
 public interface Player {
 
+    String getName();
+
 }

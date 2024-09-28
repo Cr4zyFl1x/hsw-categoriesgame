@@ -33,6 +33,7 @@ public class GameserverApplication {
         try (final ServerSocket serverSocket = new ServerSocket(Integer.parseInt(getConfig().getString("server.port")))) {
             while (true) {
                 log.info("Waiting for client connection...");
+                log.error("de");
                 final Socket socket = serverSocket.accept();
                 log.debug("Connection established from {}!", socket.getRemoteSocketAddress());
                 final ServiceOperator<CategoriesGame> gameServiceOperator = new ServiceOperator<>(game, socket);

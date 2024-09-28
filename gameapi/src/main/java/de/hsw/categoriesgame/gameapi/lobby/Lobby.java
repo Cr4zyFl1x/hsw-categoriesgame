@@ -18,5 +18,6 @@ public interface Lobby {
 
     void finishRound(final Player player /* ... */);
 
+    // TODO:
     void pauseOrResumeGame(final Player player);
 }

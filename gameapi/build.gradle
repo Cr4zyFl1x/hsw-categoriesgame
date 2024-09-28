@@ -7,3 +7,16 @@ plugins {
 
 group = 'de.hsw.categoriesgame'
 version = '0.0.1-SNAPSHOT'
+
+dependencies {
+
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+
+    // JUnit
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
