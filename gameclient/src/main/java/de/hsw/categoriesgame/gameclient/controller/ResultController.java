@@ -1,14 +1,13 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameclient.pojos.Player;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.ResultView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Controller class to control actions on the ResultView
@@ -19,9 +18,9 @@ public class ResultController {
     ResultView view;
     GameModel model;
 
-    // TODO: HashMap "points" ersetzen durch model.getPoints()!!!
+    // TODO: mockPlayers-Referenzen durch getter in model ersetzen
 
-    HashMap<String, Integer> points;
+    List<Player> mockPlayers;
 
     /**
      * Constructor
@@ -34,10 +33,10 @@ public class ResultController {
         this.view = view;
         this.model = model;
 
-        points = new HashMap<>();
-        points.put("Rick", 10);
-        points.put("Astley", 0);
-        points.put(":D", 100);
+        mockPlayers = new ArrayList<>();
+        mockPlayers.add(new Player("Jeff", 100));
+        mockPlayers.add(new Player("Kevin", 80));
+        mockPlayers.add(new Player("Marc", 120));
 
         registerListener();
         calculatePlacements();
@@ -63,6 +62,9 @@ public class ResultController {
      * Navigates into a new game round
      */
     private void goToGameRoundView() {
+        // reset round count
+        model.setCurrentRoundNumber(0);
+
         System.out.println("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
@@ -71,12 +73,11 @@ public class ResultController {
      * Calculates the top 3 players of the game
      */
     private void calculatePlacements() {
-        List<Map.Entry<String, Integer>> pointsList = new ArrayList<>(points.entrySet());
-        pointsList.sort((eintrag1, eintrag2) -> eintrag2.getValue().compareTo(eintrag1.getValue()));
-        ArrayList<Map.Entry<String, Integer>> sortierteListe = new ArrayList<>(pointsList);
+        mockPlayers.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
+        ArrayList<Player> sortedList = new ArrayList<>(mockPlayers);
 
-        view.getPlayer1Label().setText(sortierteListe.get(0).getKey());
-        view.getPlayer2Label().setText(sortierteListe.get(1).getKey());
-        view.getPlayer3Label().setText(sortierteListe.get(2).getKey());
+        view.getPlayer1Label().setText(sortedList.get(0).getName());
+        view.getPlayer2Label().setText(sortedList.get(1).getName());
+        view.getPlayer3Label().setText(sortedList.get(2).getName());
     }
 }

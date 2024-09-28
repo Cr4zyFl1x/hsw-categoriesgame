@@ -1,5 +1,5 @@
 package de.hsw.categoriesgame.gameclient.views;
-import de.hsw.categoriesgame.gameclient.interfaces.ViewBuild;
+import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Class in which the view for a game round is being built
  */
-public class GameRoundView extends JPanel implements ViewBuild {
+public class GameRoundView extends JPanel implements InitializableView {
 
     private JLabel header;
     private JLabel categoryLabel;

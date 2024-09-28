@@ -1,6 +1,6 @@
 package de.hsw.categoriesgame.gameclient.views;
 
-import de.hsw.categoriesgame.gameclient.interfaces.ViewBuild;
+import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * View class which builds the view for joining a lobby
  */
-public class JoinLobbyView extends JPanel implements ViewBuild {
+public class JoinLobbyView extends JPanel implements InitializableView {
 
     private JLabel joinHeader;
     private JLabel codeLabel;

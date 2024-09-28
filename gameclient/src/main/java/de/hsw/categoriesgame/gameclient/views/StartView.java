@@ -1,6 +1,6 @@
 package de.hsw.categoriesgame.gameclient.views;
 
-import de.hsw.categoriesgame.gameclient.interfaces.ViewBuild;
+import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  *  Class in which the view of the start screen is being built
  */
-public class StartView extends JPanel implements ViewBuild {
+public class StartView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
     private JButton createLobbyButton;

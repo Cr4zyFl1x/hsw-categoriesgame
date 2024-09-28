@@ -1,6 +1,6 @@
 package de.hsw.categoriesgame.gameclient.views;
 
-import de.hsw.categoriesgame.gameclient.interfaces.ViewBuild;
+import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Class in which the view of creating a lobby is being built
  */
-public class CreateLobbyView extends JPanel implements ViewBuild {
+public class CreateLobbyView extends JPanel implements InitializableView {
 
     private JLabel newLobbyHeader;
     private JLabel configHeader;

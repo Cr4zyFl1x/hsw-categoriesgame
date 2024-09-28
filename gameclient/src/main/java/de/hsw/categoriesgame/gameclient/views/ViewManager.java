@@ -13,7 +13,7 @@ public class ViewManager {
 
     /**
      * Constructor for the ViewManager
-     * @param frame
+     * @param frame     frame
      */
     public ViewManager(JFrame frame) {
         this.frame = frame;
@@ -35,6 +35,10 @@ public class ViewManager {
             case START -> {
                 newView = new StartView();
                 new StartController(this, (StartView) newView);
+            }
+            case WAITING -> {
+                newView = new LobbyWaitingView();
+                new LobbyWaitingController(this, (LobbyWaitingView) newView);
             }
             case JOIN_LOBBY -> {
                 newView = new JoinLobbyView();

@@ -49,7 +49,7 @@ public class AnswerOverviewController {
      */
     private void registerListener() {
         view.getCancelButton().addActionListener(e -> goToLobbiesView());
-        view.getContinueButton().addActionListener(e -> goToGameRoundView());
+        view.getContinueButton().addActionListener(e -> goToResultOrGameRoundView());
     }
 
     /**
@@ -61,16 +61,29 @@ public class AnswerOverviewController {
     }
 
     /**
-     * Navigates to the result view
+     * Navigates to the result or next game round view
      */
-    private void goToGameRoundView() {
-        System.out.println("GO TO RESULT VIEW");
-        viewManager.changeView(View.RESULTS);
+    private void goToResultOrGameRoundView() {
+        if (isRoundAmountReached()) {
+            System.out.println("GO TO RESULT VIEW");
+            viewManager.changeView(View.RESULTS);
+        } else {
+            System.out.println("GO TO GAME ROUND VIEW");
+            viewManager.changeView(View.GAME_ROUND);
+        }
+    }
+
+    /**
+     * Checks if the selected amount of rounds was reached
+     * @return  true - the amount of rounds was reached / false - the amount is not reached yet
+     */
+    private boolean isRoundAmountReached() {
+        return model.getAmountRounds() == model.getCurrentRoundNumber();
     }
 
     /**
      * Builds the overall answer overview according to the amount of players and categories
-     * @param players     amount of players
+     * @param players           amount of players
      * @param categories        selected categories
      */
     private void createAnswerOverview(List<String> players, List<String> categories) {

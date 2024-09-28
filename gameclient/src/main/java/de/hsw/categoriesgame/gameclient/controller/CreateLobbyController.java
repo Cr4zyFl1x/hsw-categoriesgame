@@ -73,10 +73,14 @@ public class CreateLobbyController {
     }
 
     /**
-     * Navigates into the game round view (including updating the game model)
+     * Navigates into the game round view including saving the amount of rounds in the model
      */
     private void goToGameRoundView() {
         if (validateInputs()) {
+            // save the amount of rounds in model
+            gameModel.setAmountRounds((int) view.getAmountRoundsSpinner().getValue());
+
+            // switch view
             System.out.println("GO TO GAME ROUND VIEW");
             viewManager.changeView(View.GAME_ROUND);
         } else {
@@ -84,6 +88,10 @@ public class CreateLobbyController {
         }
     }
 
+    /**
+     * Validates if all input is given correctly, so the player can continue
+     * @return  true - conditions are met / false - conditions are not met
+     */
     private boolean validateInputs() {
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();

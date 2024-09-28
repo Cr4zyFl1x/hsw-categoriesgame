@@ -6,8 +6,6 @@ import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +33,7 @@ public class GameRoundController {
         registerListener();
 
         // prepare view for gameplay
+        updateRoundNumber();
         generateRandomLetter();
         generateCategoryRows(model.getCategories());
     }
@@ -45,6 +44,18 @@ public class GameRoundController {
     private void registerListener() {
         view.getFinishButton().addActionListener(e -> goToAnswerOverviewView());
         view.getLeaveRoundButton().addActionListener(e -> goToStartView());
+    }
+
+    /**
+     * Updates the game round number
+     */
+    private void updateRoundNumber() {
+        // save changes in model
+        int currentRound = model.getCurrentRoundNumber();
+        model.setCurrentRoundNumber(currentRound + 1);
+
+        // update header in view
+        view.getHeader().setText("Game Round #" + currentRound);
     }
 
     /**

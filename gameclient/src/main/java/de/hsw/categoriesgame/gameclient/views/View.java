@@ -6,5 +6,6 @@ public enum View {
     CREATE_LOBBY,
     GAME_ROUND,
     ANSWERS,
+    WAITING,
     RESULTS;
 }

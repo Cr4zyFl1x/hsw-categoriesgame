@@ -1,6 +1,6 @@
 package de.hsw.categoriesgame.gameclient.views;
 
-import de.hsw.categoriesgame.gameclient.interfaces.ViewBuild;
+import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * View class to build the view for the result overview
  */
-public class ResultView extends JPanel implements ViewBuild {
+public class ResultView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
     private JLabel resultHeader;

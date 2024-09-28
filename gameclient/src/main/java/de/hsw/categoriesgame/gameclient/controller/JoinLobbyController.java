@@ -41,12 +41,12 @@ public class JoinLobbyController {
     }
 
     /**
-     * Navigates into a game round
+     * Navigates into the waiting screen
      */
     private void goToGameRoundView() {
         if (validateInputs()) {
-            System.out.println("GO TO GAME ROUND VIEW");
-            viewManager.changeView(View.GAME_ROUND);
+            System.out.println("GO TO LOBBY WAITING VIEW");
+            viewManager.changeView(View.WAITING);
         } else {
             view.throwErrorDialog();
         }
@@ -54,7 +54,7 @@ public class JoinLobbyController {
 
     private boolean validateInputs() {
         // TODO: Suche nach Lobbycode; falls gefunden dann true zurückgeben, ansonsten false
-        return false;
+        return true;
     }
 
 }
