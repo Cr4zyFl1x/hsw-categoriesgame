@@ -1,15 +1,13 @@
 package de.hsw.categoriesgame.gameserver;
 
-import de.hsw.categoriesgame.gameapi.iface.CategoriesGame;
-import de.hsw.categoriesgame.gameapi.service.ServiceOperator;
+import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -27,20 +25,10 @@ public class GameserverApplication {
     {
         readConfig();
 
-        final CategoriesGame game = new CategoriesGameImpl();
+        final Object defaultDomain = new CategoriesGameImpl();
 
-        // Socket for accepting connections from configured port
-        try (final ServerSocket serverSocket = new ServerSocket(Integer.parseInt(getConfig().getString("server.port")))) {
-            while (true) {
-                log.info("Waiting for client connection...");
-                log.error("de");
-                final Socket socket = serverSocket.accept();
-                log.debug("Connection established from {}!", socket.getRemoteSocketAddress());
-                final ServiceOperator<CategoriesGame> gameServiceOperator = new ServiceOperator<>(game, socket);
-                final Thread operatorThread = new Thread(gameServiceOperator);
-                operatorThread.start();
-            }
-        }
+        final RemoteServer server = new SocketRemoteServer(Integer.parseInt(getConfig().getString("server.port")), new DomainRegistry(), defaultDomain);
+        server.start();
     }
 
 
