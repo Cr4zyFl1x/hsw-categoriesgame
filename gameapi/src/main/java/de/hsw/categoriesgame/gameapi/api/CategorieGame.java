@@ -1,15 +1,21 @@
 package de.hsw.categoriesgame.gameapi.api;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+
 import java.util.List;
 
 /**
  * @author Florian J. Kleine-Vorholt
+ *
+ * TODO:
+ *
  */
 public interface CategorieGame {
 
-    Lobby joinLobby(String lobbyCode);
+    Lobby joinLobby(String lobbyCode) throws LobbyNotFoundException;
+
+    Lobby joinLobby(String lobbyCode, final Player player) throws LobbyNotFoundException;
+    Lobby joinLobby(String lobbyCode, final List<Player> player) throws LobbyNotFoundException;
 
     Lobby createLobby();
 

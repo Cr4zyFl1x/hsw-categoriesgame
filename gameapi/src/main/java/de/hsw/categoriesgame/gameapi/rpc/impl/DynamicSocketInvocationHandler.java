@@ -3,11 +3,12 @@ package de.hsw.categoriesgame.gameapi.rpc.impl;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
-import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.SocketInvocationHandler;
 
 import java.io.*;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -19,30 +20,30 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
     /**
      * The connection details with remote information
      */
-    private final ConnectionDetails connectionDetails;
+    private final ConnectionDetails remoteConnectionDetails;
 
     /**
-     * Factory to create new proxies on demand
+     * The connection details with remote information
      */
-    private final ProxyFactory proxyFactory;
+    private final RemoteServer localServer;
 
     /**
      * Actual UUID of the domain object to be handled on remote
      */
-    private UUID domainUUID;
+    private final UUID domainUUID;
 
 
 
-    public DynamicSocketInvocationHandler(final ConnectionDetails connectionDetails,
-                                          final ProxyFactory proxyFactory,
+    public DynamicSocketInvocationHandler(final ConnectionDetails remoteConnectionDetails,
+                                          final RemoteServer localServer,
                                           final UUID domainUUID)
     {
-        if (connectionDetails == null || proxyFactory == null) {
-            throw new IllegalArgumentException("The communication socket or proxy factory is null!");
+        if (remoteConnectionDetails == null || localServer == null) {
+            throw new IllegalArgumentException("The connection details cannot be null!");
         }
 
-        this.connectionDetails = connectionDetails;
-        this.proxyFactory = proxyFactory;
+        this.remoteConnectionDetails = remoteConnectionDetails;
+        this.localServer = localServer;
         this.domainUUID = domainUUID;
     }
 
@@ -51,18 +52,15 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
      * {@inheritDoc}
      */
     @Override
-    public ConnectionDetails getConnectionDetails()
+    public ConnectionDetails getRemoteConnectionDetails()
     {
-        return this.connectionDetails;
+        return this.remoteConnectionDetails;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public ProxyFactory getProxyFactory()
+    public ConnectionDetails getLocalConnectionDetails()
     {
-        return this.proxyFactory;
+        return localServer.getConnectionDetails();
     }
 
     /**
@@ -71,13 +69,23 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
-        if (method.getName().equals("toString")) {
-            return proxy.getClass().toString();
+//        if (method.getName().equals("toString")) {
+//            return proxy.getClass().toString();
+//        }
+
+        if (method.getName().equals("equals") && (args[0] instanceof Proxy)) {
+            return args[0].hashCode() == proxy.hashCode();
         }
 
-        try (final Socket sock = new Socket(connectionDetails.getHost(), connectionDetails.getPort());
+        try (final Socket sock = new Socket(remoteConnectionDetails.getHost(), remoteConnectionDetails.getPort());
              final ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
              final ObjectInputStream  in  = new ObjectInputStream(sock.getInputStream())) {
+
+            // SERIALIZER
+            final ProxyDataSerializer serializer = new ProxySerializer(
+                    localServer.getConnectionDetails(),
+                    localServer,
+                    method);
 
             /*
              * SEND-PART
@@ -87,7 +95,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             sendMethodInvocationInformation(out, method);
 
             // Send Arguments
-            out.writeObject(args);
+            out.writeObject(serializer.serializeArguments(args, method));
 
             // Send InvocationDomain-Identifier
             out.writeObject(domainUUID);
@@ -106,9 +114,11 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
                 throw ((ProxyException) result).buildException();
             }
 
-            // Otherwise deserialize and return
-            final ProxyDataSerializer serializer = new ProxySerializer(getProxyFactory(), null, method);
-            return serializer.deserializeReturnValue(result);
+            // Deserialize result
+            final Object ret = serializer.deserializeReturnValue(result);
+
+            // Return
+            return ret;
         }
     }
 

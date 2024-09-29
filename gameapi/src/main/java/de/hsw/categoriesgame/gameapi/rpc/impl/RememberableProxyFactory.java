@@ -3,10 +3,11 @@ package de.hsw.categoriesgame.gameapi.rpc.impl;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyData;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyFactoryRegistry;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyRegistry;
 
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -22,21 +23,29 @@ public final class RememberableProxyFactory implements ProxyFactory {
     /**
      * The (resolvable) hostname of the server to connect to
      */
-    private final ConnectionDetails connectionDetails;
+    private final ConnectionDetails remoteConnection;
 
+    /**
+     * The local (client) server to manage domain objects on client side
+     */
+    private final RemoteServer localConnection;
 
 
     /**
      * Creates a new {@code RememberableProxyFactory}.
      */
-    public RememberableProxyFactory(final ConnectionDetails connectionDetails)
+    public RememberableProxyFactory(final ConnectionDetails remoteConnection, RemoteServer localConnection)
     {
-        if (connectionDetails == null) {
+        if (remoteConnection == null) {
             throw new IllegalArgumentException("Connection details cannot be null");
         }
-        this.connectionDetails = connectionDetails;
+        this.remoteConnection = remoteConnection;
+        this.localConnection = localConnection;
 
         this.proxyRegistry = new ProxyRegistry();
+
+        // ADD to Registry of Factories
+        ProxyFactoryRegistry.getRegistry().save(remoteConnection, this);
     }
 
 
@@ -57,12 +66,15 @@ public final class RememberableProxyFactory implements ProxyFactory {
         final Proxy proxy = (Proxy) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
                 new Class[]{clazz},
-                new DynamicSocketInvocationHandler(connectionDetails, this, domainUUID == null ? null : UUID.fromString(domainUUID))
+                new DynamicSocketInvocationHandler(
+                        remoteConnection,
+                        localConnection,
+                        domainUUID == null ? null : UUID.fromString(domainUUID))
         );
 
         // Save proxy to registry
         if (domainUUID != null) {
-            proxyRegistry.save(new ProxyData(UUID.fromString(domainUUID), clazz, proxy));
+            proxyRegistry.save(new ProxyData(remoteConnection, UUID.fromString(domainUUID), clazz, proxy));
         }
 
         // Return proxy
@@ -76,5 +88,10 @@ public final class RememberableProxyFactory implements ProxyFactory {
     public ProxyRegistry getProxyRegistry()
     {
         return proxyRegistry;
+    }
+
+    @Override
+    public ConnectionDetails getEndpointConnectionDetails() {
+        return remoteConnection;
     }
 }

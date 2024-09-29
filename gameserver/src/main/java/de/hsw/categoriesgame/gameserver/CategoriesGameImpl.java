@@ -2,11 +2,11 @@ package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
+import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
@@ -25,9 +25,29 @@ public class CategoriesGameImpl implements CategorieGame {
     }
 
     @Override
-    public Lobby joinLobby(String lobbyCode)
+    public Lobby joinLobby(String lobbyCode) throws LobbyNotFoundException
     {
+        if (!lobbies.containsKey(lobbyCode)) {
+            throw new LobbyNotFoundException("No lobby found with lobbycode " + lobbyCode);
+        }
         return lobbies.get(lobbyCode);
+    }
+
+    @Override
+    public Lobby joinLobby(String lobbyCode, Player player) throws LobbyNotFoundException {
+        System.out.println("JOINED: " + player.getName());
+        return joinLobby(lobbyCode);
+    }
+
+    @Override
+    public Lobby joinLobby(String lobbyCode, List<Player> player) throws LobbyNotFoundException
+    {
+        System.out.println(player);
+        Lobby lobby = null;
+        for (Player p : player) {
+            lobby = joinLobby(lobbyCode, p);
+        }
+        return lobby;
     }
 
     @Override

@@ -1,31 +1,20 @@
 package de.hsw.categoriesgame.gameapi.rpc;
 
+import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyRegistry;
 
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * @author Florian J. Kleine-Vorholt
  */
 public interface ProxyFactory {
 
-    /**
-     *
-     * @param clazz
-     * @return
-     * @param <T>
-     */
-    default <T> T createProxy(final Class<T> clazz) {
+    default <T> T createProxy(final Class<T> clazz)
+    {
         return createProxy(clazz, null);
     }
 
-    /**
-     *
-     * @param proxyData
-     * @return
-     */
     default Proxy createProxy(final ProxyData proxyData)
     {
         try {
@@ -35,15 +24,9 @@ public interface ProxyFactory {
         }
     }
 
-    /**
-     *
-     * @param clazz
-     * @param domainUUID
-     * @return
-     * @param <T>
-     */
     <T> T createProxy(final Class<T> clazz, final String domainUUID);
 
-
     ProxyRegistry getProxyRegistry();
+
+    ConnectionDetails getEndpointConnectionDetails();
 }

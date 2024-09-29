@@ -1,5 +1,8 @@
 package de.hsw.categoriesgame.gameapi.rpc;
 
+import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
+import lombok.Getter;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
@@ -14,13 +17,21 @@ public final class ProxyData implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ConnectionDetails
+     */
+    @Getter
+    private final ConnectionDetails connectionDetails;
+
+    /**
      * Domain identifier of the manageable object
      */
+    @Getter
     private final UUID domainUUID;
 
     /**
      * Class of the manageable object via Proxy
      */
+    @Getter
     private final Class<?> clazz;
 
     /**
@@ -32,14 +43,16 @@ public final class ProxyData implements Serializable {
     private Proxy proxy;
 
 
+
     /**
      * Creates a new ProxyData POJO
      *
      * @param domainUUID    The UUID of the domain to manage
      * @param clazz         The class of the object to manage
      */
-    public ProxyData(final UUID domainUUID, final Class<?> clazz)
+    public ProxyData(final ConnectionDetails connectionDetails, final UUID domainUUID, final Class<?> clazz)
     {
+        this.connectionDetails = connectionDetails;
         this.domainUUID = domainUUID;
         this.clazz = clazz;
     }
@@ -51,34 +64,25 @@ public final class ProxyData implements Serializable {
      * @param clazz         The class of the object to manage
      * @param proxy         The proxy object used to manage the remote domain object
      */
-    public ProxyData(final UUID domainUUID, final Class<?> clazz, final Proxy proxy)
+    public ProxyData(final ConnectionDetails connectionDetails, final UUID domainUUID, final Class<?> clazz, final Proxy proxy)
     {
-        this(domainUUID, clazz);
+        this(connectionDetails, domainUUID, clazz);
         this.proxy = proxy;
     }
 
 
 
-    public UUID getDomainUUID() {
-        return domainUUID;
-    }
-
-
-    public Class<?> getClazz() {
-        return clazz;
-    }
-
-
-    public Proxy getProxy() throws IllegalStateException {
-        if (proxy == null) {
+    public Proxy getProxy() throws IllegalStateException
+    {
+        if (this.proxy == null) {
             throw new IllegalStateException("No proxy available");
         }
         return proxy;
     }
 
-
-    public void setProxy(final Proxy proxy) throws IllegalStateException {
-        if (proxy != null) {
+    public void setProxy(final Proxy proxy) throws IllegalStateException
+    {
+        if (this.proxy != null) {
             throw new IllegalStateException("Proxy already set");
         }
         this.proxy = proxy;

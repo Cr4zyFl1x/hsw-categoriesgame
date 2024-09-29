@@ -1,7 +1,5 @@
 package de.hsw.categoriesgame.gameapi.rpc;
 
-import java.util.UUID;
-
 /**
  * @author Florian J. Kleine-Vorholt
  */
@@ -13,7 +11,7 @@ public interface Registry<K, V> {
 
     K save(final V object) throws IllegalStateException;
 
-    void save(final UUID key, final V object) throws IllegalStateException;
+    void save(final K key, final V object) throws IllegalStateException;
 
     void delete(final K uuid) throws IllegalStateException;
 

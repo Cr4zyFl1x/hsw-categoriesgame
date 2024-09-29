@@ -1,8 +1,10 @@
 package de.hsw.categoriesgame.gameserver;
 
+import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +20,7 @@ public class GameserverApplication {
 
     private final static Logger log = LoggerFactory.getLogger(GameserverApplication.class);
 
+    @Getter
     private static ResourceBundle config;
 
 
@@ -27,7 +30,10 @@ public class GameserverApplication {
 
         final Object defaultDomain = new CategoriesGameImpl();
 
-        final RemoteServer server = new SocketRemoteServer(Integer.parseInt(getConfig().getString("server.port")), new DomainRegistry(), defaultDomain);
+        final RemoteServer server = new SocketRemoteServer(
+                new ConnectionDetails("localhost", Integer.parseInt(getConfig().getString("server.port"))),
+                new DomainRegistry(),
+                defaultDomain);
         server.start();
     }
 
@@ -44,10 +50,5 @@ public class GameserverApplication {
             log.error("Error reading application.properties", e);
             System.exit(1);
         }
-    }
-
-
-    public static ResourceBundle getConfig() {
-        return config;
     }
 }

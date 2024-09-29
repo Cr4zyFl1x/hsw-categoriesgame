@@ -9,6 +9,8 @@ import java.lang.reflect.Type;
  */
 public class ReflectionUtil {
 
+    private ReflectionUtil() {}
+
     public static Class<?> getGenericReturnType(final Method method)
     {
         final Type type = method.getGenericReturnType();
@@ -22,4 +24,36 @@ public class ReflectionUtil {
         return (Class<?>) parameterizedType.getActualTypeArguments()[0];
     }
 
+    public static Class<?> getParameterGenericType(final Method method, final int param)
+    {
+        final Type[] types = method.getGenericParameterTypes();
+
+        if (types.length == 0) {
+            throw new RuntimeException("Cannot get generic return type of " + method);
+        }
+
+        if (types.length-1 < param) {
+            throw new RuntimeException("Parameter not found!");
+        }
+
+        if (!(types[param] instanceof ParameterizedType parameterizedType)) {
+            throw new RuntimeException("Cannot get generic type of " + method.getName() + " parameter " + param);
+        }
+
+        return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+    }
+
+    public static Class<?> getMethodReturnType(final Method method)
+    {
+        return method.getReturnType();
+    }
+
+    public static Class<?> getMethodParameterType(final Method method, final int param)
+    {
+        Class<?>[] cls = method.getParameterTypes();
+        if (cls.length-1 < param) {
+            throw new RuntimeException("Parameter not found!");
+        }
+        return cls[param];
+    }
 }

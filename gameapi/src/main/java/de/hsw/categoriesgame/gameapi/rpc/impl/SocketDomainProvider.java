@@ -1,9 +1,11 @@
 package de.hsw.categoriesgame.gameapi.rpc.impl;
 
+import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.DomainProvider;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
-import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
+import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.exception.DomainInvocationException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,7 +28,7 @@ public final class SocketDomainProvider implements DomainProvider {
     /**
      * The registry of saved domains
      */
-    private final DomainRegistry registry;
+    private final RemoteServer localServer;
 
     /**
      * Actual domain
@@ -38,22 +40,18 @@ public final class SocketDomainProvider implements DomainProvider {
     /**
      *
      * @param socket
-     * @param registry
+     * @param localServer
      * @param domain
      */
     public SocketDomainProvider(final Socket socket,
-                                final DomainRegistry registry,
+                                final RemoteServer localServer,
                                 final Object domain)
     {
-        this.registry = registry;
+        this.localServer = localServer;
         this.socket = socket;
 
-        if (domain == null) {
-            throw new IllegalArgumentException("Domain cannot be null");
-        }
-
-        if (!registry.contains(domain)) {
-            registry.save(domain);
+        if (domain != null && !localServer.getDomainRegistry().contains(domain)) {
+            localServer.getDomainRegistry().save(domain);
         }
         this.domain = domain;
     }
@@ -67,6 +65,10 @@ public final class SocketDomainProvider implements DomainProvider {
         return domain;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run()
     {
@@ -84,16 +86,31 @@ public final class SocketDomainProvider implements DomainProvider {
 
             // Determine Class & Method
             final UUID domainUUID     = (UUID) in.readObject();
-            if (domainUUID != null && registry.exists(domainUUID)) {
-                this.domain = registry.get(domainUUID);
+            if (domainUUID != null && localServer.getDomainRegistry().exists(domainUUID)) {
+                this.domain = localServer.getDomainRegistry().get(domainUUID);
             }
+
+            // If domain was not found and no default is set -> null
+            if (getDomain() == null) {
+                throw new DomainInvocationException("No default domain was set and the client did not request a valid domain!");
+            }
+
+            // Acquire Domain class and respective method
             final Class<?> invocationClass = this.domain.getClass();
             final Method method = invocationClass.getMethod(methodName, paramTypes);
+
+            // Deserialize Arguments
+            final ProxyDataSerializer serializer = new ProxySerializer(
+                    new ConnectionDetails(socket.getLocalAddress().getHostName(), socket.getLocalPort()),
+                    localServer,
+                    method);
+            final Object[] deserializedArguments = serializer.deserializeArguments(arguments);
+
 
             // Invoke Method
             Object result;
             try {
-                result = method.invoke(this.domain, arguments);
+                result = method.invoke(this.domain, deserializedArguments);
             } catch (InvocationTargetException e) {
                 final Throwable targetException = e.getTargetException();
                 result = new ProxyException(
@@ -107,14 +124,15 @@ public final class SocketDomainProvider implements DomainProvider {
              * SEND-PART
              */
 
-            final ProxyDataSerializer serializer = new ProxySerializer(null, registry, method);
-            final Object sendObj = serializer.serializeReturnValue(result);
+            // Serialize return value into a serializable format
+            final Object sendObj = serializer.serializeReturnValue(result, method);
 
             // Push into pipe
             out.writeObject(sendObj);
             out.flush();
 
         } catch (ClassNotFoundException | IOException | NoSuchMethodException | IllegalAccessException e) {
+            // TODO: what to do?
             throw new RuntimeException(e);
         }
     }
