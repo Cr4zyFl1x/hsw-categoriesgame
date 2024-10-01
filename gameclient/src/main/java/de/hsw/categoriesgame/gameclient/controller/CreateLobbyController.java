@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class CreateLobbyController {
 
-    ViewManager viewManager;
-    CreateLobbyView view;
-    GameModel gameModel;
+    private final ViewManager viewManager;
+    private final CreateLobbyView view;
+    private final GameModel gameModel;
     JButton categoryButton;
 
     // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
