@@ -15,7 +15,7 @@ public class AnswerOverviewController {
 
     private final ViewManager viewManager;
     private final AnswerOverviewView view;
-   private final  GameModel model;
+    private final  GameModel model;
 
     // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
 
