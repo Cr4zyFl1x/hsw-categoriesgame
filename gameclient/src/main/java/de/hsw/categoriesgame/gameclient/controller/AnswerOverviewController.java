@@ -13,9 +13,9 @@ import java.util.List;
  */
 public class AnswerOverviewController {
 
-    ViewManager viewManager;
-    AnswerOverviewView view;
-    GameModel model;
+    private final ViewManager viewManager;
+    private final AnswerOverviewView view;
+   private final  GameModel model;
 
     // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
 
