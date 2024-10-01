@@ -9,8 +9,8 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
  */
 public class JoinLobbyController {
 
-    ViewManager viewManager;
-    JoinLobbyView view;
+    private final ViewManager viewManager;
+    private final JoinLobbyView view;
 
     /**
      * Constructor
