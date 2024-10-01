@@ -3,15 +3,15 @@ package de.hsw.categoriesgame.gameclient.controller;
 import de.hsw.categoriesgame.gameclient.views.StartView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller class for StartView to handle logic operations
  */
 public class StartController {
 
-    private static final Logger log = Logger.getLogger(StartController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(StartController.class);
     ViewManager viewManager;
     StartView view;
 

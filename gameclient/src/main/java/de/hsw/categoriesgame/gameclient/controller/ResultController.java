@@ -5,17 +5,18 @@ import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.ResultView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Controller class to control actions on the ResultView
  */
 public class ResultController {
 
-    private static final Logger log = Logger.getLogger(ResultController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ResultController.class.getName());
     private final ViewManager viewManager;
     private final ResultView view;
     private final GameModel model;

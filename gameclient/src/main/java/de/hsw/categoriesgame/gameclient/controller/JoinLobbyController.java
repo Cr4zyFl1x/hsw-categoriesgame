@@ -3,15 +3,15 @@ package de.hsw.categoriesgame.gameclient.controller;
 import de.hsw.categoriesgame.gameclient.views.JoinLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
-
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller class for JoinLobbyView to enable doing actions
  */
 public class JoinLobbyController {
 
-    private static final Logger log = Logger.getLogger(JoinLobbyController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(JoinLobbyController.class.getName());
     private final ViewManager viewManager;
     private final JoinLobbyView view;
 

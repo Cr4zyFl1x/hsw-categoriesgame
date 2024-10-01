@@ -4,20 +4,21 @@ import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.CreateLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Controller class for CreateLobbyView to make operations possible
  */
 public class CreateLobbyController {
 
-    private static final Logger log = Logger.getLogger(CreateLobbyController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(CreateLobbyController.class.getName());
     private final ViewManager viewManager;
     private final CreateLobbyView view;
     private final GameModel gameModel;

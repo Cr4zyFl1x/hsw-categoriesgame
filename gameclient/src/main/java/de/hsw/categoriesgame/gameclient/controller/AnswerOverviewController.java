@@ -4,17 +4,18 @@ import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Controller class which enables logical operations can be made on AnswerOverviewView
  */
 public class AnswerOverviewController {
 
-    private static final Logger log = Logger.getLogger(AnswerOverviewController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(AnswerOverviewController.class.getName());
     private final ViewManager viewManager;
     private final AnswerOverviewView view;
     private final  GameModel model;

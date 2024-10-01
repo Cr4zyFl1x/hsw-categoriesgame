@@ -4,17 +4,18 @@ import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.GameRoundView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Controller class of the GameRoundView to handle logical operations
  */
 public class GameRoundController {
 
-    private static final Logger log = Logger.getLogger(GameRoundController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(GameRoundController.class.getName());
     private final ViewManager viewManager;
     private final GameRoundView view;
     private final GameModel model;
