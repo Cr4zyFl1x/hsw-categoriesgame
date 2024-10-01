@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class ResultController {
 
-    private static final Logger log = LoggerFactory.getLogger(ResultController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ResultController.class);
     private final ViewManager viewManager;
     private final ResultView view;
     private final GameModel model;

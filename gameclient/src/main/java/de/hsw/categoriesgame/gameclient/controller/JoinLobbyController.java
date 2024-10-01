@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JoinLobbyController {
 
-    private static final Logger log = LoggerFactory.getLogger(JoinLobbyController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(JoinLobbyController.class);
     private final ViewManager viewManager;
     private final JoinLobbyView view;
 

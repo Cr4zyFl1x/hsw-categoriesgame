@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class AnswerOverviewController {
 
-    private static final Logger log = LoggerFactory.getLogger(AnswerOverviewController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(AnswerOverviewController.class);
     private final ViewManager viewManager;
     private final AnswerOverviewView view;
     private final  GameModel model;

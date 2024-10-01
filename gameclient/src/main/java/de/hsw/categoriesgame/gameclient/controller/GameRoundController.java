@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class GameRoundController {
 
-    private static final Logger log = LoggerFactory.getLogger(GameRoundController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(GameRoundController.class);
     private final ViewManager viewManager;
     private final GameRoundView view;
     private final GameModel model;

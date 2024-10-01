@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class CreateLobbyController {
 
-    private static final Logger log = LoggerFactory.getLogger(CreateLobbyController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(CreateLobbyController.class);
     private final ViewManager viewManager;
     private final CreateLobbyView view;
     private final GameModel gameModel;

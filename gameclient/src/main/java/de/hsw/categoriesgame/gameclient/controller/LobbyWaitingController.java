@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class LobbyWaitingController {
 
-    private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
     private final ViewManager viewManager;
     private final LobbyWaitingView view;
 
