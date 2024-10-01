@@ -8,12 +8,14 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Controller class to control actions on the ResultView
  */
 public class ResultController {
 
+    private static final Logger log = Logger.getLogger(ResultController.class.getName());
     private final ViewManager viewManager;
     private final ResultView view;
     private final GameModel model;
@@ -54,7 +56,7 @@ public class ResultController {
      * Navigates to start screen
      */
     private void goToStartView() {
-        System.out.println("GO TO START VIEW");
+        log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
@@ -65,7 +67,7 @@ public class ResultController {
         // reset round count
         model.setCurrentRoundNumber(0);
 
-        System.out.println("GO TO GAME ROUND VIEW");
+        log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
 

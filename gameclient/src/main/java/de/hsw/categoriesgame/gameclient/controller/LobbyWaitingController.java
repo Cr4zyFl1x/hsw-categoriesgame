@@ -4,8 +4,11 @@ import de.hsw.categoriesgame.gameclient.views.LobbyWaitingView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
+import java.util.logging.Logger;
+
 public class LobbyWaitingController {
 
+    private static final Logger log = Logger.getLogger(LobbyWaitingController.class.getName());
     private final ViewManager viewManager;
     private final LobbyWaitingView view;
 
@@ -30,12 +33,12 @@ public class LobbyWaitingController {
     }
 
     private void goToStartView() {
-        System.out.println("GO TO START VIEW");
+        log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
     private void goToGameRoundView() {
-        System.out.println("GO TO GAME ROUND VIEW");
+        log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
 

@@ -7,13 +7,14 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
 import javax.swing.*;
 import java.util.List;
-import java.util.Random;
+import java.util.logging.Logger;
 
 /**
  * Controller class of the GameRoundView to handle logical operations
  */
 public class GameRoundController {
 
+    private static final Logger log = Logger.getLogger(GameRoundController.class.getName());
     private final ViewManager viewManager;
     private final GameRoundView view;
     private final GameModel model;
@@ -33,8 +34,7 @@ public class GameRoundController {
         registerListener();
 
         // prepare view for gameplay
-        updateRoundNumber();
-        generateRandomLetter();
+        updateRoundNumber(model.getCurrentRoundNumber());
         generateCategoryRows(model.getCategories());
     }
 
@@ -49,28 +49,12 @@ public class GameRoundController {
     /**
      * Updates the game round number
      */
-    private void updateRoundNumber() {
+    private void updateRoundNumber(int currentRound) {
         // save changes in model
-        int currentRound = model.getCurrentRoundNumber();
         model.setCurrentRoundNumber(currentRound + 1);
 
         // update header in view
-        view.getHeader().setText("Game Round #" + currentRound);
-    }
-
-    /**
-     * Method generates a random number
-     */
-    private void generateRandomLetter() {
-        // Generate letter
-        Random random = new Random();
-        char c = (char) (random.nextInt(26) + 'A');
-
-        // Save letter in model
-        model.setCurrentLetter(c);
-
-        // Show generated letter in view
-        view.getCurrentLetter().setText(String.valueOf(c));
+        view.getHeader().setText("Game Round #" + (currentRound + 1));
     }
 
     /**
@@ -78,7 +62,7 @@ public class GameRoundController {
      */
     private void goToAnswerOverviewView() {
         if (validateInputs()) {
-            System.out.println("GO TO ANSWERS OVERVIEW VIEW");
+            log.info("GO TO ANSWER OVERVIEW VIEW");
             viewManager.changeView(View.ANSWERS);
         } else {
             view.throwErrorDialog();
@@ -108,7 +92,7 @@ public class GameRoundController {
      * Navigate to start screen
      */
     private void goToStartView() {
-        System.out.println("GO TO START VIEW");
+        log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 

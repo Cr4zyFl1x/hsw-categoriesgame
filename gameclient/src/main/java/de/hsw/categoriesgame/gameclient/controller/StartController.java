@@ -4,11 +4,14 @@ import de.hsw.categoriesgame.gameclient.views.StartView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
+import java.util.logging.Logger;
+
 /**
  * Controller class for StartView to handle logic operations
  */
 public class StartController {
 
+    private static final Logger log = Logger.getLogger(StartController.class.getName());
     ViewManager viewManager;
     StartView view;
 
@@ -36,7 +39,7 @@ public class StartController {
      * Navigates the user to the join lobby view
      */
     private void goToJoinLobbyView() {
-        System.out.println("GO TO JOIN LOBBY VIEW");
+        log.info("GO TO JOIN LOBBY VIEW");
         viewManager.changeView(View.JOIN_LOBBY);
     }
 
@@ -44,7 +47,7 @@ public class StartController {
      * Navigates the user to the lobby creation view
      */
     private void goToCreateLobbyView() {
-        System.out.println("GO TO CREATE LOBBY VIEW");
+        log.info("GO TO CREATE LOBBY VIEW");
         viewManager.changeView(View.CREATE_LOBBY);
     }
 

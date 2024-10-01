@@ -4,11 +4,14 @@ import de.hsw.categoriesgame.gameclient.views.JoinLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
+import java.util.logging.Logger;
+
 /**
  * Controller class for JoinLobbyView to enable doing actions
  */
 public class JoinLobbyController {
 
+    private static final Logger log = Logger.getLogger(JoinLobbyController.class.getName());
     private final ViewManager viewManager;
     private final JoinLobbyView view;
 
@@ -28,15 +31,15 @@ public class JoinLobbyController {
      * Register all ActionListeners
      */
     private void registerListener() {
-        view.getBackButton().addActionListener(e -> goToLobbiesView());
+        view.getBackButton().addActionListener(e -> goToStartView());
         view.getJoinButton().addActionListener(e -> goToGameRoundView());
     }
 
     /**
      * Navigates to the start screen
      */
-    private void goToLobbiesView() {
-        System.out.println("GO TO START VIEW");
+    private void goToStartView() {
+        log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
@@ -45,7 +48,7 @@ public class JoinLobbyController {
      */
     private void goToGameRoundView() {
         if (validateInputs()) {
-            System.out.println("GO TO LOBBY WAITING VIEW");
+            log.info("GO TO GAME ROUND VIEW");
             viewManager.changeView(View.WAITING);
         } else {
             view.throwErrorDialog();

@@ -7,12 +7,14 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Controller class which enables logical operations can be made on AnswerOverviewView
  */
 public class AnswerOverviewController {
 
+    private static final Logger log = Logger.getLogger(AnswerOverviewController.class.getName());
     private final ViewManager viewManager;
     private final AnswerOverviewView view;
     private final  GameModel model;
@@ -48,15 +50,15 @@ public class AnswerOverviewController {
      * registers all ActionListeners
      */
     private void registerListener() {
-        view.getCancelButton().addActionListener(e -> goToLobbiesView());
+        view.getCancelButton().addActionListener(e -> goToStartView());
         view.getContinueButton().addActionListener(e -> goToResultOrGameRoundView());
     }
 
     /**
      * Navigates to the start screen
      */
-    private void goToLobbiesView() {
-        System.out.println("GO TO START VIEW");
+    private void goToStartView() {
+        log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
@@ -65,10 +67,10 @@ public class AnswerOverviewController {
      */
     private void goToResultOrGameRoundView() {
         if (isRoundAmountReached()) {
-            System.out.println("GO TO RESULT VIEW");
+            log.info("GO TO RESULT VIEW");
             viewManager.changeView(View.RESULTS);
         } else {
-            System.out.println("GO TO GAME ROUND VIEW");
+            log.info("GO TO GAME ROUND VIEW");
             viewManager.changeView(View.GAME_ROUND);
         }
     }

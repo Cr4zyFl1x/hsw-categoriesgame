@@ -10,16 +10,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Controller class for CreateLobbyView to make operations possible
  */
 public class CreateLobbyController {
 
+    private static final Logger log = Logger.getLogger(CreateLobbyController.class.getName());
     private final ViewManager viewManager;
     private final CreateLobbyView view;
     private final GameModel gameModel;
-    JButton categoryButton;
 
     // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
 
@@ -61,14 +62,14 @@ public class CreateLobbyController {
                 }
             }
         });
-        view.getCategoryButton().addActionListener(e -> removeCategory(categoryButton));
+        view.getCategoryButton().addActionListener(e -> removeCategory(view.getCategoryButton()));
     }
 
     /**
      * Navigates to the start screen
      */
     private void goToStartView() {
-        System.out.println("GO TO START VIEW");
+        log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
@@ -81,7 +82,7 @@ public class CreateLobbyController {
             gameModel.setAmountRounds((int) view.getAmountRoundsSpinner().getValue());
 
             // switch view
-            System.out.println("GO TO GAME ROUND VIEW");
+            log.info("GO TO GAME ROUND VIEW");
             viewManager.changeView(View.GAME_ROUND);
         } else {
             view.throwErrorDialog();
@@ -106,13 +107,21 @@ public class CreateLobbyController {
     private void addNewCategory() {
         JTextField inputField = view.getNewCategoryInput();
         String newCategory = inputField.getText().trim();
+        JButton categoryButton = new JButton();
+
+        for (int i = 0; i < view.getCategoryButtons().size(); i++) {
+            if (view.getCategoryButtons().get(i).getText().equals(newCategory)) {
+                categoryButton = view.getCategoryButtons().get(i);
+            }
+        }
 
         if (!newCategory.isEmpty()) {
             // Adding a new button component and getting the reference
             categoryButton = view.addActiveCategory(newCategory);
 
             // Adding action listener to the newly created category button
-            categoryButton.addActionListener(e -> removeCategory(categoryButton));
+            JButton finalCategoryButton = categoryButton;
+            categoryButton.addActionListener(e -> removeCategory(finalCategoryButton));
 
             // Adding category to model
             gameModel.addCategory(newCategory);
