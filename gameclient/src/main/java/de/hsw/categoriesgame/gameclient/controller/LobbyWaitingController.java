@@ -6,8 +6,8 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
 public class LobbyWaitingController {
 
-    ViewManager viewManager;
-    LobbyWaitingView view;
+    private final ViewManager viewManager;
+    private final LobbyWaitingView view;
 
     public LobbyWaitingController(ViewManager viewManager, LobbyWaitingView view) {
         this.viewManager = viewManager;
