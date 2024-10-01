@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class ResultController {
 
-    ViewManager viewManager;
-    ResultView view;
-    GameModel model;
+    private final ViewManager viewManager;
+    private final ResultView view;
+    private final GameModel model;
 
     // TODO: mockPlayers-Referenzen durch getter in model ersetzen
 
