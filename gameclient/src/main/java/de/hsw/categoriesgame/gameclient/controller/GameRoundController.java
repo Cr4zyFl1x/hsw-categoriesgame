@@ -14,9 +14,9 @@ import java.util.Random;
  */
 public class GameRoundController {
 
-    ViewManager viewManager;
-    GameRoundView view;
-    GameModel model;
+    private final ViewManager viewManager;
+    private final GameRoundView view;
+    private final GameModel model;
 
     /**
      * Constructor
