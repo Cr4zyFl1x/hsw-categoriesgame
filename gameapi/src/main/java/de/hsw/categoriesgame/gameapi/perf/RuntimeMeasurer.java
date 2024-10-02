@@ -24,6 +24,6 @@ public class RuntimeMeasurer {
 
     public long getMillis()
     {
-        return endTime - startTime;
+        return ((endTime != 0) ? endTime : System.currentTimeMillis()) - startTime;
     }
 }
