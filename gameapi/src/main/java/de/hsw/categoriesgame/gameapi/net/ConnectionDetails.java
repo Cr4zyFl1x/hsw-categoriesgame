@@ -20,12 +20,12 @@ public final class ConnectionDetails implements Serializable {
     /**
      * Hostname (e.g. IPv4, IPv6, FQDN)
      */
-    private final String host;
+    private String host;
 
     /**
      * Port between 1 and 65.536
      */
-    private final int port;
+    private int port;
 
 
     /**
@@ -36,12 +36,25 @@ public final class ConnectionDetails implements Serializable {
      */
     public ConnectionDetails(final String host, final int port) {
 
-        if (host == null || host.isEmpty() || port < 1 || port > 65535) {
-            throw new IllegalArgumentException("Host and/or Port is invalid!");
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("Port/Hostname is invalid!");
         }
 
         this.host = host;
         this.port = port;
+    }
+
+    public ConnectionDetails(final String host) {
+        if (host == null || host.isBlank()) {
+            throw new IllegalArgumentException("Hostname is invalid!");
+        }
+        this.host = host;
+    }
+
+    public ConnectionDetails(final int port) {
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("Port is invalid!");
+        }
     }
 
 

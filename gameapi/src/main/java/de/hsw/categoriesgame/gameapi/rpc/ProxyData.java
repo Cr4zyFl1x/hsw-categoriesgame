@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameapi.rpc;
 
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -20,7 +21,8 @@ public final class ProxyData implements Serializable {
      * ConnectionDetails
      */
     @Getter
-    private final ConnectionDetails connectionDetails;
+    @Setter
+    private ConnectionDetails connectionDetails;
 
     /**
      * Domain identifier of the manageable object

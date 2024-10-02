@@ -57,11 +57,6 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
         return this.remoteConnectionDetails;
     }
 
-    @Override
-    public ConnectionDetails getLocalConnectionDetails()
-    {
-        return localServer.getConnectionDetails();
-    }
 
     /**
      * {@inheritDoc}
@@ -69,12 +64,14 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
-//        if (method.getName().equals("toString")) {
-//            return proxy.getClass().toString();
-//        }
-
         if (method.getName().equals("equals") && (args[0] instanceof Proxy)) {
             return args[0].hashCode() == proxy.hashCode();
+        }
+        if (method.getName().equals("hashCode")) {
+            return System.identityHashCode(proxy);
+        }
+        if (method.getName().equals("toString")) {
+            return proxy.getClass().toString();
         }
 
         try (final Socket sock = new Socket(remoteConnectionDetails.getHost(), remoteConnectionDetails.getPort());
@@ -82,8 +79,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
              final ObjectInputStream  in  = new ObjectInputStream(sock.getInputStream())) {
 
             // SERIALIZER
-            final ProxyDataSerializer serializer = new ProxySerializer(
-                    localServer.getConnectionDetails(),
+            ProxyDataSerializer serializer = new ProxySerializer(null,
                     localServer,
                     method);
 
@@ -113,6 +109,11 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             if (result instanceof ProxyException) {
                 throw ((ProxyException) result).buildException();
             }
+
+            serializer = new ProxySerializer(
+                    new ConnectionDetails(sock.getInetAddress().getHostName()),
+                    localServer,
+                    method);
 
             // Deserialize result
             final Object ret = serializer.deserializeReturnValue(result);

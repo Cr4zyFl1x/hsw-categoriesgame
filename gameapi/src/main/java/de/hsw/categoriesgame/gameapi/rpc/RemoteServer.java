@@ -16,7 +16,5 @@ public interface RemoteServer {
 
     boolean isRunning();
 
-    ConnectionDetails getConnectionDetails();
-
     DomainRegistry getDomainRegistry();
 }

@@ -100,8 +100,8 @@ public final class SocketDomainProvider implements DomainProvider {
             final Method method = invocationClass.getMethod(methodName, paramTypes);
 
             // Deserialize Arguments
-            final ProxyDataSerializer serializer = new ProxySerializer(
-                    new ConnectionDetails(socket.getLocalAddress().getHostName(), socket.getLocalPort()),
+            ProxyDataSerializer serializer = new ProxySerializer(
+                    new ConnectionDetails(socket.getInetAddress().getHostName()),
                     localServer,
                     method);
             final Object[] deserializedArguments = serializer.deserializeArguments(arguments);
@@ -123,6 +123,11 @@ public final class SocketDomainProvider implements DomainProvider {
             /*
              * SEND-PART
              */
+
+            serializer = new ProxySerializer(
+                    null,
+                    localServer,
+                    method);
 
             // Serialize return value into a serializable format
             final Object sendObj = serializer.serializeReturnValue(result, method);

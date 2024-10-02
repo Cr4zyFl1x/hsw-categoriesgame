@@ -31,7 +31,7 @@ public class GameserverApplication {
         final Object defaultDomain = new CategoriesGameImpl();
 
         final RemoteServer server = new SocketRemoteServer(
-                new ConnectionDetails("localhost", Integer.parseInt(getConfig().getString("server.port"))),
+                Integer.parseInt(getConfig().getString("server.port")),
                 new DomainRegistry(),
                 defaultDomain);
         server.start();

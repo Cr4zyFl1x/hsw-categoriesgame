@@ -20,17 +20,17 @@ import java.util.UUID;
  */
 public final class ProxySerializer implements ProxyDataSerializer {
 
-    /**
-     * The
-     */
+
     private final RemoteServer localServer;
+
     private final Method method;
+
     private final ConnectionDetails remoteConnectionDetails;
 
 
-    public ProxySerializer(final ConnectionDetails remoteConnectionDetails,
-                           final RemoteServer localServer,
-                           final Method method) {
+    public ProxySerializer (final ConnectionDetails remoteConnectionDetails,
+                            final RemoteServer localServer,
+                            final Method method) {
         this.method = method;
         this.remoteConnectionDetails = remoteConnectionDetails;
         this.localServer = localServer;
@@ -199,11 +199,11 @@ public final class ProxySerializer implements ProxyDataSerializer {
         for (final Object object : list) {
             if (localServer.getDomainRegistry().contains(object)) {
                 final UUID domainUUID = localServer.getDomainRegistry().getKey(object);
-                returnList.add(new ProxyData(remoteConnectionDetails, domainUUID, listClass));
+                returnList.add(new ProxyData(new ConnectionDetails(null, localServer.getPort()), domainUUID, listClass));
                 continue;
             }
             final UUID uuid = localServer.getDomainRegistry().save(object);
-            returnList.add(new ProxyData(remoteConnectionDetails, uuid, listClass));
+            returnList.add(new ProxyData(new ConnectionDetails(null, localServer.getPort()), uuid, listClass));
         }
 
         return returnList;
@@ -223,6 +223,10 @@ public final class ProxySerializer implements ProxyDataSerializer {
         final List<Object> retList = new ArrayList<>(list.size());
         for (final Object object : list) {
             final ProxyData proxyData = (ProxyData) object;
+
+            proxyData.setConnectionDetails(
+                    new ConnectionDetails(remoteConnectionDetails.getHost(), proxyData.getConnectionDetails().getPort()));
+
             final ProxyFactory factory = ProxyFactoryRegistry.getFactoryOrCreate(proxyData.getConnectionDetails(),
                     localServer);
             retList.add(factory.createProxy((ProxyData) object));
@@ -238,11 +242,14 @@ public final class ProxySerializer implements ProxyDataSerializer {
     private ProxyData serializeDomainToProxy(final Object domain, Class<?> clazz)
     {
         if (localServer.getDomainRegistry().contains(domain)) {
-            return new ProxyData(remoteConnectionDetails, localServer.getDomainRegistry().getKey(domain), clazz);
+            return new ProxyData(
+                    new ConnectionDetails(null, localServer.getPort()),
+                    localServer.getDomainRegistry().getKey(domain),
+                    clazz);
         }
 
         final UUID domainUUID = localServer.getDomainRegistry().save(domain);
-        return new ProxyData(remoteConnectionDetails, domainUUID, clazz);
+        return new ProxyData(new ConnectionDetails(null, localServer.getPort()), domainUUID, clazz);
     }
 
     /**
@@ -252,6 +259,10 @@ public final class ProxySerializer implements ProxyDataSerializer {
      */
     private Object deserializeProxyDataToProxy(final ProxyData proxyData)
     {
+        proxyData.setConnectionDetails(new ConnectionDetails(
+                remoteConnectionDetails.getHost(),
+                proxyData.getConnectionDetails().getPort()));
+
         return ProxyFactoryRegistry.getFactoryOrCreate(proxyData.getConnectionDetails(),
                 localServer).createProxy(proxyData);
     }

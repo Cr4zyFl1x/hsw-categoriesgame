@@ -25,7 +25,7 @@ public final class SocketRemoteServer implements RemoteServer {
     /**
      * Port the server should listen to
      */
-    private final ConnectionDetails listeningDetails;
+    private final int port;
 
     /**
      * Registry used to save domains
@@ -42,11 +42,11 @@ public final class SocketRemoteServer implements RemoteServer {
 
 
 
-    public SocketRemoteServer(final ConnectionDetails listeningDetails,
+    public SocketRemoteServer(final int port,
                               final DomainRegistry domainRegistry,
                               final Object defaultDomain)
     {
-        this.listeningDetails = listeningDetails;
+        this.port = port;
         this.registry = domainRegistry;
         this.defaultDomain = defaultDomain;
     }
@@ -74,6 +74,7 @@ public final class SocketRemoteServer implements RemoteServer {
                 while (true) {
                     final Socket socket = serverSocket.accept();
                     log.debug("New connection from >> '{}'", socket.getRemoteSocketAddress());
+                    log.debug(socket.getInetAddress().getHostAddress());
 
                     new Thread(new SocketDomainProvider(socket, this, getDefaultDomain())).start();
                 }
@@ -94,18 +95,13 @@ public final class SocketRemoteServer implements RemoteServer {
 
     @Override
     public int getPort() {
-        return this.listeningDetails.getPort();
+        return this.port;
     }
 
     @Override
     public boolean isRunning()
     {
         return serverThread != null && serverThread.isAlive();
-    }
-
-    @Override
-    public ConnectionDetails getConnectionDetails() {
-        return this.listeningDetails;
     }
 
     @Override

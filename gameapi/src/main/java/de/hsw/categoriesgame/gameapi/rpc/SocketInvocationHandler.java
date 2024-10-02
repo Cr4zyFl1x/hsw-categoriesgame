@@ -10,5 +10,4 @@ import java.lang.reflect.InvocationHandler;
 public interface SocketInvocationHandler extends InvocationHandler {
 
     ConnectionDetails getRemoteConnectionDetails();
-    ConnectionDetails getLocalConnectionDetails();
 }

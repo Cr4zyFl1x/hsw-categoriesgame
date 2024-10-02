@@ -5,17 +5,14 @@ import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Player;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
-import de.hsw.categoriesgame.gameapi.rpc.ProxyData;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 
-import java.lang.reflect.Proxy;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Florian J. Kleine-Vorholt
@@ -24,8 +21,7 @@ public class GameclientApplication {
 
     public static void main(String[] args) throws UnknownHostException, LobbyNotFoundException {
         // Clientside server
-        final RemoteServer socketRemoteServer = new SocketRemoteServer(
-                new ConnectionDetails("localhost", 99), new DomainRegistry(), null);
+        final RemoteServer socketRemoteServer = new SocketRemoteServer(99, new DomainRegistry(), null);
         socketRemoteServer.start();
 
         // ProxyFactory
@@ -53,7 +49,7 @@ public class GameclientApplication {
         System.out.println(lobby); // LobbyImpl@[...]
 
 
-//        game.joinLobby(lobby.getLobbyCode(), List.of(player, player1));
+        game.joinLobby(lobby.getLobbyCode(), List.of(player, player1));
 //
 //        System.out.println(game.getLobbies());
 //
