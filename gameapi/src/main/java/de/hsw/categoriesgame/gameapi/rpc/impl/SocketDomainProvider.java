@@ -6,13 +6,13 @@ import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.exception.DomainInvocationException;
+import lombok.SneakyThrows;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.util.UUID;
 
 /**
@@ -72,17 +72,17 @@ public final class SocketDomainProvider implements DomainProvider {
     @Override
     public void run()
     {
-        try (final ObjectInputStream   in = new ObjectInputStream(socket.getInputStream());
-             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        String methodName;
+        Class<?>[] paramTypes;
+        Object[] arguments;
 
-            /*
-             * RECEIVE-PART
-             */
+        try {
+            final ObjectInputStream   in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
             // Read invocation information
-            final String methodName     = (String) in.readObject();
-            final Class<?>[] paramTypes = (Class<?>[]) in.readObject();
-            final Object[] arguments    = (Object[]) in.readObject();
+            methodName     = (String) in.readObject();
+            paramTypes = (Class<?>[]) in.readObject();
+            arguments    = (Object[]) in.readObject();
 
             // Determine Class & Method
             final UUID domainUUID     = (UUID) in.readObject();
@@ -90,10 +90,16 @@ public final class SocketDomainProvider implements DomainProvider {
                 this.domain = localServer.getDomainRegistry().get(domainUUID);
             }
 
+//            in.close();
+
+
             // If domain was not found and no default is set -> null
             if (getDomain() == null) {
                 throw new DomainInvocationException("No default domain was set and the client did not request a valid domain!");
             }
+
+
+            final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
             // Acquire Domain class and respective method
             final Class<?> invocationClass = this.domain.getClass();
@@ -136,9 +142,10 @@ public final class SocketDomainProvider implements DomainProvider {
             out.writeObject(sendObj);
             out.flush();
 
-        } catch (ClassNotFoundException | IOException | NoSuchMethodException | IllegalAccessException e) {
-            // TODO: what to do?
-            throw new RuntimeException(e);
+            out.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
     }
 }

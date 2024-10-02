@@ -74,9 +74,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             return proxy.getClass().toString();
         }
 
-        try (final Socket sock = new Socket(remoteConnectionDetails.getHost(), remoteConnectionDetails.getPort());
-             final ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
-             final ObjectInputStream  in  = new ObjectInputStream(sock.getInputStream())) {
+        try (final Socket sock = new Socket(remoteConnectionDetails.getHost(), remoteConnectionDetails.getPort())) {
 
             sock.setReceiveBufferSize(1024 * 60);
             sock.setSendBufferSize(1024 * 60);
@@ -86,9 +84,9 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
                     localServer,
                     method);
 
-            /*
-             * SEND-PART
-             */
+            sock.setTcpNoDelay(true);
+
+            final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(sock.getOutputStream()));
 
             // Send Method
             sendMethodInvocationInformation(out, method);
@@ -100,13 +98,13 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             out.writeObject(domainUUID);
 
             out.flush();
+//            out.close();
 
 
-            /*
-             * RECEIVE-PART
-             */
-
+            final ObjectInputStream  in  = new ObjectInputStream(new BufferedInputStream(sock.getInputStream()));
             final Object result = in.readObject();
+
+            in.close();
 
             // If is exception -> throw exception
             if (result instanceof ProxyException) {
