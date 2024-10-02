@@ -104,10 +104,14 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             out.flush();
 
+            log.debug("Sent request for method {} in {} milliseconds.", method.getName(), measurer.getMillis());
+
 
             /*
              * RECEIVE-PART
              */
+
+            final RuntimeMeasurer measurer2 = new RuntimeMeasurer().start();
 
             final Object result = in.readObject();
 
@@ -123,6 +127,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             // Deserialize result
             final Object ret = serializer.deserializeReturnValue(result);
+            log.debug("Reading answer took {} seconds.", measurer2.stop());
 
             log.debug("Processing the request '{}' took {} milliseconds.",
                     method,
