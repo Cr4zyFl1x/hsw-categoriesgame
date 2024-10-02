@@ -1,11 +1,14 @@
 package de.hsw.categoriesgame.gameapi.rpc.impl;
 
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
+import de.hsw.categoriesgame.gameapi.perf.RuntimeMeasurer;
 import de.hsw.categoriesgame.gameapi.rpc.DomainProvider;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.exception.DomainInvocationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,6 +23,7 @@ import java.util.UUID;
  */
 public final class SocketDomainProvider implements DomainProvider {
 
+    private static final Logger log = LoggerFactory.getLogger(SocketDomainProvider.class);
     /**
      * The socket used for communication
      */
@@ -74,6 +78,9 @@ public final class SocketDomainProvider implements DomainProvider {
     {
         try (final ObjectInputStream   in = new ObjectInputStream(socket.getInputStream());
              final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
+            RuntimeMeasurer measurer = new RuntimeMeasurer().start();
+
 
             /*
              * RECEIVE-PART
@@ -135,6 +142,10 @@ public final class SocketDomainProvider implements DomainProvider {
             // Push into pipe
             out.writeObject(sendObj);
             out.flush();
+
+            log.debug("Processing the request '{}' took {} milliseconds.",
+                    method,
+                    measurer.stop());
 
         } catch (ClassNotFoundException | IOException | NoSuchMethodException | IllegalAccessException e) {
             // TODO: what to do?

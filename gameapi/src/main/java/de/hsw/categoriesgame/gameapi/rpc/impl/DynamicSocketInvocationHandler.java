@@ -1,10 +1,13 @@
 package de.hsw.categoriesgame.gameapi.rpc.impl;
 
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
+import de.hsw.categoriesgame.gameapi.perf.RuntimeMeasurer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.SocketInvocationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -17,6 +20,7 @@ import java.util.UUID;
  */
 public final class DynamicSocketInvocationHandler implements SocketInvocationHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(DynamicSocketInvocationHandler.class);
     /**
      * The connection details with remote information
      */
@@ -64,6 +68,8 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
     {
+        final RuntimeMeasurer measurer = new RuntimeMeasurer().start();
+
         if (method.getName().equals("equals") && (args[0] instanceof Proxy)) {
             return args[0].hashCode() == proxy.hashCode();
         }
@@ -117,6 +123,10 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             // Deserialize result
             final Object ret = serializer.deserializeReturnValue(result);
+
+            log.debug("Processing the request '{}' took {} milliseconds.",
+                    method,
+                    measurer.stop());
 
             // Return
             return ret;
