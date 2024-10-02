@@ -73,10 +73,6 @@ public final class SocketRemoteServer implements RemoteServer {
 
                 while (true) {
                     final Socket socket = serverSocket.accept();
-                    socket.setTcpNoDelay(true);
-                    socket.setReceiveBufferSize(1024 * 60);
-                    socket.setSendBufferSize(1024 * 60);
-
                     log.debug("New connection from >> '{}'", socket.getRemoteSocketAddress());
                     log.debug(socket.getInetAddress().getHostAddress());
 

@@ -74,6 +74,7 @@ public final class SocketDomainProvider implements DomainProvider {
     {
         try (final ObjectInputStream   in = new ObjectInputStream(socket.getInputStream());
              final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+
             /*
              * RECEIVE-PART
              */
