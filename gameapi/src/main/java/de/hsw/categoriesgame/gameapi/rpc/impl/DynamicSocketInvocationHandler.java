@@ -83,38 +83,41 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             sock.setTcpNoDelay(true);
 
-            try (final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(sock.getOutputStream()))) {
-                // Send Method
-                sendMethodInvocationInformation(out, method);
+            final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(sock.getOutputStream()));
 
-                // Send Arguments
-                out.writeObject(serializer.serializeArguments(args, method));
+            // Send Method
+            sendMethodInvocationInformation(out, method);
 
-                    // Send InvocationDomain-Identifier
-                out.writeObject(domainUUID);
+            // Send Arguments
+            out.writeObject(serializer.serializeArguments(args, method));
 
-                out.flush();
-            };
+            // Send InvocationDomain-Identifier
+            out.writeObject(domainUUID);
 
-            try (final ObjectInputStream  in  = new ObjectInputStream(new BufferedInputStream(sock.getInputStream()))) {
-                final Object result = in.readObject();
+            out.flush();
+            out.close();
 
-                // If is exception -> throw exception
-                if (result instanceof ProxyException) {
-                    throw ((ProxyException) result).buildException();
-                }
 
-                serializer = new ProxySerializer(
-                    new ConnectionDetails(sock.getInetAddress().getHostName()),
-                localServer,
-                method);
+            final ObjectInputStream  in  = new ObjectInputStream(new BufferedInputStream(sock.getInputStream()));
+            final Object result = in.readObject();
 
-                // Deserialize result
-                final Object ret = serializer.deserializeReturnValue(result);
+            in.close();
 
-                // Return
-                return ret;
+            // If is exception -> throw exception
+            if (result instanceof ProxyException) {
+                throw ((ProxyException) result).buildException();
             }
+
+            serializer = new ProxySerializer(
+                    new ConnectionDetails(sock.getInetAddress().getHostName()),
+                    localServer,
+                    method);
+
+            // Deserialize result
+            final Object ret = serializer.deserializeReturnValue(result);
+
+            // Return
+            return ret;
         }
     }
 

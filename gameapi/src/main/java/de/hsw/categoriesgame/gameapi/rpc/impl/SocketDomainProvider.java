@@ -76,7 +76,8 @@ public final class SocketDomainProvider implements DomainProvider {
         Class<?>[] paramTypes;
         Object[] arguments;
 
-        try (final ObjectInputStream   in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()))) {
+        try {
+            final ObjectInputStream   in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
 
             // Read invocation information
             methodName     = (String) in.readObject();
@@ -89,19 +90,16 @@ public final class SocketDomainProvider implements DomainProvider {
                 this.domain = localServer.getDomainRegistry().get(domainUUID);
             }
 
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+            in.close();
 
 
-        // If domain was not found and no default is set -> null
-        if (getDomain() == null) {
-            throw new DomainInvocationException("No default domain was set and the client did not request a valid domain!");
-        }
+            // If domain was not found and no default is set -> null
+            if (getDomain() == null) {
+                throw new DomainInvocationException("No default domain was set and the client did not request a valid domain!");
+            }
 
 
-
-        try (final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()))) {
+            final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 
             // Acquire Domain class and respective method
             final Class<?> invocationClass = this.domain.getClass();
@@ -144,9 +142,10 @@ public final class SocketDomainProvider implements DomainProvider {
             out.writeObject(sendObj);
             out.flush();
 
-        } catch (IOException | NoSuchMethodException | IllegalAccessException e) {
-            // TODO: what to do?
-            throw new RuntimeException(e);
+            out.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
     }
 }
