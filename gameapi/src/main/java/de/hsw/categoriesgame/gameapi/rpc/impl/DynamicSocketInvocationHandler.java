@@ -95,7 +95,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             out.writeObject(domainUUID);
 
             out.flush();
-            out.close();
+//            out.close();
 
 
             final ObjectInputStream  in  = new ObjectInputStream(new BufferedInputStream(sock.getInputStream()));

@@ -90,7 +90,7 @@ public final class SocketDomainProvider implements DomainProvider {
                 this.domain = localServer.getDomainRegistry().get(domainUUID);
             }
 
-            in.close();
+//            in.close();
 
 
             // If domain was not found and no default is set -> null
