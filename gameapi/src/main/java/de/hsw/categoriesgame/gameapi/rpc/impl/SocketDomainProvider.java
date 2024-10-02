@@ -7,12 +7,11 @@ import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.exception.DomainInvocationException;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.util.UUID;
 
 /**
@@ -72,8 +71,8 @@ public final class SocketDomainProvider implements DomainProvider {
     @Override
     public void run()
     {
-        try (final ObjectInputStream   in = new ObjectInputStream(socket.getInputStream());
-             final ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+        try (final ObjectInputStream   in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+             final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()))) {
 
             /*
              * RECEIVE-PART

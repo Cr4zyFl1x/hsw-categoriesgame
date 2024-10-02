@@ -75,8 +75,8 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
         }
 
         try (final Socket sock = new Socket(remoteConnectionDetails.getHost(), remoteConnectionDetails.getPort());
-             final ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
-             final ObjectInputStream  in  = new ObjectInputStream(sock.getInputStream())) {
+             final ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(sock.getOutputStream()));
+             final ObjectInputStream  in  = new ObjectInputStream(new BufferedInputStream(sock.getInputStream()))) {
 
             // SERIALIZER
             ProxyDataSerializer serializer = new ProxySerializer(null,
