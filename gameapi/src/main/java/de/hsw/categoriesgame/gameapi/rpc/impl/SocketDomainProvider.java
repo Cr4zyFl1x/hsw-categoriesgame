@@ -81,7 +81,6 @@ public final class SocketDomainProvider implements DomainProvider {
 
             RuntimeMeasurer measurer = new RuntimeMeasurer().start();
 
-
             /*
              * RECEIVE-PART
              */
@@ -96,6 +95,8 @@ public final class SocketDomainProvider implements DomainProvider {
             if (domainUUID != null && localServer.getDomainRegistry().exists(domainUUID)) {
                 this.domain = localServer.getDomainRegistry().get(domainUUID);
             }
+
+            log.debug("Reading Data took {} millis.", measurer.getMillis());
 
             // If domain was not found and no default is set -> null
             if (getDomain() == null) {
@@ -131,6 +132,8 @@ public final class SocketDomainProvider implements DomainProvider {
              * SEND-PART
              */
 
+            RuntimeMeasurer measurer1 = new RuntimeMeasurer().start();
+
             serializer = new ProxySerializer(
                     null,
                     localServer,
@@ -142,6 +145,8 @@ public final class SocketDomainProvider implements DomainProvider {
             // Push into pipe
             out.writeObject(sendObj);
             out.flush();
+
+            log.debug("Sending response took {} millis.", measurer1.stop());
 
             log.debug("Processing the request '{}' took {} milliseconds.",
                     method,
