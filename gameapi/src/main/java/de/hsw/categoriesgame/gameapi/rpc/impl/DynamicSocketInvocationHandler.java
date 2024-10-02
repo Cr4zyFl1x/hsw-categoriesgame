@@ -78,6 +78,9 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
              final ObjectOutputStream out = new ObjectOutputStream(sock.getOutputStream());
              final ObjectInputStream  in  = new ObjectInputStream(sock.getInputStream())) {
 
+            sock.setReceiveBufferSize(1024 * 60);
+            sock.setSendBufferSize(1024 * 60);
+
             // SERIALIZER
             ProxyDataSerializer serializer = new ProxySerializer(null,
                     localServer,
