@@ -76,6 +76,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
         try (final Socket sock = new Socket(remoteConnectionDetails.getHost(), remoteConnectionDetails.getPort())) {
 
+            sock.setTcpNoDelay(true);
             sock.setReceiveBufferSize(1024 * 60);
             sock.setSendBufferSize(1024 * 60);
 
