@@ -121,7 +121,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             }
 
             serializer = new ProxySerializer(
-                    new ConnectionDetails(sock.getInetAddress().getHostName()),
+                    new ConnectionDetails(sock.getInetAddress().getHostAddress()),
                     localServer,
                     method);
 
