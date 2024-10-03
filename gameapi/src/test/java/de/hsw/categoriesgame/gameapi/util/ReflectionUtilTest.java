@@ -1,6 +1,6 @@
 package de.hsw.categoriesgame.gameapi.util;
 
-import org.junit.jupiter.api.DisplayName;
+import de.hsw.categoriesgame.gameapi.util.testres.IReflectionUtilInterfaceTest;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;

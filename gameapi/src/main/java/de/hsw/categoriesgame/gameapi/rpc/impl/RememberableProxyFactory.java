@@ -42,6 +42,10 @@ public final class RememberableProxyFactory implements ProxyFactory {
         this.remoteConnection = remoteConnection;
         this.localConnection = localConnection;
 
+        // ClientServer running?
+        if (!localConnection.isRunning())
+            throw new RuntimeException("Local Server is not running!");
+
         this.proxyRegistry = new ProxyRegistry();
 
         // ADD to Registry of Factories
@@ -74,7 +78,9 @@ public final class RememberableProxyFactory implements ProxyFactory {
 
         // Save proxy to registry
         if (domainUUID != null) {
-            proxyRegistry.save(new ProxyData(remoteConnection, UUID.fromString(domainUUID), clazz, proxy));
+            proxyRegistry.save(
+                    UUID.fromString(domainUUID),
+                    new ProxyData(remoteConnection, UUID.fromString(domainUUID), clazz, proxy));
         }
 
         // Return proxy

@@ -98,8 +98,6 @@ public final class SocketDomainProvider implements DomainProvider {
 
             log.debug("Reading Data took {} millis.", measurer.getMillis());
 
-            RuntimeMeasurer measurer3 = new RuntimeMeasurer().start();
-
             // If domain was not found and no default is set -> null
             if (getDomain() == null) {
                 throw new DomainInvocationException("No default domain was set and the client did not request a valid domain!");
@@ -129,14 +127,11 @@ public final class SocketDomainProvider implements DomainProvider {
                         targetException.getMessage());
             }
 
-            log.debug("Processing method against object took {} millis.", measurer3.stop());
 
 
             /*
              * SEND-PART
              */
-
-            RuntimeMeasurer measurer1 = new RuntimeMeasurer().start();
 
             serializer = new ProxySerializer(
                     null,
@@ -150,10 +145,8 @@ public final class SocketDomainProvider implements DomainProvider {
             out.writeObject(sendObj);
             out.flush();
 
-            log.debug("Sending response took {} millis.", measurer1.stop());
-
             log.debug("Processing the request '{}' took {} milliseconds.",
-                    method,
+                    method.getName() + "@" +  method.getDeclaringClass().getSimpleName(),
                     measurer.stop());
 
         } catch (ClassNotFoundException | IOException | NoSuchMethodException | IllegalAccessException e) {

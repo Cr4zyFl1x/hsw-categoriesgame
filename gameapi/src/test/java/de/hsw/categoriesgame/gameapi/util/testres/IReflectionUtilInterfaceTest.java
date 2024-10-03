@@ -1,4 +1,4 @@
-package de.hsw.categoriesgame.gameapi.util;
+package de.hsw.categoriesgame.gameapi.util.testres;
 
 import java.util.List;
 

@@ -68,11 +68,18 @@ public class CategoriesGameImpl implements CategorieGame {
     }
 
     @Override
-    public void deleteLobby(String lobbyCode) throws IllegalArgumentException
+    public void deleteLobby(String lobbyCode) throws LobbyNotFoundException
     {
         if (!lobbies.containsKey(lobbyCode)) {
-            throw new IllegalArgumentException("Lobby " + lobbyCode + " does not exist!");
+            throw new LobbyNotFoundException("Lobby " + lobbyCode + " does not exist!");
         }
         lobbies.remove(lobbyCode);
+
+        log.info("Deleted lobby {}", lobbyCode);
+    }
+
+    @Override
+    public void deleteLobby(Lobby lobby) throws LobbyNotFoundException {
+        deleteLobby(lobby.getLobbyCode());
     }
 }

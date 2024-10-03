@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameapi.net;
 
+import de.hsw.categoriesgame.gameapi.util.InetAddressUtil;
 import lombok.Getter;
 
 import java.io.Serial;
@@ -40,17 +41,29 @@ public final class ConnectionDetails implements Serializable {
             throw new IllegalArgumentException("Port/Hostname is invalid!");
         }
 
-        this.host = host;
+        this.host = host != null ? InetAddressUtil.getLongIP(host) : null;
         this.port = port;
     }
 
+
+    /**
+     * Creates a new instance of the {@code ConnectionDetails} pojo
+     *
+     * @param host  hostname
+     */
     public ConnectionDetails(final String host) {
         if (host == null || host.isBlank()) {
             throw new IllegalArgumentException("Hostname is invalid!");
         }
-        this.host = host;
+        this.host = InetAddressUtil.getLongIP(host);
     }
 
+
+    /**
+     * Creates a new instance of the {@code ConnectionDetails} pojo
+     *
+     * @param port  port
+     */
     public ConnectionDetails(final int port) {
         if (port < 1 || port > 65535) {
             throw new IllegalArgumentException("Port is invalid!");

@@ -1,25 +1,24 @@
 package de.hsw.categoriesgame.gameapi.rpc.impl;
 
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
-import de.hsw.categoriesgame.gameapi.rpc.ProxyData;
-import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
-import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
-import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.*;
+import de.hsw.categoriesgame.gameapi.rpc.exception.SerializationException;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyFactoryRegistry;
 import de.hsw.categoriesgame.gameapi.util.ReflectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.Proxy;
+import java.util.*;
 
 /**
  * @author Florian J. Kleine-Vorholt
  */
 public final class ProxySerializer implements ProxyDataSerializer {
 
+    private static final Logger log = LoggerFactory.getLogger(ProxySerializer.class);
 
     private final RemoteServer localServer;
 
@@ -42,8 +41,8 @@ public final class ProxySerializer implements ProxyDataSerializer {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Object[] serializeArguments(Object[] args, final Method method) {
-
+    public Object[] serializeArguments(Object[] args, final Method method)
+    {
         if (args == null || args.length == 0) {
             return args;
         }
@@ -54,6 +53,11 @@ public final class ProxySerializer implements ProxyDataSerializer {
             // NULL
             if (arg == null) {
                 continue;
+            }
+
+            // IS PROXY
+            if (arg instanceof Proxy) {
+                args[i] = serializeProxyToDomainData((Proxy) arg);
             }
 
             // LIST
@@ -68,7 +72,7 @@ public final class ProxySerializer implements ProxyDataSerializer {
 
             // Shall create a Proxy for
             if (!(arg instanceof Serializable)) {
-                args[i] = serializeDomainToProxy(arg, ReflectionUtil.getMethodParameterType(method, i));
+                args[i] = serializeDomainToProxyData(arg, ReflectionUtil.getMethodParameterType(method, i));
             }
 
             // Otherwise must be serializable --> do nothing
@@ -94,6 +98,10 @@ public final class ProxySerializer implements ProxyDataSerializer {
                 continue;
             }
 
+            if (arg instanceof DomainData) {
+                args[i] = deserializeDomainDataToDomain((DomainData) arg);
+            }
+
             if (arg instanceof List<?>) {
                 args[i] = deserializeList((List<Object>) arg);
             }
@@ -105,7 +113,6 @@ public final class ProxySerializer implements ProxyDataSerializer {
             if (arg instanceof ProxyData) {
                 args[i] = deserializeProxyDataToProxy((ProxyData) arg);
             }
-
             // Else -> Should be serializable
         }
 
@@ -137,7 +144,7 @@ public final class ProxySerializer implements ProxyDataSerializer {
 
         // Non-Serializable as Proxy
         if (!(returnValue instanceof Serializable)) {
-            return serializeDomainToProxy(returnValue, ReflectionUtil.getMethodReturnType(method));
+            return serializeDomainToProxyData(returnValue, ReflectionUtil.getMethodReturnType(method));
         }
 
         // Should be serializable
@@ -179,48 +186,63 @@ public final class ProxySerializer implements ProxyDataSerializer {
     /////////////////////////////////////////////////
 
 
-    /**
-     * Converts a list of domain objects into a List of {@code ProxyData} objects that can be serialized and transferred.
-     * These {@code ProxyData} objects can then be used to create proxies to manage these domain objects.
-     *
-     * @param list  list containing the domain objects
-     * @return
-     */
     private List<Object> serializeList(final List<Object> list, Class<?> listClass)
     {
         if (list == null) {
             return null;
         }
 
-        if (list.isEmpty() || ((list.get(0) instanceof Serializable))) {
+        if (list.isEmpty()) {
             return list;
         }
-        final List<Object> returnList   = new ArrayList<Object>();
-        for (final Object object : list) {
-            if (localServer.getDomainRegistry().contains(object)) {
-                final UUID domainUUID = localServer.getDomainRegistry().getKey(object);
-                returnList.add(new ProxyData(new ConnectionDetails(null, localServer.getPort()), domainUUID, listClass));
-                continue;
+
+        final List<Object> returnList   = new ArrayList<>();
+
+        // To domain data
+        if (list.get(0) instanceof Proxy) {
+            for (final Object o : list) {
+                final DomainData domainData = serializeProxyToDomainData((Proxy) o);
+                returnList.add(domainData);
             }
-            final UUID uuid = localServer.getDomainRegistry().save(object);
-            returnList.add(new ProxyData(new ConnectionDetails(null, localServer.getPort()), uuid, listClass));
+            return returnList;
+        }
+
+        if (list.get(0) instanceof Serializable) {
+            return list;
+        }
+
+        // To ProxyData
+        for (final Object object : list) {
+            final ProxyData proxyData = serializeDomainToProxyData(object, listClass);
+            returnList.add(proxyData);
         }
 
         return returnList;
     }
 
-    /**
-     *
-     * @param list
-     * @return
-     */
+
+
     private List<Object> deserializeList(final List<Object> list)
     {
-        if (list.isEmpty() || (!(list.get(0) instanceof ProxyData) && (list.get(0) instanceof Serializable))) {
+        if (list.isEmpty() || (!(list.get(0) instanceof ProxyData)
+                && (!(list.get(0) instanceof DomainData))
+                && (list.get(0) instanceof Serializable)))
+        {
             return list;
         }
 
         final List<Object> retList = new ArrayList<>(list.size());
+
+        // DomainData -> Domain
+        if (list.get(0) instanceof DomainData) {
+            for (final Object o : list) {
+                final Object ob = deserializeDomainDataToDomain((DomainData) o);
+                retList.add(ob);
+            }
+            return retList;
+        }
+
+        // ProxyData -> Proxy
         for (final Object object : list) {
             final ProxyData proxyData = (ProxyData) object;
 
@@ -234,12 +256,9 @@ public final class ProxySerializer implements ProxyDataSerializer {
         return retList;
     }
 
-    /**
-     *
-     * @param domain
-     * @return
-     */
-    private ProxyData serializeDomainToProxy(final Object domain, Class<?> clazz)
+
+
+    private ProxyData serializeDomainToProxyData(final Object domain, Class<?> clazz)
     {
         if (localServer.getDomainRegistry().contains(domain)) {
             return new ProxyData(
@@ -252,18 +271,37 @@ public final class ProxySerializer implements ProxyDataSerializer {
         return new ProxyData(new ConnectionDetails(null, localServer.getPort()), domainUUID, clazz);
     }
 
-    /**
-     *
-     * @param proxyData
-     * @return
-     */
+
+
     private Object deserializeProxyDataToProxy(final ProxyData proxyData)
     {
+        // Is localDomain?
         proxyData.setConnectionDetails(new ConnectionDetails(
                 remoteConnectionDetails.getHost(),
                 proxyData.getConnectionDetails().getPort()));
 
+        log.warn(proxyData.getDomainUUID().toString());
+
         return ProxyFactoryRegistry.getFactoryOrCreate(proxyData.getConnectionDetails(),
                 localServer).createProxy(proxyData);
+    }
+
+
+    private DomainData serializeProxyToDomainData(final Proxy proxy)
+    {
+        final SocketInvocationHandler socketInvocationHandler = (SocketInvocationHandler) Proxy.getInvocationHandler(proxy);
+        final Class<?> interfaceClass = proxy.getClass().getInterfaces()[0];        // Should be the first
+        final UUID domainUUID = socketInvocationHandler.getUUID();
+
+        return new DomainData(interfaceClass, domainUUID);
+    }
+
+
+    private Object deserializeDomainDataToDomain(final DomainData domainData)
+    {
+        if (!localServer.getDomainRegistry().exists(domainData.getUuid()))
+            throw new SerializationException("No respective Domain found for UUID: " + domainData.getUuid());
+
+        return localServer.getDomainRegistry().get(domainData.getUuid());
     }
 }

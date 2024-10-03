@@ -61,6 +61,11 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
         return this.remoteConnectionDetails;
     }
 
+    @Override
+    public UUID getUUID() {
+        return domainUUID;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -71,7 +76,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
         final RuntimeMeasurer measurer = new RuntimeMeasurer().start();
 
         if (method.getName().equals("equals") && (args[0] instanceof Proxy)) {
-            return args[0].hashCode() == proxy.hashCode();
+            return args[0] == proxy;
         }
         if (method.getName().equals("hashCode")) {
             return System.identityHashCode(proxy);
@@ -104,14 +109,11 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             out.flush();
 
-            log.debug("Sent request for method {} in {} milliseconds.", method.getName(), measurer.getMillis());
 
 
             /*
              * RECEIVE-PART
              */
-
-            final RuntimeMeasurer measurer2 = new RuntimeMeasurer().start();
 
             final Object result = in.readObject();
 
@@ -127,10 +129,9 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             // Deserialize result
             final Object ret = serializer.deserializeReturnValue(result);
-            log.debug("Reading answer took {} seconds.", measurer2.stop());
 
-            log.debug("Processing the request '{}' took {} milliseconds.",
-                    method,
+            log.trace("Processing the request '{}' took {} milliseconds.",
+                    method.getName() + "@" +  method.getDeclaringClass().getSimpleName(),
                     measurer.stop());
 
             // Return
@@ -144,6 +145,5 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
         out.writeObject(method.getName());
         out.writeObject(method.getParameterTypes());
     }
-
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author Florian J. Kleine-Vorholt
  *
- * TODO:
+ * TODO: THIS IS ONLY A CLASS FOR TESTING PURPOSES! SHOULD BE REPLACED BY ACTUAL ONE
  *
  */
 public interface CategorieGame {
@@ -21,5 +21,6 @@ public interface CategorieGame {
 
     List<Lobby> getLobbies();
 
-    void deleteLobby(String lobbyCode) throws IllegalArgumentException;
+    void deleteLobby(String lobbyCode) throws LobbyNotFoundException;
+    void deleteLobby(Lobby lobby) throws LobbyNotFoundException;
 }

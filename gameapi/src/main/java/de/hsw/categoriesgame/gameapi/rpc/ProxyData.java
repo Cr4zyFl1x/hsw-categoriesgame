@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -88,5 +89,23 @@ public final class ProxyData implements Serializable {
             throw new IllegalStateException("Proxy already set");
         }
         this.proxy = proxy;
+    }
+
+
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
+
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        ProxyData proxyData = (ProxyData) object;
+        return Objects.equals(connectionDetails, proxyData.connectionDetails) && Objects.equals(domainUUID, proxyData.domainUUID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(connectionDetails, domainUUID);
     }
 }
