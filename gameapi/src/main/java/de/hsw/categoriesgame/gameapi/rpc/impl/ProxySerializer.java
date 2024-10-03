@@ -5,28 +5,55 @@ import de.hsw.categoriesgame.gameapi.rpc.*;
 import de.hsw.categoriesgame.gameapi.rpc.exception.SerializationException;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyFactoryRegistry;
 import de.hsw.categoriesgame.gameapi.util.ReflectionUtil;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
+ * Serializer to serialize/deserialize non serializable date to push it through a {@link java.io.ObjectOutputStream}
+ *
  * @author Florian J. Kleine-Vorholt
  */
 public final class ProxySerializer implements ProxyDataSerializer {
 
+    /**
+     * Logger
+     */
     private static final Logger log = LoggerFactory.getLogger(ProxySerializer.class);
 
+    /**
+     * The local server instance
+     */
     private final RemoteServer localServer;
 
+    /**
+     * The method the serializer serializes data for
+     */
+    @Getter
     private final Method method;
 
+    /**
+     * Remote {@link ConnectionDetails} used for creating {@code ProxyData} objects that are used on the other
+     * side for creating proxies to manage local domain objects
+     */
     private final ConnectionDetails remoteConnectionDetails;
 
 
+    /**
+     * Creates a new ProxySerializer
+     *
+     * @param remoteConnectionDetails   remote connection details for serializing local domains to ProxyData
+     * @param localServer               the local server for adding domains to the registry of manageable objects
+     * @param method                    the current method
+     */
     public ProxySerializer (final ConnectionDetails remoteConnectionDetails,
                             final RemoteServer localServer,
                             final Method method) {
@@ -36,12 +63,13 @@ public final class ProxySerializer implements ProxyDataSerializer {
     }
 
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Object[] serializeArguments(Object[] args, final Method method)
+    public Object[] serializeArguments(Object[] args)
     {
         if (args == null || args.length == 0) {
             return args;
@@ -62,7 +90,7 @@ public final class ProxySerializer implements ProxyDataSerializer {
 
             // LIST
             if (arg instanceof List<?>) {
-                args[i] = serializeList((List<Object>) arg, ReflectionUtil.getParameterGenericType(method, i));
+                args[i] = serializeList((List<Object>) arg, ReflectionUtil.getParameterGenericType(getMethod(), i));
             }
 
             // MAP
@@ -72,7 +100,7 @@ public final class ProxySerializer implements ProxyDataSerializer {
 
             // Shall create a Proxy for
             if (!(arg instanceof Serializable)) {
-                args[i] = serializeDomainToProxyData(arg, ReflectionUtil.getMethodParameterType(method, i));
+                args[i] = serializeDomainToProxyData(arg, ReflectionUtil.getMethodParameterType(getMethod(), i));
             }
 
             // Otherwise must be serializable --> do nothing
@@ -125,16 +153,21 @@ public final class ProxySerializer implements ProxyDataSerializer {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Object serializeReturnValue(Object returnValue, Method method)
+    public Object serializeReturnValue(Object returnValue)
     {
         // NULL
         if (returnValue == null) {
             return null;
         }
 
+        // IS PROXY
+        if (returnValue instanceof Proxy) {
+            return serializeProxyToDomainData((Proxy) returnValue);
+        }
+
         // LIST
         if (returnValue instanceof List<?>) {
-            return serializeList((List<Object>) returnValue, ReflectionUtil.getGenericReturnType(method));
+            return serializeList((List<Object>) returnValue, ReflectionUtil.getGenericReturnType(getMethod()));
         }
 
         // MAP
@@ -144,7 +177,7 @@ public final class ProxySerializer implements ProxyDataSerializer {
 
         // Non-Serializable as Proxy
         if (!(returnValue instanceof Serializable)) {
-            return serializeDomainToProxyData(returnValue, ReflectionUtil.getMethodReturnType(method));
+            return serializeDomainToProxyData(returnValue, ReflectionUtil.getMethodReturnType(getMethod()));
         }
 
         // Should be serializable
@@ -161,6 +194,10 @@ public final class ProxySerializer implements ProxyDataSerializer {
         // NULL
         if (object == null) {
             return null;
+        }
+
+        if (object instanceof DomainData) {
+            return deserializeDomainDataToDomain((DomainData) object);
         }
 
         // LIST
@@ -182,8 +219,10 @@ public final class ProxySerializer implements ProxyDataSerializer {
     }
 
 
+
     /////////////////////////////////////////////////
     /////////////////////////////////////////////////
+
 
 
     private List<Object> serializeList(final List<Object> list, Class<?> listClass)
@@ -290,7 +329,13 @@ public final class ProxySerializer implements ProxyDataSerializer {
     private DomainData serializeProxyToDomainData(final Proxy proxy)
     {
         final SocketInvocationHandler socketInvocationHandler = (SocketInvocationHandler) Proxy.getInvocationHandler(proxy);
-        final Class<?> interfaceClass = proxy.getClass().getInterfaces()[0];        // Should be the first
+
+        final Class<?>[] prIf = proxy.getClass().getInterfaces();
+        if (prIf.length == 0) {
+            throw new SerializationException("Cannot find interface!");
+        }
+
+        final Class<?> interfaceClass = prIf[0];        // Should be the first
         final UUID domainUUID = socketInvocationHandler.getUUID();
 
         return new DomainData(interfaceClass, domainUUID);

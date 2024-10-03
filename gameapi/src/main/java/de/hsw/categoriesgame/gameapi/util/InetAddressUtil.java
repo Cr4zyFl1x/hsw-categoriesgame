@@ -8,7 +8,17 @@ import java.net.UnknownHostException;
  */
 public class InetAddressUtil {
 
-    public static final String getLongIP(final String host)
+    /**
+     * Gets the long version of an IP-Adress.
+     * <p>
+     *     If a hostname like "google.de" is provided the ip address will be returned.
+     * </p>
+     *
+     * @param host  the ip address
+     *
+     * @return  long ip address
+     */
+    public static String getLongIP(final String host)
     {
         try {
             final InetAddress inet = InetAddress.getByName(host);

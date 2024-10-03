@@ -5,7 +5,9 @@ import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 import de.hsw.categoriesgame.gameapi.rpc.testres.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
@@ -31,7 +33,6 @@ public class GeneralProxyServerTest {
 
         final RemoteServer clientServer = new SocketRemoteServer(new DomainRegistry());
         clientServer.start();
-
         proxyFactory = new RememberableProxyFactory(
                 new ConnectionDetails("::1", 6444),
                 clientServer);
@@ -138,7 +139,22 @@ public class GeneralProxyServerTest {
         assertEquals(defaultDomain.getLobbyCount(), game.getLobbyCount());
     }
 
-    // TODO: Pruefen ob nur Player als rettype funktioniert
+    @Test
+    void testReturnSingleLocalDomainFromServerProxy()
+    {
+        final ITS_Game game = proxyFactory.createProxy(ITS_Game.class);
+        final ITS_Lobby lobby = game.createLobby();
+        final ITS_Player player = new TS_Player("MAX");
+        lobby.join(player);
+
+        final ITS_Player itsPlayer = lobby.getPlayers().get(0);
+        assertInstanceOf(ITS_Player.class, itsPlayer);
+        assertEquals(player, itsPlayer);
+
+        final ITS_Player adminPlayer = lobby.getAdmin();
+        assertInstanceOf(ITS_Player.class, adminPlayer);
+        assertEquals(player, adminPlayer);
+    }
 
     ///////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////

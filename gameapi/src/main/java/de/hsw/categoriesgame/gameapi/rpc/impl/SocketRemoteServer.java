@@ -1,6 +1,5 @@
 package de.hsw.categoriesgame.gameapi.rpc.impl;
 
-import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.exception.RemoteServerException;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
@@ -13,6 +12,8 @@ import java.net.Socket;
 import java.security.SecureRandom;
 
 /**
+ * {@link RemoteServer} that communicates over Sockets
+ *
  * @author Florian J. Kleine-Vorholt
  */
 public final class SocketRemoteServer implements RemoteServer {
@@ -37,30 +38,62 @@ public final class SocketRemoteServer implements RemoteServer {
      */
     private final Object defaultDomain;
 
-
+    /**
+     * The thread the server is running in.
+     */
     private Thread serverThread;
 
 
-
+    /**
+     * Creates a new SocketRemoteServer that will be exposed on a specific port and provides a default domain.    *
+     *
+     * @param port              the port on which the server will listen
+     * @param domainRegistry    the domain registry where manageable objects are saved
+     * @param defaultDomain     the default domain
+     */
     public SocketRemoteServer(final int port,
                               final DomainRegistry domainRegistry,
                               final Object defaultDomain)
     {
+        if (domainRegistry == null) {
+            throw new IllegalArgumentException("DomainRegistry cannot be null");
+        }
+
         this.port = port;
         this.registry = domainRegistry;
         this.defaultDomain = defaultDomain;
     }
 
+    /**
+     * Creates a new SocketRemoteServer that will be exposed on a random free port and provides a default domain.
+     *
+     * @param domainRegistry    the domain registry where manageable objects are saved
+     * @param defaultDomain     the default domain
+     */
     public SocketRemoteServer(final DomainRegistry domainRegistry,
                               final Object defaultDomain)
     {
+        if (domainRegistry == null) {
+            throw new IllegalArgumentException("DomainRegistry cannot be null");
+        }
+
         this.port = null;
         this.registry = domainRegistry;
         this.defaultDomain = defaultDomain;
     }
 
+
+    /**
+     * Creates a new SocketRemoteServer that will be exposed on a random free port.
+     *
+     * @param domainRegistry    the domain registry where manageable objects are saved
+     */
     public SocketRemoteServer(final DomainRegistry domainRegistry)
     {
+        if (domainRegistry == null) {
+            throw new IllegalArgumentException("DomainRegistry cannot be null");
+        }
+
         this.port = null;
         this.registry = domainRegistry;
         this.defaultDomain = null;
@@ -82,15 +115,17 @@ public final class SocketRemoteServer implements RemoteServer {
 
         // Otherwise start server in a new thread
         this.serverThread = new Thread(() -> {
-            log.info("Starting server on port {} ...", getPort());
+            log.info("Starting server ...");
             try (final ServerSocket serverSocket = new ServerSocket(getPort())) {
-                this.port = serverSocket.getLocalPort();
-                log.info("The server has been started successfully!");
+
+                if (this.port == null) {
+                    this.port = serverSocket.getLocalPort();
+                }
+                log.info("The server has been started successfully o port {}!", getPort());
 
                 while (true) {
                     final Socket socket = serverSocket.accept();
                     log.debug("New connection from >> '{}'", socket.getRemoteSocketAddress());
-                    log.debug(socket.getInetAddress().getHostAddress());
 
                     new Thread(new SocketDomainProvider(socket, this, getDefaultDomain())).start();
                 }
@@ -104,11 +139,18 @@ public final class SocketRemoteServer implements RemoteServer {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object getDefaultDomain() {
         return this.defaultDomain;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPort() {
         if (this.port == null) {
@@ -117,12 +159,20 @@ public final class SocketRemoteServer implements RemoteServer {
         return this.port;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isRunning()
     {
         return serverThread != null && serverThread.isAlive();
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DomainRegistry getDomainRegistry() {
         return registry;

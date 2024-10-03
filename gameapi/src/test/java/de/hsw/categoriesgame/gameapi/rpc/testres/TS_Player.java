@@ -1,6 +1,5 @@
 package de.hsw.categoriesgame.gameapi.rpc.testres;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

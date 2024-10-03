@@ -11,6 +11,8 @@ public class ReflectionUtil {
 
     private ReflectionUtil() {}
 
+
+
     public static Class<?> getGenericReturnType(final Method method)
     {
         final Type type = method.getGenericReturnType();
@@ -23,6 +25,7 @@ public class ReflectionUtil {
 
         return (Class<?>) parameterizedType.getActualTypeArguments()[0];
     }
+
 
     public static Class<?> getParameterGenericType(final Method method, final int param)
     {
@@ -43,10 +46,12 @@ public class ReflectionUtil {
         return (Class<?>) parameterizedType.getActualTypeArguments()[0];
     }
 
+
     public static Class<?> getMethodReturnType(final Method method)
     {
         return method.getReturnType();
     }
+
 
     public static Class<?> getMethodParameterType(final Method method, final int param)
     {

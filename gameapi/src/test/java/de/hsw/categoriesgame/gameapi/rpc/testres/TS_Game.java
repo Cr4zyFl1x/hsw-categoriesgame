@@ -1,9 +1,5 @@
 package de.hsw.categoriesgame.gameapi.rpc.testres;
 
-import de.hsw.categoriesgame.gameapi.api.Lobby;
-import de.hsw.categoriesgame.gameapi.api.Player;
-import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
-
 import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;

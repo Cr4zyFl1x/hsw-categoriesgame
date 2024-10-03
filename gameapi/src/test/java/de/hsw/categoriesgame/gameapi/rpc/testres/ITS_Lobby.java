@@ -12,4 +12,6 @@ public interface ITS_Lobby {
     void join(ITS_Player player);
 
     List<ITS_Player> getPlayers();
+
+    ITS_Player getAdmin() throws TS_CustomException;
 }

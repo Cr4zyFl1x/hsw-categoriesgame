@@ -1,8 +1,5 @@
 package de.hsw.categoriesgame.gameapi.rpc.testres;
 
-import de.hsw.categoriesgame.gameapi.api.Lobby;
-import de.hsw.categoriesgame.gameapi.api.Player;
-
 import java.util.List;
 
 /**

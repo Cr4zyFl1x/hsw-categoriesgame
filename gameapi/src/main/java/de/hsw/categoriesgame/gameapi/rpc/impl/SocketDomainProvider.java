@@ -19,11 +19,17 @@ import java.net.Socket;
 import java.util.UUID;
 
 /**
+ * {@link SocketDomainProvider}
+ *
  * @author Florian J. Kleine-Vorholt
  */
 public final class SocketDomainProvider implements DomainProvider {
 
+    /**
+     * Logger
+     */
     private static final Logger log = LoggerFactory.getLogger(SocketDomainProvider.class);
+
     /**
      * The socket used for communication
      */
@@ -42,10 +48,11 @@ public final class SocketDomainProvider implements DomainProvider {
 
 
     /**
+     * Creates a new {@link SocketDomainProvider} that accepts remote procedure requests.
      *
-     * @param socket
-     * @param localServer
-     * @param domain
+     * @param socket        the connected socket -> to the proxy on the other side
+     * @param localServer   the local {@code RemoteServer} to get the handleable domains
+     * @param domain        the default domain (used if client does not send domain UUID)
      */
     public SocketDomainProvider(final Socket socket,
                                 final RemoteServer localServer,
@@ -139,7 +146,7 @@ public final class SocketDomainProvider implements DomainProvider {
                     method);
 
             // Serialize return value into a serializable format
-            final Object sendObj = serializer.serializeReturnValue(result, method);
+            final Object sendObj = serializer.serializeReturnValue(result);
 
             // Push into pipe
             out.writeObject(sendObj);
@@ -150,8 +157,8 @@ public final class SocketDomainProvider implements DomainProvider {
                     measurer.stop());
 
         } catch (ClassNotFoundException | IOException | NoSuchMethodException | IllegalAccessException e) {
-            // TODO: what to do?
-            throw new RuntimeException(e);
+            log.error("An error occurred during processing the RPC-Request!", e);
+            throw new DomainInvocationException(e);
         }
     }
 }

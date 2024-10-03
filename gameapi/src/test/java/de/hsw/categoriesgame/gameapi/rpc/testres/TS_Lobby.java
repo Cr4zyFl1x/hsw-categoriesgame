@@ -42,4 +42,13 @@ public class TS_Lobby implements ITS_Lobby {
     {
         return players;
     }
+
+    @Override
+    public ITS_Player getAdmin() throws TS_CustomException {
+
+        if (players.isEmpty()) {
+            throw new TS_CustomException("No Admin set!");
+        }
+        return players.get(0);
+    }
 }

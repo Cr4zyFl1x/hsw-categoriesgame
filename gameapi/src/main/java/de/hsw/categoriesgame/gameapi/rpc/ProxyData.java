@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * Serializable POJO used to transport information for creating proxies
+ *
  * @author Florian J. Kleine-Vorholt
  */
 public final class ProxyData implements Serializable {

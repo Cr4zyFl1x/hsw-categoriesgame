@@ -10,8 +10,6 @@ import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
-import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyFactoryRegistry;
-import de.hsw.categoriesgame.gameapi.rpc.impl.registry.ProxyRegistry;
 
 import java.net.UnknownHostException;
 
@@ -23,10 +21,8 @@ public class GameclientApplication {
     public static void main(String[] args) throws UnknownHostException, LobbyNotFoundException {
 
         // Clientside server
-        final RemoteServer socketRemoteServer = new SocketRemoteServer(new DomainRegistry(), null);
+        final RemoteServer socketRemoteServer = new SocketRemoteServer(new DomainRegistry());
         socketRemoteServer.start();
-
-        final ProxyFactoryRegistry factoryReg = ProxyFactoryRegistry.getRegistry();
 
         // ProxyFactory
         final ConnectionDetails details = new ConnectionDetails("::1", 4703);

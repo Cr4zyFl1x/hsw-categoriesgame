@@ -11,6 +11,8 @@ import java.lang.reflect.Proxy;
 import java.util.UUID;
 
 /**
+ * {@link ProxyFactory} that reuses proxies if requested equal again.
+ *
  * @author Florian J. Kleine-Vorholt
  */
 public final class RememberableProxyFactory implements ProxyFactory {
@@ -87,6 +89,7 @@ public final class RememberableProxyFactory implements ProxyFactory {
         return (T) proxy;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -96,6 +99,10 @@ public final class RememberableProxyFactory implements ProxyFactory {
         return proxyRegistry;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ConnectionDetails getEndpointConnectionDetails() {
         return remoteConnection;

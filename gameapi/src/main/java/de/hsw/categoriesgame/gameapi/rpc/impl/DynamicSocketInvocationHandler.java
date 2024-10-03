@@ -9,7 +9,8 @@ import de.hsw.categoriesgame.gameapi.rpc.SocketInvocationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
@@ -20,7 +21,11 @@ import java.util.UUID;
  */
 public final class DynamicSocketInvocationHandler implements SocketInvocationHandler {
 
+    /**
+     * Logger
+     */
     private static final Logger log = LoggerFactory.getLogger(DynamicSocketInvocationHandler.class);
+
     /**
      * The connection details with remote information
      */
@@ -38,6 +43,13 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
 
 
+    /**
+     * Creates a new {@link DynamicSocketInvocationHandler}
+     *
+     * @param remoteConnectionDetails   the connection details the socket will be established to.
+     * @param localServer               the local server
+     * @param domainUUID                the domain uuid to contact by default
+     */
     public DynamicSocketInvocationHandler(final ConnectionDetails remoteConnectionDetails,
                                           final RemoteServer localServer,
                                           final UUID domainUUID)
@@ -52,6 +64,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
     }
 
 
+
     /**
      * {@inheritDoc}
      */
@@ -61,6 +74,10 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
         return this.remoteConnectionDetails;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UUID getUUID() {
         return domainUUID;
@@ -99,10 +116,11 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
              */
 
             // Send Method
-            sendMethodInvocationInformation(out, method);
+            out.writeObject(method.getName());
+            out.writeObject(method.getParameterTypes());
 
             // Send Arguments
-            out.writeObject(serializer.serializeArguments(args, method));
+            out.writeObject(serializer.serializeArguments(args));
 
             // Send InvocationDomain-Identifier
             out.writeObject(domainUUID);
@@ -138,12 +156,4 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
             return ret;
         }
     }
-
-
-    private void sendMethodInvocationInformation(final ObjectOutputStream out, final Method method) throws IOException
-    {
-        out.writeObject(method.getName());
-        out.writeObject(method.getParameterTypes());
-    }
-
 }

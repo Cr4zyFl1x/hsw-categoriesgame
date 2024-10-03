@@ -20,10 +20,12 @@ public final class RuntimeMeasurer {
     private Long endTime;
 
 
+
     /**
      * Creates a new instance of the {@code RuntimeMeasurer}
      */
     public RuntimeMeasurer() {}
+
 
 
     /**
