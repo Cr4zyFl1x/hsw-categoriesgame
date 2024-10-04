@@ -1,5 +1,7 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import java.util.List;
+
 /**
  * @author Florian J. Kleine-Vorholt
  *
@@ -9,4 +11,28 @@ package de.hsw.categoriesgame.gameapi.api;
 public interface Lobby {
 
     String getLobbyCode();
+
+    void addPlayer(Player player);
+    void removePlayer(Player player);
+
+    List<Player> getAllPlayers();
+
+    Player getAdmin();
+
+    void setCategories(List<String> categories);
+    List<String> getCategories();
+
+    int getCurrentRoundNumber();
+    char getCurrentLetter();
+
+    void startGame();
+
+    void startNewRound();
+
+    void sendAnswers(List<String> answers, Player player);
+
+    int evaluateAnswers();
+
+    int getPointsOfPlayer(Player player);
+
 }

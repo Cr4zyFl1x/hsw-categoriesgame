@@ -1,19 +1,16 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.pojos;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private int id;
     private final String name;
-    private int points;
+
+    private boolean hasAnswered;
 
     public Player(String name) {
         this.name = name;
     }
-
-    public Player(String name, int points) {
-        this.name = name;
-        this.points = points;
-    }
-
     public int getId() {
         return id;
     }
@@ -26,12 +23,12 @@ public class Player {
         return name;
     }
 
-    public int getPoints() {
-        return points;
+    public boolean hasAnswered() {
+        return hasAnswered;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public void setHasAnswered(boolean hasAnswered) {
+        this.hasAnswered = hasAnswered;
     }
 
     //-----------------------

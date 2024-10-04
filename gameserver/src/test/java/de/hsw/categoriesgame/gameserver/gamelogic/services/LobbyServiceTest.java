@@ -21,7 +21,7 @@ class LobbyServiceTest {
                 10,
                 3,
                 List.of("Stadt", "Land", "Name"));
-        lobbyService = new LobbyServiceImpl(lobbyConfigs);
+        lobbyService = new LobbyServiceImpl(lobbyConfigs, new Player("A"));
     }
 
     @Test
@@ -31,7 +31,7 @@ class LobbyServiceTest {
                 10,
                 3,
                 List.of("Stadt", "Land", "Name"));
-        var lobby = lobbyService.createLobby(lobbyConfigs);
+        var lobby = lobbyService.createLobby(lobbyConfigs, new Player("A"));
 
         assertEquals("ABC", lobby.getLobbyCode());
     }
@@ -56,6 +56,7 @@ class LobbyServiceTest {
 
     @Test
     void changeAdmin() {
+        lobbyService.getLobby().addPlayer(new Player("B"));
         var oldAdmin = lobbyService.getCurrentAdmin();
         lobbyService.changeAdmin();
         var newAdmin = lobbyService.getCurrentAdmin();

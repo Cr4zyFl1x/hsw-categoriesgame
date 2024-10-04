@@ -35,14 +35,16 @@ public class CategoriesGameImpl implements CategorieGame {
 
     @Override
     public Lobby joinLobby(String lobbyCode, Player player) throws LobbyNotFoundException {
-        System.out.println("JOINED: " + player.getName());
-        return joinLobby(lobbyCode);
+        log.info("JOINED: " + player.getName());
+        Lobby lobby = joinLobby(lobbyCode);
+        lobby.addPlayer(player);
+        return lobby;
     }
 
     @Override
     public Lobby joinLobby(String lobbyCode, List<Player> player) throws LobbyNotFoundException
     {
-        System.out.println(player);
+        log.debug(player);
         Lobby lobby = null;
         for (Player p : player) {
             lobby = joinLobby(lobbyCode, p);
@@ -51,10 +53,20 @@ public class CategoriesGameImpl implements CategorieGame {
     }
 
     @Override
-    public Lobby createLobby()
+    public Lobby createLobby(Player player)
     {
         final String lobbyCode = UUID.randomUUID().toString();
-        final Lobby lobby = new LobbyImpl(lobbyCode);
+        final Lobby lobby = new LobbyImpl(lobbyCode, player);
+        lobbies.put(lobbyCode, lobby);
+
+        log.debug("Created lobby {}", lobbyCode);
+
+        return lobby;
+    }
+
+    @Override
+    public Lobby createLobby(String lobbyCode, Player player) {
+        final Lobby lobby = new LobbyImpl(lobbyCode, player);
         lobbies.put(lobbyCode, lobby);
 
         log.debug("Created lobby {}", lobbyCode);
@@ -81,5 +93,18 @@ public class CategoriesGameImpl implements CategorieGame {
     @Override
     public void deleteLobby(Lobby lobby) throws LobbyNotFoundException {
         deleteLobby(lobby.getLobbyCode());
+    }
+
+    @Override
+    public void leaveLobby(String lobbyCode, Player player) {
+        log.info("LEAVING: " + player.getName());
+        this.lobbies.get(lobbyCode).removePlayer(player);
+    }
+
+    @Override
+    public void leaveLobby(String lobbyCode, List<Player> players) {
+        for (Player player : players) {
+            leaveLobby(lobbyCode, player);
+        }
     }
 }

@@ -17,10 +17,14 @@ public interface CategorieGame {
     Lobby joinLobby(String lobbyCode, final Player player) throws LobbyNotFoundException;
     Lobby joinLobby(String lobbyCode, final List<Player> player) throws LobbyNotFoundException;
 
-    Lobby createLobby();
+    Lobby createLobby(Player player);
+    Lobby createLobby(String lobbyCode, Player player);
 
     List<Lobby> getLobbies();
 
     void deleteLobby(String lobbyCode) throws LobbyNotFoundException;
     void deleteLobby(Lobby lobby) throws LobbyNotFoundException;
+
+    void leaveLobby(String lobbyCode, Player player);
+    void leaveLobby(String lobbyCode, List<Player> players);
 }

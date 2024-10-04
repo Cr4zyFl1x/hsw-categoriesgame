@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface LobbyService {
 
-    Lobby createLobby(LobbyConfigs configs);
+    Lobby createLobby(LobbyConfigs configs, Player player);
 
     boolean joinLobby(String lobbyCode, Player player);
 

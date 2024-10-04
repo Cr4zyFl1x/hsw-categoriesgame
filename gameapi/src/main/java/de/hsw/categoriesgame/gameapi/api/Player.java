@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
