@@ -11,10 +11,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * TODO: This is only a pre dummy
- * @author Florian J. Kleine-Vorholt
- */
 public class CategoriesGameImpl implements CategorieGame {
 
     private static final Logger log = LogManager.getLogger(CategoriesGameImpl.class);
@@ -24,6 +20,9 @@ public class CategoriesGameImpl implements CategorieGame {
         lobbies = new Hashtable<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Lobby joinLobby(String lobbyCode) throws LobbyNotFoundException
     {
@@ -33,6 +32,9 @@ public class CategoriesGameImpl implements CategorieGame {
         return lobbies.get(lobbyCode);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Lobby joinLobby(String lobbyCode, Player player) throws LobbyNotFoundException {
         log.info("JOINED: " + player.getName());
@@ -44,17 +46,23 @@ public class CategoriesGameImpl implements CategorieGame {
         return lobby;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Lobby joinLobby(String lobbyCode, List<Player> player) throws LobbyNotFoundException
+    public Lobby joinLobby(String lobbyCode, List<Player> players) throws LobbyNotFoundException
     {
-        log.debug(player);
+        log.debug(players);
         Lobby lobby = null;
-        for (Player p : player) {
+        for (Player p : players) {
             lobby = joinLobby(lobbyCode, p);
         }
         return lobby;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Lobby createLobby()
     {
@@ -67,6 +75,9 @@ public class CategoriesGameImpl implements CategorieGame {
         return lobby;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Lobby createLobby(String lobbyCode) {
         final Lobby lobby = new LobbyImpl(lobbyCode);
@@ -77,11 +88,17 @@ public class CategoriesGameImpl implements CategorieGame {
         return lobby;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Lobby> getLobbies() {
         return lobbies.values().stream().toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteLobby(String lobbyCode) throws LobbyNotFoundException
     {
@@ -93,14 +110,23 @@ public class CategoriesGameImpl implements CategorieGame {
         log.info("Deleted lobby {}", lobbyCode);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteLobby(Lobby lobby) throws LobbyNotFoundException {
         deleteLobby(lobby.getLobbyCode());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void leaveLobby(String lobbyCode, Player player) {
+    public void leaveLobby(String lobbyCode, Player player) throws LobbyNotFoundException {
         log.info("LEAVING: " + player.getName());
+        if (!lobbies.containsKey(lobbyCode)) {
+            throw new LobbyNotFoundException("Lobby " + lobbyCode + " does not exist!");
+        }
         var lobby = this.lobbies.get(lobbyCode);
         lobby.removePlayer(player);
         if (lobby.getAdmin().equals(player)) {
@@ -108,10 +134,31 @@ public class CategoriesGameImpl implements CategorieGame {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void leaveLobby(String lobbyCode, List<Player> players) {
+    public void leaveLobby(String lobbyCode, List<Player> players) throws LobbyNotFoundException {
         for (Player player : players) {
             leaveLobby(lobbyCode, player);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void leaveLobby(Lobby lobby, Player player) {
+        lobby.removePlayer(player);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void leaveLobby(Lobby lobby, List<Player> players) {
+        for (Player player : players) {
+            leaveLobby(lobby, player);
         }
     }
 }

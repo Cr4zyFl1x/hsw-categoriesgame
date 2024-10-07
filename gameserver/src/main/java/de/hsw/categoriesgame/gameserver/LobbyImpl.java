@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @author Florian J. Kleine-Vorholt
- */
 public class LobbyImpl implements Lobby {
 
     @Getter
@@ -34,21 +31,33 @@ public class LobbyImpl implements Lobby {
         this.players = new ArrayList<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addPlayer(Player player) {
         this.players.add(player);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removePlayer(Player player) {
         this.players.remove(player);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setCategories(List<String> categories) {
         game.setCategories(categories);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getCategories() {
         return game.getCategories();
@@ -64,11 +73,17 @@ public class LobbyImpl implements Lobby {
         return game.getCurrentLetter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void startGame() {
         game = new GameImpl(getPlayers());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public char startNewRound() {
         game.updateRoundNumber();
@@ -76,6 +91,9 @@ public class LobbyImpl implements Lobby {
         return game.generateRandomLetter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean sendAnswers(List<String> answers, String playerName) {
         var player = getPlayerByName(playerName);
@@ -88,6 +106,9 @@ public class LobbyImpl implements Lobby {
         return game.haveAllPlayersAnswered();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void evaluateAnswers() {
         game.evaluateAnswers();
@@ -103,6 +124,9 @@ public class LobbyImpl implements Lobby {
         return players.stream().filter(pl -> pl.getName().equals(name)).toList().get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void changeAdmin() {
         if (!players.isEmpty()) {
