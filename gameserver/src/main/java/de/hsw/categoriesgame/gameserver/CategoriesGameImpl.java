@@ -38,6 +38,9 @@ public class CategoriesGameImpl implements CategorieGame {
         log.info("JOINED: " + player.getName());
         Lobby lobby = joinLobby(lobbyCode);
         lobby.addPlayer(player);
+        if (lobby.getAdmin() == null) {
+            lobby.setAdmin(player);
+        }
         return lobby;
     }
 
@@ -53,10 +56,10 @@ public class CategoriesGameImpl implements CategorieGame {
     }
 
     @Override
-    public Lobby createLobby(Player player)
+    public Lobby createLobby()
     {
         final String lobbyCode = UUID.randomUUID().toString();
-        final Lobby lobby = new LobbyImpl(lobbyCode, player);
+        final Lobby lobby = new LobbyImpl(lobbyCode);
         lobbies.put(lobbyCode, lobby);
 
         log.debug("Created lobby {}", lobbyCode);
@@ -65,8 +68,8 @@ public class CategoriesGameImpl implements CategorieGame {
     }
 
     @Override
-    public Lobby createLobby(String lobbyCode, Player player) {
-        final Lobby lobby = new LobbyImpl(lobbyCode, player);
+    public Lobby createLobby(String lobbyCode) {
+        final Lobby lobby = new LobbyImpl(lobbyCode);
         lobbies.put(lobbyCode, lobby);
 
         log.debug("Created lobby {}", lobbyCode);
@@ -98,7 +101,11 @@ public class CategoriesGameImpl implements CategorieGame {
     @Override
     public void leaveLobby(String lobbyCode, Player player) {
         log.info("LEAVING: " + player.getName());
-        this.lobbies.get(lobbyCode).removePlayer(player);
+        var lobby = this.lobbies.get(lobbyCode);
+        lobby.removePlayer(player);
+        if (lobby.getAdmin().equals(player)) {
+            lobby.changeAdmin();
+        }
     }
 
     @Override

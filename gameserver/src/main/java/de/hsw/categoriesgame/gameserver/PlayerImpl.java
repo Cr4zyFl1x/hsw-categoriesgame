@@ -12,6 +12,8 @@ public class PlayerImpl implements Player {
     private UUID uuid;
     private final String name;
 
+    private boolean hasAnswered;
+
     public PlayerImpl(String name) {
         this.name = name;
     }
@@ -31,6 +33,16 @@ public class PlayerImpl implements Player {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean hasAnswered() {
+        return hasAnswered;
+    }
+
+    @Override
+    public void setHasAnswered(boolean hasAnswered) {
+        this.hasAnswered = hasAnswered;
     }
 
     //-----------------------

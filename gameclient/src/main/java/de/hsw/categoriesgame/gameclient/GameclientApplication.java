@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class GameclientApplication {
 
-    public static void main(String[] args) throws LobbyNotFoundException {
+    public static void main(String[] args) throws LobbyNotFoundException, InterruptedException {
         System.out.println("Hello World! I'm the Client!");
 
         SwingUtilities.invokeLater(GameclientApplication::setupTheme);
@@ -47,62 +47,40 @@ public class GameclientApplication {
         // Player
         final Player player = new PlayerImpl("Fl1x");
         final Player player1 = new PlayerImpl("Barbara");
+        final Player player2 = new PlayerImpl("Annegret");
 
         //final Lobby otherLobby = game.createLobby(player);
 
-        final Lobby lobby = game.createLobby("ABC", player1);
+        final Lobby lobby = game.createLobby("ABC");
         final Lobby lobby1 = game.joinLobby(lobby.getLobbyCode());
+        game.joinLobby(lobby.getLobbyCode(), player);
+        game.joinLobby(lobby.getLobbyCode(), player1);
+        //game.joinLobby(lobby.getLobbyCode(), player2);
+
 
         lobby.startGame();
 
         lobby.setCategories(List.of("Stadt", "Land", "Fluss"));
+        lobby.startNewRound();
 
 
         System.out.println(lobby.getCategories().toString());
         System.out.println(lobby.getCurrentLetter());
 
-        var list = new ArrayList<String>(List.of("Angola", "Angola", "Andorra"));
-        lobby.sendAnswers(list,player);
-        lobby.sendAnswers(list,player1);
+        var list = new ArrayList<String>(List.of("A1", "", "A1"));
+        System.out.println("#####################" + lobby.sendAnswers(list, player.getName()));
+        var list1 = new ArrayList<String>(List.of("A1", "A2", "B2"));
+        System.out.println("#####################" + lobby.sendAnswers(list1, player1.getName()));
 
         lobby.evaluateAnswers();
 
         System.out.println(lobby.getPointsOfPlayer(player));
         System.out.println(lobby.getPointsOfPlayer(player1));
 
-
-        lobby.startNewRound();
-
-        System.out.println(lobby.getCurrentLetter());
-
-
-
-        System.out.println(lobby.evaluateAnswers());
-
-
-        System.out.println(lobby.getLobbyCode());
-        //System.out.println(lobby1.hashCode());
-
-        //System.out.println(lobby.equals(lobby1));       // TRUE
-        //System.out.println(lobby.equals(otherLobby));   // FALSE
-
-        System.out.println(lobby); // LobbyImpl@[...]
-
+        System.out.println(lobby.getAdmin().getName());
         game.leaveLobby(lobby.getLobbyCode(), player);
+        System.out.println(lobby.getAdmin().getName());
 
-
-        //game.deleteLobby(lobby);
-        //game.deleteLobby(lobby);
-
-
-        //game.joinLobby(lobby.getLobbyCode(), Arrays.asList(player, player1));
-
-        System.out.println(game.getLobbies());
-
-        //System.out.println(game.getLobbies().get(0).getClass());
-
-         //Should throw a LobbyNotFoundException
-        //System.out.println(game.joinLobby("TEST-FAILURE", player));
     }
 
     /**

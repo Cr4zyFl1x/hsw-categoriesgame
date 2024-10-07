@@ -17,8 +17,8 @@ public interface CategorieGame {
     Lobby joinLobby(String lobbyCode, final Player player) throws LobbyNotFoundException;
     Lobby joinLobby(String lobbyCode, final List<Player> player) throws LobbyNotFoundException;
 
-    Lobby createLobby(Player player);
-    Lobby createLobby(String lobbyCode, Player player);
+    Lobby createLobby();
+    Lobby createLobby(String lobbyCode);
 
     List<Lobby> getLobbies();
 

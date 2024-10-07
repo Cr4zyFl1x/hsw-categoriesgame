@@ -2,11 +2,13 @@ package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Player;
-import de.hsw.categoriesgame.gameserver.gamelogic.mapper.PlayerMapper;
-import de.hsw.categoriesgame.gameserver.gamelogic.services.PlayingService;
-import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.PlayingServiceImpl;
+import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
+import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,28 +17,21 @@ import java.util.Objects;
  */
 public class LobbyImpl implements Lobby {
 
+    @Getter
     private final String lobbyCode;
+    @Getter
     private final List<Player> players;
 
+    @Setter
+    @Getter
     private Player admin;
 
-    private PlayingService playingService;
-    private Player player;
+    private Game game;
 
-    public LobbyImpl(String lobbyCode, Player player)
+    public LobbyImpl(String lobbyCode)
     {
         this.lobbyCode = lobbyCode;
         this.players = new ArrayList<>();
-        this.playingService = new PlayingServiceImpl(lobbyCode);
-        this.admin = player;
-        this.player = player;
-    }
-
-
-    @Override
-    public String getLobbyCode()
-    {
-        return lobbyCode;
     }
 
     @Override
@@ -50,66 +45,71 @@ public class LobbyImpl implements Lobby {
     }
 
     @Override
-    public List<Player> getAllPlayers() {
-        return this.players;
-    }
-
-    @Override
-    public Player getAdmin() {
-        return this.admin;
-    }
-
-    @Override
     public void setCategories(List<String> categories) {
-        playingService.setCategories(categories);
+        game.setCategories(categories);
     }
 
     @Override
     public List<String> getCategories() {
-        return playingService.getCategories();
+        return game.getCategories();
     }
 
     @Override
     public int getCurrentRoundNumber() {
-        return playingService.getCurrentRoundNumber();
+        return game.getRoundNumber();
     }
 
     @Override
     public char getCurrentLetter() {
-        return playingService.getCurrentLetter();
+        return game.getCurrentLetter();
     }
 
     @Override
     public void startGame() {
-        playingService.startGame();
+        game = new GameImpl(getPlayers());
     }
 
     @Override
-    public void startNewRound() {
-        playingService.startNewRound();
+    public char startNewRound() {
+        game.updateRoundNumber();
+        game.resetHasAnswered();
+        return game.generateRandomLetter();
     }
 
     @Override
-    public void sendAnswers(List<String> answers, Player player) {
-        playingService.sendAnswersOfRound(PlayerMapper.map((PlayerImpl) player), answers);
+    public boolean sendAnswers(List<String> answers, String playerName) {
+        var player = getPlayerByName(playerName);
+        // check if everyone answered
+        var categoryAnswerMap = new HashMap<String, String>();
+        for (int i = 0; i < answers.size(); i++) {
+            categoryAnswerMap.put(game.getCategories().get(i), answers.get(i));
+        }
+        game.setAnswersOfPlayer(player, categoryAnswerMap);
+        return game.haveAllPlayersAnswered();
     }
 
     @Override
-    public int evaluateAnswers() {
-        playingService.evaluateRound();
-        return 0;
+    public void evaluateAnswers() {
+        game.evaluateAnswers();
     }
 
     @Override
     public int getPointsOfPlayer(Player player) {
-        return playingService.getPointsOfPlayer(PlayerMapper.map((PlayerImpl) player));
+        return game.getCurrentPoints().get(player);
     }
 
-    public void setPlayerId(Player p) {
-        var player = (PlayerImpl) players.stream().filter(pl -> pl.getName().equals(p.getName())).toList().get(0);
-        var position = players.indexOf(player);
-        player.setId(position + 1);
+    @Override
+    public Player getPlayerByName(String name) {
+        return players.stream().filter(pl -> pl.getName().equals(name)).toList().get(0);
     }
+
+    @Override
+    public void changeAdmin() {
+        if (!players.isEmpty()) {
+            this.admin = players.get(0);
+        }
+    }
+
 
     ///////////////////////////////////////////
     ///////////////////////////////////////////

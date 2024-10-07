@@ -12,6 +12,8 @@ public class PlayerImpl implements Player {
     private final UUID uuid;
     private final String name;
 
+    private boolean hasAnswered;
+
     public PlayerImpl(final String name) {
         uuid = UUID.randomUUID();
         this.name = name;
@@ -27,5 +29,15 @@ public class PlayerImpl implements Player {
     public String getName() {
         System.out.println(name);
         return name;
+    }
+
+    @Override
+    public boolean hasAnswered() {
+        return hasAnswered;
+    }
+
+    @Override
+    public void setHasAnswered(boolean hasAnswered) {
+        this.hasAnswered = hasAnswered;
     }
 }

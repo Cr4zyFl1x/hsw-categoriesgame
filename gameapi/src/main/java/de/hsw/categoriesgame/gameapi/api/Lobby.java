@@ -15,9 +15,10 @@ public interface Lobby {
     void addPlayer(Player player);
     void removePlayer(Player player);
 
-    List<Player> getAllPlayers();
+    List<Player> getPlayers();
 
     Player getAdmin();
+    void setAdmin(Player player);
 
     void setCategories(List<String> categories);
     List<String> getCategories();
@@ -25,14 +26,20 @@ public interface Lobby {
     int getCurrentRoundNumber();
     char getCurrentLetter();
 
-    void startGame();
+    void startGame() throws InterruptedException;
 
-    void startNewRound();
+    char startNewRound();
 
-    void sendAnswers(List<String> answers, Player player);
+    boolean sendAnswers(List<String> answers, String playerName);
 
-    int evaluateAnswers();
+    void evaluateAnswers();
 
     int getPointsOfPlayer(Player player);
+
+    Player getPlayerByName(String name);
+
+    void changeAdmin();
+
+
 
 }
