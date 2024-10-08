@@ -1,6 +1,8 @@
 package de.hsw.categoriesgame.gameclient;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
+import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
@@ -27,7 +29,7 @@ import java.util.List;
  */
 public class GameclientApplication {
 
-    public static void main(String[] args) throws LobbyNotFoundException, InterruptedException {
+    public static void main(String[] args) throws LobbyNotFoundException, InterruptedException, LobbyAlreadyExistsException {
         System.out.println("Hello World! I'm the Client!");
 
         SwingUtilities.invokeLater(GameclientApplication::setupTheme);
@@ -52,7 +54,7 @@ public class GameclientApplication {
         //final Lobby otherLobby = game.createLobby(player);
 
         final Lobby lobby = game.createLobby("ABC");
-        final Lobby lobby1 = game.joinLobby(lobby.getLobbyCode());
+        final Lobby lobby1 = game.getLobby(lobby.getLobbyCode());
         game.joinLobby(lobby.getLobbyCode(), player);
         game.joinLobby(lobby.getLobbyCode(), player1);
         //game.joinLobby(lobby.getLobbyCode(), player2);
@@ -67,10 +69,17 @@ public class GameclientApplication {
         System.out.println(lobby.getCategories().toString());
         System.out.println(lobby.getCurrentLetter());
 
-        var list = new ArrayList<String>(List.of("A1", "", "A1"));
-        System.out.println("#####################" + lobby.sendAnswers(list, player.getName()));
-        var list1 = new ArrayList<String>(List.of("A1", "A2", "B2"));
-        System.out.println("#####################" + lobby.sendAnswers(list1, player1.getName()));
+        var normalAnswers = List.of(
+                new NormalAnswer(player.getUUID(), "Stadt", "A1"),
+                new NormalAnswer(player.getUUID(), "Land", ""),
+                new NormalAnswer(player.getUUID(), "Fluss", "A1"));
+        System.out.println("#####################" + lobby.sendAnswers(normalAnswers));
+
+        var normalAnswers1 = List.of(
+                new NormalAnswer(player1.getUUID(), "Stadt", "A1"),
+                new NormalAnswer(player1.getUUID(), "Land", "A2"),
+                new NormalAnswer(player1.getUUID(), "Fluss", "B2"));
+        System.out.println("#####################" + lobby.sendAnswers(normalAnswers1));
 
         lobby.evaluateAnswers();
 

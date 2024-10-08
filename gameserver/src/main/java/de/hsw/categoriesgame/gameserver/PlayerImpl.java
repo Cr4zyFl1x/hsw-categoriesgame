@@ -6,23 +6,16 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlayerImpl implements Player {
-
-    private int id;
-
     private UUID uuid;
     private final String name;
+
+    private int points;
 
     private boolean hasAnswered;
 
     public PlayerImpl(String name) {
+        this.uuid = UUID.randomUUID();
         this.name = name;
-    }
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
@@ -34,6 +27,17 @@ public class PlayerImpl implements Player {
     public String getName() {
         return name;
     }
+
+    @Override
+    public int getPoints() {
+        return points;
+    }
+
+    @Override
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
 
     @Override
     public boolean hasAnswered() {
@@ -52,6 +56,6 @@ public class PlayerImpl implements Player {
             return false;
         }
         final PlayerImpl other = (PlayerImpl) obj;
-        return this.name.equals(other.name);
+        return this.uuid.equals(other.uuid);
     }
 }

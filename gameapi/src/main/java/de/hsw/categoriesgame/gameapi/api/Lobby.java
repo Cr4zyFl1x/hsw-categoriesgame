@@ -1,5 +1,7 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import de.hsw.categoriesgame.gameapi.pojo.*;
+
 import java.util.List;
 
 public interface Lobby {
@@ -35,12 +37,6 @@ public interface Lobby {
     Player getAdmin();
 
     /**
-     * Set player as admin of lobby.
-     * @param player    player that should be admin
-     */
-    void setAdmin(Player player);
-
-    /**
      * Set the categories for the game/lobby.
      * @param categories    list of categories (e.g. name, country, ...)
      */
@@ -66,22 +62,18 @@ public interface Lobby {
      */
     char startNewRound();
 
-    /**
-     * Send the answers of the player to later evaluate them.
-     * @param answers       list of answers per category (has to be in the order of the categories)
-     * @param playerName    name of player that wants to send answers
-     * @return              if all players have already answered
-     */
-    boolean sendAnswers(List<String> answers, String playerName);
+    boolean sendAnswers(List<NormalAnswer> answers);
+
+    List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
+
+
 
     /**
      * Evaluates the answers if all players have answered and gives points for them.
      */
-    void evaluateAnswers();
+    List<Entry> evaluateAnswers();
 
     int getPointsOfPlayer(Player player);
-
-    Player getPlayerByName(String name);
 
     /**
      * Changes the admin of the lobby if the current admin leaves.

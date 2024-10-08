@@ -9,6 +9,8 @@ public class PlayerImpl implements Player {
     private final UUID uuid;
     private final String name;
 
+    private int points;
+
     private boolean hasAnswered;
 
     public PlayerImpl(final String name) {
@@ -31,6 +33,16 @@ public class PlayerImpl implements Player {
     public String getName() {
         System.out.println(name);
         return name;
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
+    }
+
+    @Override
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     /**

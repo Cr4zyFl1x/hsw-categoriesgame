@@ -3,6 +3,7 @@ package de.hsw.categoriesgame.gameserver;
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +25,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public Lobby joinLobby(String lobbyCode) throws LobbyNotFoundException
+    public Lobby getLobby(String lobbyCode) throws LobbyNotFoundException
     {
         if (!lobbies.containsKey(lobbyCode)) {
             throw new LobbyNotFoundException("No lobby found with lobbycode " + lobbyCode);
@@ -37,25 +38,10 @@ public class CategoriesGameImpl implements CategorieGame {
      */
     @Override
     public Lobby joinLobby(String lobbyCode, Player player) throws LobbyNotFoundException {
-        log.info("JOINED: " + player.getName());
-        Lobby lobby = joinLobby(lobbyCode);
+        Lobby lobby = getLobby(lobbyCode);
         lobby.addPlayer(player);
         if (lobby.getAdmin() == null) {
-            lobby.setAdmin(player);
-        }
-        return lobby;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Lobby joinLobby(String lobbyCode, List<Player> players) throws LobbyNotFoundException
-    {
-        log.debug(players);
-        Lobby lobby = null;
-        for (Player p : players) {
-            lobby = joinLobby(lobbyCode, p);
+            lobby.changeAdmin();
         }
         return lobby;
     }
@@ -79,7 +65,10 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public Lobby createLobby(String lobbyCode) {
+    public Lobby createLobby(String lobbyCode) throws LobbyAlreadyExistsException {
+        if (lobbies.containsKey(lobbyCode)) {
+            throw new LobbyAlreadyExistsException();
+        }
         final Lobby lobby = new LobbyImpl(lobbyCode);
         lobbies.put(lobbyCode, lobby);
 
@@ -105,6 +94,8 @@ public class CategoriesGameImpl implements CategorieGame {
         if (!lobbies.containsKey(lobbyCode)) {
             throw new LobbyNotFoundException("Lobby " + lobbyCode + " does not exist!");
         }
+        Lobby lobby = getLobby(lobbyCode);
+        leaveLobby(lobby, lobby.getPlayers());
         lobbies.remove(lobbyCode);
 
         log.info("Deleted lobby {}", lobbyCode);
@@ -123,7 +114,6 @@ public class CategoriesGameImpl implements CategorieGame {
      */
     @Override
     public void leaveLobby(String lobbyCode, Player player) throws LobbyNotFoundException {
-        log.info("LEAVING: " + player.getName());
         if (!lobbies.containsKey(lobbyCode)) {
             throw new LobbyNotFoundException("Lobby " + lobbyCode + " does not exist!");
         }
@@ -131,6 +121,9 @@ public class CategoriesGameImpl implements CategorieGame {
         lobby.removePlayer(player);
         if (lobby.getAdmin().equals(player)) {
             lobby.changeAdmin();
+        }
+        if (lobby.getPlayers().isEmpty()) {
+            this.deleteLobby(lobby);
         }
     }
 
@@ -148,15 +141,15 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void leaveLobby(Lobby lobby, Player player) {
-        lobby.removePlayer(player);
+    public void leaveLobby(Lobby lobby, Player player) throws LobbyNotFoundException {
+        leaveLobby(lobby.getLobbyCode(), player);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void leaveLobby(Lobby lobby, List<Player> players) {
+    public void leaveLobby(Lobby lobby, List<Player> players) throws LobbyNotFoundException {
         for (Player player : players) {
             leaveLobby(lobby, player);
         }

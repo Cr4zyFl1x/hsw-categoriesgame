@@ -2,15 +2,12 @@ package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.pojo.*;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class LobbyImpl implements Lobby {
 
@@ -19,7 +16,6 @@ public class LobbyImpl implements Lobby {
     @Getter
     private final List<Player> players;
 
-    @Setter
     @Getter
     private Player admin;
 
@@ -45,6 +41,9 @@ public class LobbyImpl implements Lobby {
     @Override
     public void removePlayer(Player player) {
         this.players.remove(player);
+        if (player.equals(admin)) {
+            changeAdmin();
+        }
     }
 
     /**
@@ -91,37 +90,46 @@ public class LobbyImpl implements Lobby {
         return game.generateRandomLetter();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public boolean sendAnswers(List<String> answers, String playerName) {
-        var player = getPlayerByName(playerName);
-        // check if everyone answered
-        var categoryAnswerMap = new HashMap<String, String>();
-        for (int i = 0; i < answers.size(); i++) {
-            categoryAnswerMap.put(game.getCategories().get(i), answers.get(i));
-        }
-        game.setAnswersOfPlayer(player, categoryAnswerMap);
-        return game.haveAllPlayersAnswered();
+    public boolean sendAnswers(List<NormalAnswer> normalAnswers) {
+        game.sendAnswers(normalAnswers);
+        return false;
+    }
+
+    @Override
+    public List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer) {
+        var list = new ArrayList<Entry>();
+        game.doubtAnswer(doubtedAnswer).forEach(roundEntry -> {
+            var category = roundEntry.getCategory();
+            var playerUUID = roundEntry.getPlayer().getUUID();
+            var answer = roundEntry.getAnswer();
+            var doubted = roundEntry.isDoubted();
+            var doubtedBy = roundEntry.getDoubtedBy().stream().map(Player::getUUID).toList();
+            list.add(new Entry(category, playerUUID, answer, doubted, doubtedBy));
+        });
+        return list;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void evaluateAnswers() {
-        game.evaluateAnswers();
+    public List<Entry> evaluateAnswers() {
+        var list = new ArrayList<Entry>();
+        game.evaluateAnswers().forEach(roundEntry -> {
+            var category = roundEntry.getCategory();
+            var playerUUID = roundEntry.getPlayer().getUUID();
+            var answer = roundEntry.getAnswer();
+            var doubted = roundEntry.isDoubted();
+            var doubtedBy = roundEntry.getDoubtedBy().stream().map(Player::getUUID).toList();
+            list.add(new Entry(category, playerUUID, answer, doubted, doubtedBy));
+        });
+        return list;
     }
 
     @Override
     public int getPointsOfPlayer(Player player) {
-        return game.getCurrentPoints().get(player);
-    }
-
-    @Override
-    public Player getPlayerByName(String name) {
-        return players.stream().filter(pl -> pl.getName().equals(name)).toList().get(0);
+        return game.getCurrentPointsOfPlayer(player);
     }
 
     /**

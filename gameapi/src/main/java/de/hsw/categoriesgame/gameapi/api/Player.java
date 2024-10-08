@@ -16,6 +16,10 @@ public interface Player {
      */
     String getName();
 
+    int getPoints();
+    void setPoints(int points);
+
+
     /**
      * Check if the player has already answered for this round.
      * @return  true if player has answered for the round
