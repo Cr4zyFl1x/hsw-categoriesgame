@@ -20,6 +20,8 @@ public class CreateLobbyView extends JPanel implements InitializableView {
     private JSpinner maxPlayerSpinner;
     private JLabel amountRoundsLabel;
     private JSpinner amountRoundsSpinner;
+    private JLabel doubtsNeededLabel;
+    private JSpinner doubtsNeededSpinner;
     private JButton cancelButton;
     private JButton createButton;
     private JLabel newCategoryLabel;
@@ -168,6 +170,22 @@ public class CreateLobbyView extends JPanel implements InitializableView {
     }
 
     /**
+     * Returns the label for doubts needed spinner component
+     * @return
+     */
+    public JLabel getDoubtsNeededLabel() {
+        return doubtsNeededLabel;
+    }
+
+    /**
+     * Returns the doubts needed Spinner component
+     * @return  JSpinner
+     */
+    public JSpinner getDoubtsNeededSpinner() {
+        return doubtsNeededSpinner;
+    }
+
+    /**
      * Initializes all components needed
      */
     @Override
@@ -191,6 +209,10 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         // Amount rounds components
         amountRoundsLabel = new JLabel("Amount Rounds:");
         amountRoundsSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 20, 1));
+
+        // Amount doubts components
+        doubtsNeededLabel = new JLabel("Amount Doubts:");
+        doubtsNeededSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
 
         // Components for adding a new category
         newCategoryLabel = new JLabel("New Category:");
@@ -216,7 +238,6 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         categoryButtons = new ArrayList<>();
 
         // separate panel to keep the active categories
-        // TODO: fixing bug
         activeCategoriesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     }
 
@@ -281,16 +302,26 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         configGbc.weightx = 1.0;
         configPanel.add(amountRoundsSpinner, configGbc);
 
-        // Add separator
+        // Add Amount Rounds label and spinner
         configGbc.gridx = 0;
         configGbc.gridy = 4;
+        configGbc.weightx = 0.2;
+        configPanel.add(doubtsNeededLabel, configGbc);
+
+        configGbc.gridx = 1;
+        configGbc.weightx = 1.0;
+        configPanel.add(doubtsNeededSpinner, configGbc);
+
+        // Add separator
+        configGbc.gridx = 0;
+        configGbc.gridy = 5;
         configGbc.gridwidth = 2;
         configGbc.fill = GridBagConstraints.HORIZONTAL;
         configPanel.add(separator, configGbc);
 
         // Add New Category label, input, and button
         configGbc.gridwidth = 1;
-        configGbc.gridy = 5;
+        configGbc.gridy = 6;
         configGbc.gridx = 0;
         configGbc.weightx = 0.2;
         configPanel.add(newCategoryLabel, configGbc);
@@ -305,13 +336,13 @@ public class CreateLobbyView extends JPanel implements InitializableView {
 
         // Add Active Categories label
         configGbc.gridx = 0;
-        configGbc.gridy = 6;
+        configGbc.gridy = 7;
         configGbc.gridwidth = 2;
         configGbc.weightx = 0.2;
         configPanel.add(activeCategoriesLabel, configGbc);
 
         // Add panel with active categories to config panel
-        configGbc.gridy = 7;
+        configGbc.gridy = 8;
         configGbc.gridwidth = 2;
         configPanel.add(activeCategoriesPanel, configGbc);
 
@@ -382,7 +413,8 @@ public class CreateLobbyView extends JPanel implements InitializableView {
                 Überprüfe bitte auf folgende Punkte:\s
                 - Passt deine maximale Spieleranzahl mit der Anzahl teilnehmender Spieler?\s
                 - Hast du mindestens eine Kategorie angegeben?\s
-                - Hast du einen Lobbycode angegeben?""", "Lobby kann nicht " +
-                "erstellt werden", JOptionPane.ERROR_MESSAGE);
+                - Hast du einen Lobbycode angegeben?
+                - Ist deine Anzahl an benötigten Anzweiflern kleiner oder gleich der Spieleranzahl?""",
+                "Lobby kann nicht erstellt werden", JOptionPane.ERROR_MESSAGE);
     }
 }
