@@ -46,6 +46,16 @@ public class LobbyImpl implements Lobby {
         }
     }
 
+    @Override
+    public void setGameConfigs(GameConfigs gameConfigs) {
+        game.setGameConfigs(gameConfigs);
+    }
+
+    @Override
+    public GameConfigs getGameConfigs() {
+        return game.getGameConfigs();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -77,7 +87,7 @@ public class LobbyImpl implements Lobby {
      */
     @Override
     public void startGame() {
-        game = new GameImpl(getPlayers());
+        game = new GameImpl(getPlayers(), getGameConfigs());
     }
 
     /**

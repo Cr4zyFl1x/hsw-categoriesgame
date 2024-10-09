@@ -36,6 +36,9 @@ public interface Lobby {
      */
     Player getAdmin();
 
+    void setGameConfigs(GameConfigs gameConfigs);
+    GameConfigs getGameConfigs();
+
     /**
      * Set the categories for the game/lobby.
      * @param categories    list of categories (e.g. name, country, ...)

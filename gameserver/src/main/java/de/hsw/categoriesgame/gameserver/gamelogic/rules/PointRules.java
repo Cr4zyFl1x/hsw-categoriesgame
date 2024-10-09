@@ -5,7 +5,8 @@ public enum PointRules {
     DISTINCT_WORD(10),
     MULTIPLE_WORD(5),
     NO_WORD(0),
-    FALSE_WORD(0);
+    FALSE_WORD(0),
+    DOUBTED_WORD(0);
 
     final int points;
 

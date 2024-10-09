@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameserver.gamelogic.services;
 
 import de.hsw.categoriesgame.gameapi.api.Player;
 import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
 import de.hsw.categoriesgame.gameserver.gamelogic.rules.PointRules;
@@ -22,6 +23,9 @@ public interface Game {
      * @param pointRule     given situation that translate to points
      */
     void addPointsForPlayer(Player player, PointRules pointRule);
+
+    GameConfigs getGameConfigs();
+    void setGameConfigs(GameConfigs gameConfigs);
 
     /**
      * Set the categories for the game.

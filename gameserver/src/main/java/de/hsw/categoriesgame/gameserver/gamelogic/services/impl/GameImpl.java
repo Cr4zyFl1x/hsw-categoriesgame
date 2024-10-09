@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameserver.gamelogic.services.impl;
 
 import de.hsw.categoriesgame.gameapi.api.Player;
 import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.Round;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 public class GameImpl implements Game {
 
     @Getter
+    @Setter
+    private GameConfigs gameConfigs;
+    @Getter
     private int roundNumber;
 
     @Getter
@@ -33,9 +37,10 @@ public class GameImpl implements Game {
     @Setter
     private boolean answersWereDoubted;
 
-    public GameImpl(List<Player> players) {
+    public GameImpl(List<Player> players, GameConfigs gameConfigs) {
         this.players = players;
         this.categories = new ArrayList<>();
+        this.gameConfigs = gameConfigs;
 
         this.round = new Round(currentLetter);
 
@@ -117,7 +122,7 @@ public class GameImpl implements Game {
             var entriesOfCategory = round.getEntriesOfCategory(category);
 
             entriesOfCategory.forEach(roundEntry -> {
-                if (!validInput(roundEntry.getAnswer()) || roundEntry.isDoubted()) {
+                if (!validInput(roundEntry.getAnswer())) {
                     roundEntry.setAnswer("");
                 }
             });
@@ -130,7 +135,7 @@ public class GameImpl implements Game {
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
             entriesOfCategory.forEach(roundEntry -> {
-                PointRules pointRules = getPointRules(players.size(), amountOfAnswers, numberOfBlanks, roundEntry.getAnswer());
+                PointRules pointRules = getPointRules(players.size(), amountOfAnswers, numberOfBlanks, roundEntry.getAnswer(), roundEntry.getDoubtedBy().size());
                 this.addPointsForPlayer(roundEntry.getPlayer(), pointRules);
             });
 
@@ -139,12 +144,14 @@ public class GameImpl implements Game {
         return round.getRoundEntries();
     }
 
-    private PointRules getPointRules(int amountOfPlayers, Map<String, Long> amountOfAnswers, long numberOfBlanks, String answer) {
+    private PointRules getPointRules(int amountOfPlayers, Map<String, Long> amountOfAnswers, long numberOfBlanks, String answer, int amountOfDoubted) {
         PointRules pointRules;
 
         if (answer.isBlank()) {
             pointRules = PointRules.NO_WORD;
         } else if (!validInput(answer)) {
+            pointRules = PointRules.FALSE_WORD;
+        } else if (amountOfDoubted >= gameConfigs.getMinDoubtingPlayers()) {
             pointRules = PointRules.FALSE_WORD;
         } else if (amountOfAnswers.get(answer) > 1) {
             pointRules = PointRules.MULTIPLE_WORD;

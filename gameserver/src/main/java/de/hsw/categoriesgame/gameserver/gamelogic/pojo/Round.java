@@ -60,9 +60,7 @@ public class Round {
                 .filter(roundEntry -> roundEntry.getPlayer().equals(player))
                 .findFirst();
 
-        return optionalEntry.orElse(null);
-        // TODO: 08.10.2024 Error
-
+        return optionalEntry.orElseThrow();
     }
 
 }
