@@ -12,6 +12,7 @@ public class GameModel {
     private char currentLetter;
     private int amountRounds;
     private int currentRoundNumber;
+    private int doubtsNeeded;
     private final List<String> categories;
     private final List<Player> players;
 
@@ -147,5 +148,21 @@ public class GameModel {
      */
     public void setCurrentLetter(char currentLetter) {
         this.currentLetter = currentLetter;
+    }
+
+    /**
+     * returns the amount of doubts needed
+     * @return  doubts needed
+     */
+    public int getDoubtsNeeded() {
+        return doubtsNeeded;
+    }
+
+    /**
+     * sets the amount of doubts needed
+     * @param doubtsNeeded  amount of doubts needed
+     */
+    public void setDoubtsNeeded(int doubtsNeeded) {
+        this.doubtsNeeded = doubtsNeeded;
     }
 }
