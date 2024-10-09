@@ -16,7 +16,16 @@ public interface Player {
      */
     String getName();
 
+    /**
+     * Get points of a player.
+     * @return  points of player
+     */
     int getPoints();
+
+    /**
+     * Sets points of player.
+     * @param points    points of player
+     */
     void setPoints(int points);
 
 

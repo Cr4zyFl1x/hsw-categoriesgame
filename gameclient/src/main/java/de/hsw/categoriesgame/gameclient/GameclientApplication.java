@@ -73,13 +73,13 @@ public class GameclientApplication {
                 new NormalAnswer(player.getUUID(), "Stadt", "A1"),
                 new NormalAnswer(player.getUUID(), "Land", ""),
                 new NormalAnswer(player.getUUID(), "Fluss", "A1"));
-        System.out.println("#####################" + lobby.sendAnswers(normalAnswers));
+        lobby.sendAnswers(normalAnswers);
 
         var normalAnswers1 = List.of(
                 new NormalAnswer(player1.getUUID(), "Stadt", "A1"),
                 new NormalAnswer(player1.getUUID(), "Land", "A2"),
                 new NormalAnswer(player1.getUUID(), "Fluss", "B2"));
-        System.out.println("#####################" + lobby.sendAnswers(normalAnswers1));
+        lobby.sendAnswers(normalAnswers1);
 
         lobby.evaluateAnswers();
 

@@ -35,11 +35,17 @@ public class PlayerImpl implements Player {
         return name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPoints() {
         return points;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPoints(int points) {
         this.points = points;

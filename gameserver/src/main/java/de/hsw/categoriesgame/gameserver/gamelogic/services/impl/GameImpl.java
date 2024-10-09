@@ -135,6 +135,7 @@ public class GameImpl implements Game {
             });
 
         });
+        resetHasAnswered();
         return round.getRoundEntries();
     }
 

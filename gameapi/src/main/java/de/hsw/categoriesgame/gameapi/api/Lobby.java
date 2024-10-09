@@ -62,14 +62,22 @@ public interface Lobby {
      */
     char startNewRound();
 
-    boolean sendAnswers(List<NormalAnswer> answers);
+    /**
+     * Sends list of answers to server to save.
+     * @param answers   list of normal answers
+     */
+    void sendAnswers(List<NormalAnswer> answers);
 
+    /**
+     * Player can doubt an answer of another player.
+     * @param doubtedAnswer object of DoubtedAnswer
+     * @return              list of entries
+     */
     List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
-
-
 
     /**
      * Evaluates the answers if all players have answered and gives points for them.
+     * @return  list of entries
      */
     List<Entry> evaluateAnswers();
 

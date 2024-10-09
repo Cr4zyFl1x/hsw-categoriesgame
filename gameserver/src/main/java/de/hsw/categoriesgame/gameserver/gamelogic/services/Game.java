@@ -29,13 +29,22 @@ public interface Game {
      */
     void setCategories(List<String> categories);
 
-
+    /**
+     * Send answers as normal answers
+     * @param normalAnswers list of normal answers
+     */
     void sendAnswers(List<NormalAnswer> normalAnswers);
 
+    /**
+     * Doubts an answer.
+     * @param doubtedAnswer object of DoubtedAnswer
+     * @return              list of RoundEntry
+     */
     List<RoundEntry> doubtAnswer(DoubtedAnswer doubtedAnswer);
 
     /**
      * Evaluates answers of all players if all have answered and gives points.
+     * @return  list of RoundEntry
      */
     List<RoundEntry> evaluateAnswers();
 

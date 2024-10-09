@@ -11,10 +11,10 @@ import java.util.List;
 public class RoundEntry {
 
     @Getter
-    private String category;
+    private final String category;
 
     @Getter
-    private Player player;
+    private final Player player;
 
     @Getter
     @Setter
@@ -24,7 +24,7 @@ public class RoundEntry {
     private boolean doubted;
 
     @Getter
-    private List<Player> doubtedBy;
+    private final List<Player> doubtedBy;
 
     public RoundEntry(String category, Player player, String answer) {
         this.category = category;
@@ -33,6 +33,10 @@ public class RoundEntry {
         this.doubtedBy = new ArrayList<>();
     }
 
+    /**
+     * Doubt an answer.
+     * @param doubtingPlayer    player that doubted the answer
+     */
     public void doubtAnswer(Player doubtingPlayer) {
         this.doubted = true;
         doubtedBy.add(doubtingPlayer);

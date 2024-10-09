@@ -90,12 +90,17 @@ public class LobbyImpl implements Lobby {
         return game.generateRandomLetter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean sendAnswers(List<NormalAnswer> normalAnswers) {
+    public void sendAnswers(List<NormalAnswer> normalAnswers) {
         game.sendAnswers(normalAnswers);
-        return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer) {
         var list = new ArrayList<Entry>();
