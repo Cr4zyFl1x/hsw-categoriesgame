@@ -38,7 +38,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         initializeComponents();
         buildView();
     }
-
+    // TODO: buttons mit Listener verbinden
     /**
      * Returns the JLabel header named "New Lobby"
      * @return  JLabel header
