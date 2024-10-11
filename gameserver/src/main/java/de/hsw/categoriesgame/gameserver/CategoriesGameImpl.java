@@ -5,6 +5,7 @@ import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Player;
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,7 +54,7 @@ public class CategoriesGameImpl implements CategorieGame {
     public Lobby createLobby()
     {
         final String lobbyCode = UUID.randomUUID().toString();
-        final Lobby lobby = new LobbyImpl(lobbyCode);
+        final Lobby lobby = new LobbyImpl(lobbyCode, new GameConfigs(5, 10, 2));
         lobbies.put(lobbyCode, lobby);
 
         log.debug("Created lobby {}", lobbyCode);
@@ -65,11 +66,11 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public Lobby createLobby(String lobbyCode) throws LobbyAlreadyExistsException {
+    public Lobby createLobby(String lobbyCode, GameConfigs gameConfigs) throws LobbyAlreadyExistsException {
         if (lobbies.containsKey(lobbyCode)) {
             throw new LobbyAlreadyExistsException();
         }
-        final Lobby lobby = new LobbyImpl(lobbyCode);
+        final Lobby lobby = new LobbyImpl(lobbyCode, gameConfigs);
         lobbies.put(lobbyCode, lobby);
 
         log.debug("Created lobby {}", lobbyCode);

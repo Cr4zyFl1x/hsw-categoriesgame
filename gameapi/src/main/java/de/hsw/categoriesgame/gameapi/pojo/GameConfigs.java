@@ -3,10 +3,11 @@ package de.hsw.categoriesgame.gameapi.pojo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameConfigs {
+public class GameConfigs implements Serializable {
 
     @Getter
     private final int maxRounds;

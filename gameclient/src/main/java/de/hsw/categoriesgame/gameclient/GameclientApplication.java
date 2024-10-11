@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameclient;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
@@ -53,14 +54,16 @@ public class GameclientApplication {
 
         //final Lobby otherLobby = game.createLobby(player);
 
-        final Lobby lobby = game.createLobby("ABC");
+        final GameConfigs gameConfigs = new GameConfigs(3, 3);
+
+        final Lobby lobby = game.createLobby("ABC", gameConfigs);
         final Lobby lobby1 = game.getLobby(lobby.getLobbyCode());
         game.joinLobby(lobby.getLobbyCode(), player);
         game.joinLobby(lobby.getLobbyCode(), player1);
         //game.joinLobby(lobby.getLobbyCode(), player2);
 
 
-        lobby.startGame();
+        lobby.startGame(gameConfigs);
 
         lobby.setCategories(List.of("Stadt", "Land", "Fluss"));
         lobby.startNewRound();

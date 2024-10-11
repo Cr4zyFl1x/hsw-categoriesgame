@@ -57,7 +57,7 @@ public interface Lobby {
     /**
      * Create new object of class Game with players in the lobby.
      */
-    void startGame();
+    void startGame(GameConfigs gameConfigs);
 
     /**
      * Start a new round, setup data structures and generate new random letter.

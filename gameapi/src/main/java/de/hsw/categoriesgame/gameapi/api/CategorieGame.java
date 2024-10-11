@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface CategorieGame {
      * @param lobbyCode unique string that identifies the lobby
      * @return          object of class lobby that was created
      */
-    Lobby createLobby(String lobbyCode) throws LobbyAlreadyExistsException;
+    Lobby createLobby(String lobbyCode, GameConfigs gameConfigs) throws LobbyAlreadyExistsException;
 
     /**
      * Get all created lobbies.
