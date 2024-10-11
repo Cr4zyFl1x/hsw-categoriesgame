@@ -79,6 +79,8 @@ public class CreateLobbyController {
      */
     private void goToGameRoundView() {
         if (validateInputs()) {
+            // TODO: 11.10.2024  speichern in GameConfigs
+            // TODO: 11.10.2024  starte Game
             // save the amount of rounds in model
             gameModel.setAmountRounds((int) view.getAmountRoundsSpinner().getValue());
 
@@ -95,6 +97,7 @@ public class CreateLobbyController {
      * @return  true - conditions are met / false - conditions are not met
      */
     private boolean validateInputs() {
+        // TODO: 11.10.2024 vergleichen mit GameConfigs aus lobby
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
         int amountCategories = gameModel.getCategoriesCount();

@@ -48,6 +48,7 @@ public class JoinLobbyController {
      */
     private void goToGameRoundView() {
         if (validateInputs()) {
+            // TODO: 11.10.2024 CategorieGame prüfen, ob lobby verfügbar (Vergleich mit GameConfigs und aktuelle Spieleranzahl)
             log.info("GO TO GAME ROUND VIEW");
             viewManager.changeView(View.WAITING);
         } else {
@@ -56,7 +57,9 @@ public class JoinLobbyController {
     }
 
     private boolean validateInputs() {
-        // TODO: Suche nach Lobbycode; falls gefunden dann true zurückgeben, ansonsten false
+        // TODO: 11.10.2024 CategorieGame prüfen, ob lobby verfügbar (Vergleich mit GameConfigs und aktuelle Spieleranzahl)
+
+        // TODO: Suche nach Lobbycode;
         return true;
     }
 

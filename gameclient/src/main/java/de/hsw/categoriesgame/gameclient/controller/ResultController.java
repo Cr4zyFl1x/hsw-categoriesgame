@@ -68,6 +68,8 @@ public class ResultController {
         // reset round count
         model.setCurrentRoundNumber(0);
 
+        // TODO: 11.10.2024 start new round
+
         log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
@@ -76,6 +78,8 @@ public class ResultController {
      * Calculates the top 3 players of the game
      */
     private void calculatePlacements() {
+        // TODO: 11.10.2024 get current top three players from server
+
         mockPlayers.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
         ArrayList<Player> sortedList = new ArrayList<>(mockPlayers);
 

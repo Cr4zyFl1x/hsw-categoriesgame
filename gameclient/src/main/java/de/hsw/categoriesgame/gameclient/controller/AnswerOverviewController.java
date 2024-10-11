@@ -90,6 +90,7 @@ public class AnswerOverviewController {
      * @param categories        selected categories
      */
     private void createAnswerOverview(List<String> players, List<String> categories) {
+        // TODO: 11.10.2024 get answers as List<RoundEntry>  (update bei jedem anzweifeln)
         // TODO: Antworten sind mit Platzhaltern belegt -> Antworten der Spieler anzeigen!
 
         view.createAnswerOverview(players, categories);

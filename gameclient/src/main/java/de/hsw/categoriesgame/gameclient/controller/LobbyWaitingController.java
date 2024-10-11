@@ -32,6 +32,8 @@ public class LobbyWaitingController {
         // Methode zum Anzeigen: view.isStartGameButtonVisible(true);
     }
 
+    // TODO: 11.10.2024 alle bisherigen spieler in einem textfeld anzeigen lassen (getPlayers aus Lobby) 
+
     private void goToStartView() {
         log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
