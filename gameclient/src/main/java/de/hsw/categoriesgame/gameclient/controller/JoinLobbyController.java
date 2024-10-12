@@ -3,6 +3,7 @@ package de.hsw.categoriesgame.gameclient.controller;
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.LobbyFullException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameclient.ClientImpl;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
@@ -99,10 +100,17 @@ public class JoinLobbyController {
         } catch (LobbyNotFoundException e) {
             log.error("No Lobby found under Code {}!", code);
             view.throwErrorDialog("Es existiert keine Lobby mit dem Code " + code + "!");
+            gameModel.reset();
+            return;
+        } catch (LobbyFullException e) {
+            log.warn("Cannot join lobby, because lobby is full!");
+            view.throwErrorDialog("Diese Lobby hat leider schon die maximale Spielerzahl erreicht!");
+            gameModel.reset();
             return;
         } catch (Exception e) {
             log.error("Error while joining a Lobby!", e);
             view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nBitte schauen Sie im Protokoll für weitere Informationen.");
+            gameModel.reset();
             return;
         } finally {
             view.getJoinButton().setEnabled(true);
