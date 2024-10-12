@@ -54,7 +54,7 @@ public class CategoriesGameImpl implements CategorieGame {
     public Lobby createLobby()
     {
         final String lobbyCode = UUID.randomUUID().toString();
-        final Lobby lobby = new LobbyImpl(lobbyCode, new GameConfigs(5, 10, 2));
+        final Lobby lobby = new LobbyImpl(lobbyCode, new GameConfigs(5, 10));
         lobbies.put(lobbyCode, lobby);
 
         log.debug("Created lobby {}", lobbyCode);

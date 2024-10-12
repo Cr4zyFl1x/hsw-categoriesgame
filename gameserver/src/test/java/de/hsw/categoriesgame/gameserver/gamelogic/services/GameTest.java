@@ -73,7 +73,7 @@ class GameTest {
 
     @Test
     void updateRoundNumber() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5, 1));
+        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
         game.updateRoundNumber();
         assertEquals(2, game.getRoundNumber());
@@ -81,7 +81,7 @@ class GameTest {
 
     @Test
     void evaluateAnswers() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5, 1));
+        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
         ((GameImpl) game).setCurrentLetter('A');
         game.setCategories(List.of(category1, category2, category3));
@@ -140,7 +140,7 @@ class GameTest {
 
     @Test
     void doubtedOnce() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5, 1));
+        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
         ((GameImpl) game).setCurrentLetter('A');
         game.setCategories(List.of(category1, category2, category3));
@@ -232,12 +232,12 @@ class GameTest {
                 () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(player1)),
                 () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(player2)),
                 () -> assertEquals(10 + 0 + 10, game.getCurrentPointsOfPlayer(player3)),
-                () -> assertEquals(0 + 0 + 10, game.getCurrentPointsOfPlayer(player4)));
+                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(player4)));
     }
 
     @Test
     void doubtedTwice() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5, 2));
+        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
         ((GameImpl) game).setCurrentLetter('A');
         game.setCategories(List.of(category1, category2, category3));

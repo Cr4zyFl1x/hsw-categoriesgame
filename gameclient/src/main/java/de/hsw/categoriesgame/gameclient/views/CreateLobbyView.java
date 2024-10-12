@@ -26,6 +26,8 @@ public class CreateLobbyView extends JPanel implements InitializableView {
     private JSpinner maxPlayerSpinner;
     private JLabel amountRoundsLabel;
     private JSpinner amountRoundsSpinner;
+    private JLabel doubtsNeededLabel;
+    private JSpinner doubtsNeededSpinner;
     private JButton cancelButton;
     private JButton createButton;
     private JLabel newCategoryLabel;
@@ -174,6 +176,22 @@ public class CreateLobbyView extends JPanel implements InitializableView {
     }
 
     /**
+     * Returns the label for doubts needed spinner component
+     * @return
+     */
+    public JLabel getDoubtsNeededLabel() {
+        return doubtsNeededLabel;
+    }
+
+    /**
+     * Returns the doubts needed Spinner component
+     * @return  JSpinner
+     */
+    public JSpinner getDoubtsNeededSpinner() {
+        return doubtsNeededSpinner;
+    }
+
+    /**
      * Initializes all components needed
      */
     @Override
@@ -204,6 +222,10 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         amountRoundsLabel = new JLabel("Amount Rounds:");
         amountRoundsSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 20, 1));
 
+        // Amount doubts components
+        doubtsNeededLabel = new JLabel("Amount Doubts:");
+        doubtsNeededSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
+
         // Components for adding a new category
         newCategoryLabel = new JLabel("New Category:");
         newCategoryInput = new JTextField();
@@ -228,7 +250,6 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         categoryButtons = new ArrayList<>();
 
         // separate panel to keep the active categories
-        // TODO: fixing bug
         activeCategoriesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     }
 
@@ -325,7 +346,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         configGbc.weightx = 1.0;
         configPanel.add(amountRoundsSpinner, configGbc);
 
-        // Add separator
+        // Add Amount Rounds label and spinner
         configGbc.gridx = 0;
         configGbc.gridy = 5;
         configGbc.gridwidth = 2;

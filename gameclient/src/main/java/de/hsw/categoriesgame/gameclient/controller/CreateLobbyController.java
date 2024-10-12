@@ -110,7 +110,7 @@ public class CreateLobbyController {
             return;
         }
 
-
+  
         // Create Game config
         final GameConfigs config = new GameConfigs(
                 (Integer) view.getAmountRoundsSpinner().getValue(),
@@ -149,6 +149,7 @@ public class CreateLobbyController {
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
         int amountCategories = gameModel.getCategoriesCount();
+        int amountsNeededCounts = (int) view.getDoubtsNeededSpinner().getValue();
 
         return maxPlayers >= 2 && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
     }
