@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,10 +13,15 @@ import java.util.List;
  */
 public class CreateLobbyView extends JPanel implements InitializableView {
 
+    private JLabel adminUsernameLabel;
+    @Getter
+    private JTextField adminUsernameInput;
     private JLabel newLobbyHeader;
     private JLabel configHeader;
     private JTextField lobbyCodeInput;
     private JLabel lobbyCodeLabel;
+    @Getter
+    private JButton reloadLobbyCodeButton;
     private JLabel maxPlayerLabel;
     private JSpinner maxPlayerSpinner;
     private JLabel amountRoundsLabel;
@@ -198,9 +204,15 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         configHeader = new JLabel("Configuration", JLabel.LEFT);
         configHeader.setFont(new Font("Arial", Font.BOLD, 18));
 
+        // Admin username components
+        adminUsernameLabel = new JLabel("Admin Username:");
+        adminUsernameInput = new JTextField();
+
         // Lobby code components
         lobbyCodeLabel = new JLabel("Lobby Code:");
         lobbyCodeInput = new JTextField();
+        lobbyCodeInput.setEditable(false);
+        reloadLobbyCodeButton = new JButton("Regenerate");
 
         // Max amount of player components
         maxPlayerLabel = new JLabel("Max Player:");
@@ -272,19 +284,51 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         configGbc.gridwidth = 2;
         configPanel.add(configHeader, configGbc);
 
-        // Add Lobby Code label and input
+        // Add Admin Username label and input
+        configGbc.gridx = 0;
         configGbc.gridy = 1;
+        configGbc.gridwidth = 1;
+        configGbc.weightx = 0.2;
+        configPanel.add(adminUsernameLabel, configGbc);
+
+        configGbc.gridx = 1;
+        configGbc.weightx = 1.0;
+        configPanel.add(adminUsernameInput, configGbc);
+
+
+
+        // Add Lobby Code label and input
+        configGbc.gridx = 0;
+        configGbc.gridy = 2;
         configGbc.gridwidth = 1;
         configGbc.weightx = 0.2;
         configPanel.add(lobbyCodeLabel, configGbc);
 
+
         configGbc.gridx = 1;
         configGbc.weightx = 1.0;
-        configPanel.add(lobbyCodeInput, configGbc);
+        JPanel codeRLPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints codeRLGbc = new GridBagConstraints();
+        codeRLGbc.fill = GridBagConstraints.HORIZONTAL;
+
+        codeRLGbc.gridy = 1;
+        codeRLGbc.gridx = 0;
+        codeRLGbc.gridwidth = 1;
+        codeRLGbc.weightx = 0.95;
+        codeRLPanel.add(lobbyCodeInput, codeRLGbc);
+
+        codeRLGbc.gridy = 1;
+        codeRLGbc.gridx = 1;
+        codeRLGbc.weightx = 0.005;
+        codeRLPanel.add(reloadLobbyCodeButton, codeRLGbc);
+
+        configPanel.add(codeRLPanel, configGbc);
+
+
 
         // Add Max Player label and spinner
         configGbc.gridx = 0;
-        configGbc.gridy = 2;
+        configGbc.gridy = 3;
         configGbc.weightx = 0.2;
         configPanel.add(maxPlayerLabel, configGbc);
 
@@ -294,7 +338,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
 
         // Add Amount Rounds label and spinner
         configGbc.gridx = 0;
-        configGbc.gridy = 3;
+        configGbc.gridy = 4;
         configGbc.weightx = 0.2;
         configPanel.add(amountRoundsLabel, configGbc);
 
@@ -303,16 +347,6 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         configPanel.add(amountRoundsSpinner, configGbc);
 
         // Add Amount Rounds label and spinner
-        configGbc.gridx = 0;
-        configGbc.gridy = 4;
-        configGbc.weightx = 0.2;
-        configPanel.add(doubtsNeededLabel, configGbc);
-
-        configGbc.gridx = 1;
-        configGbc.weightx = 1.0;
-        configPanel.add(doubtsNeededSpinner, configGbc);
-
-        // Add separator
         configGbc.gridx = 0;
         configGbc.gridy = 5;
         configGbc.gridwidth = 2;
@@ -408,13 +442,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         activeCategoriesPanel.repaint();
     }
 
-    public void throwErrorDialog() {
-        JOptionPane.showMessageDialog(null, """
-                Überprüfe bitte auf folgende Punkte:\s
-                - Passt deine maximale Spieleranzahl mit der Anzahl teilnehmender Spieler?\s
-                - Hast du mindestens eine Kategorie angegeben?\s
-                - Hast du einen Lobbycode angegeben?
-                - Ist deine Anzahl an benötigten Anzweiflern kleiner oder gleich der Spieleranzahl?""",
-                "Lobby kann nicht erstellt werden", JOptionPane.ERROR_MESSAGE);
+    public void throwErrorDialog(final String msg) {
+        JOptionPane.showMessageDialog(null, msg, "Es ist ein Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }
 }

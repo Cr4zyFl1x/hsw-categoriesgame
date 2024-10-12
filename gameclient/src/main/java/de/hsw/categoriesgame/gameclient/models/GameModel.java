@@ -1,9 +1,12 @@
 package de.hsw.categoriesgame.gameclient.models;
 
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.pojos.Player;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +17,20 @@ import java.util.List;
  */
 public class GameModel implements AdvancedObservable<ObservableCategory> {
 
+    @Setter
+    @Getter
+    private Lobby lobby;
+
+    @Setter
+    @Getter
+    private de.hsw.categoriesgame.gameapi.api.Player localPlayer;
 
     private char currentLetter;
+
     private int amountRounds;
+
     private int currentRoundNumber;
-    private int doubtsNeeded;
+  
     private final List<String> categories;
     private final List<Player> players;
     private List<Pair<String, Boolean>> answersDoubted;
@@ -162,6 +174,28 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
+    public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
+        this.answersDoubted = answersDoubted;
+    }
+
+
+    public List<Pair<String, Boolean>> getAnswersDoubted() {
+        return answersDoubted;
+    }
+
+
+    public void reset()
+    {
+        this.currentLetter = 0;
+        this.amountRounds = 0;
+        this.currentRoundNumber = 0;
+        this.categories.clear();
+        this.players.clear();
+        this.lobby = null;
+        this.localPlayer = null;
+    }
+
+  
     //////////////////////////////////////////////////////
     //////////////////////////////////////////////////////
 
@@ -190,14 +224,5 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         for (ObservableCategory cat : category) {
             observers.get(cat).forEach(AdvancedObserver::receiveNotification);
         }
-    }
-
-    public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
-        this.answersDoubted = answersDoubted;
-    }
-
-    
-    public List<Pair<String, Boolean>> getAnswersDoubted() {
-        return answersDoubted;
     }
 }

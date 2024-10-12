@@ -121,7 +121,7 @@ public final class SocketRemoteServer implements RemoteServer {
                 if (this.port == null) {
                     this.port = serverSocket.getLocalPort();
                 }
-                log.info("The server has been started successfully o port {}!", getPort());
+                log.info("The server has been started successfully on port {}!", getPort());
 
                 while (true) {
                     final Socket socket = serverSocket.accept();

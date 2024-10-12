@@ -1,5 +1,11 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
+import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+import de.hsw.categoriesgame.gameclient.PlayerImpl;
+import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.JoinLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
@@ -12,55 +18,89 @@ import org.slf4j.LoggerFactory;
 public class JoinLobbyController {
 
     private static final Logger log = LoggerFactory.getLogger(JoinLobbyController.class);
+
     private final ViewManager viewManager;
     private final JoinLobbyView view;
+    private final GameModel gameModel;
+
+
 
     /**
      * Constructor
      * @param viewManager   ViewManager to be able to navigate between views
      * @param view          referring view of the controller
      */
-    public JoinLobbyController(ViewManager viewManager, JoinLobbyView view) {
+    public JoinLobbyController(final ViewManager viewManager,
+                               final JoinLobbyView view,
+                               final GameModel model) {
         this.viewManager = viewManager;
         this.view = view;
+        this.gameModel = model;
+
+        gameModel.reset();
 
         registerListener();
     }
+
 
     /**
      * Register all ActionListeners
      */
     private void registerListener() {
-        view.getBackButton().addActionListener(e -> goToStartView());
-        view.getJoinButton().addActionListener(e -> goToGameRoundView());
+        view.getBackButton().addActionListener(e -> backToStartButtonPressed());
+        view.getJoinButton().addActionListener(e -> joinButtonPressed());
     }
+
 
     /**
      * Navigates to the start screen
      */
-    private void goToStartView() {
-        log.info("GO TO START VIEW");
+    private void backToStartButtonPressed()
+    {
+        log.debug("User clicked button to go back to start");
         viewManager.changeView(View.START);
     }
+
 
     /**
      * Navigates into the waiting screen
      */
-    private void goToGameRoundView() {
-        if (validateInputs()) {
-            // TODO: 11.10.2024 CategorieGame prüfen, ob lobby verfügbar (Vergleich mit GameConfigs und aktuelle Spieleranzahl)
-            log.info("GO TO GAME ROUND VIEW");
-            viewManager.changeView(View.WAITING);
-        } else {
-            view.throwErrorDialog();
+    private void joinButtonPressed()
+    {
+        if (!validateInputs()) {
+            view.throwErrorDialog("Bitte füllen Sie die Felder \"Name\" und \"Code\" aus.");
+            return;
         }
+
+        final Player player = new PlayerImpl(view.getNameInput().getText());
+        final String code = view.getCodeInput().getText();
+
+        try {
+            final Lobby l = viewManager.getProxyFactory().createProxy(CategorieGame.class)
+                    .joinLobby(view.getCodeInput().getText(), player);
+
+            gameModel.setLobby(l);
+            gameModel.setLocalPlayer(player);
+
+        } catch (LobbyNotFoundException e) {
+            log.error("No Lobby found under Code {}!", code);
+            view.throwErrorDialog("Es existiert keine Lobby mit dem Code " + code + "!");
+            return;
+        } catch (Exception e) {
+            log.error("Error while joining a Lobby!", e);
+            view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nBitte schauen Sie im Protokoll für weitere Informationen.");
+            return;
+        }
+
+        viewManager.changeView(View.WAITING);
     }
 
-    private boolean validateInputs() {
-        // TODO: 11.10.2024 CategorieGame prüfen, ob lobby verfügbar (Vergleich mit GameConfigs und aktuelle Spieleranzahl)
 
-        // TODO: Suche nach Lobbycode;
-        return true;
+    private boolean validateInputs()
+    {
+        final String name = view.getNameInput().getText();
+        final String code = view.getCodeInput().getText();
+
+        return !code.isEmpty() && !name.isEmpty();
     }
-
 }

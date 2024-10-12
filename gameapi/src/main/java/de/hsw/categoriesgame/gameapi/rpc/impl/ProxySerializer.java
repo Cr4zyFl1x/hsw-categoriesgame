@@ -319,8 +319,6 @@ public final class ProxySerializer implements ProxyDataSerializer {
                 remoteConnectionDetails.getHost(),
                 proxyData.getConnectionDetails().getPort()));
 
-        log.warn(proxyData.getDomainUUID().toString());
-
         return ProxyFactoryRegistry.getFactoryOrCreate(proxyData.getConnectionDetails(),
                 localServer).createProxy(proxyData);
     }
