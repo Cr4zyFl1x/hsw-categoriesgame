@@ -14,7 +14,6 @@ public class LobbyImpl implements Lobby {
     @Getter
     private final String lobbyCode;
 
-    private GameConfigs gameConfigs;
     @Getter
     private final List<Player> players;
 
@@ -27,7 +26,6 @@ public class LobbyImpl implements Lobby {
     {
         this.lobbyCode = lobbyCode;
         this.players = new ArrayList<>();
-        this.gameConfigs = gameConfigs;
     }
 
     /**
@@ -97,10 +95,18 @@ public class LobbyImpl implements Lobby {
      * {@inheritDoc}
      */
     @Override
-    public char startNewRound() {
-        game.updateRoundNumber();
-        game.resetHasAnswered();
-        return game.generateRandomLetter();
+    public void startNewRound() {
+        game.startNewRound();
+    }
+
+    @Override
+    public void closeAnswerRound() {
+        game.closeAnsweringRound();
+    }
+
+    @Override
+    public void closeDoubtingRound() {
+        game.closeDoubtingRound();
     }
 
     /**
@@ -118,23 +124,6 @@ public class LobbyImpl implements Lobby {
     public List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer) {
         var list = new ArrayList<Entry>();
         game.doubtAnswer(doubtedAnswer).forEach(roundEntry -> {
-            var category = roundEntry.getCategory();
-            var playerUUID = roundEntry.getPlayer().getUUID();
-            var answer = roundEntry.getAnswer();
-            var doubted = roundEntry.isDoubted();
-            var doubtedBy = roundEntry.getDoubtedBy().stream().map(Player::getUUID).toList();
-            list.add(new Entry(category, playerUUID, answer, doubted, doubtedBy));
-        });
-        return list;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Entry> evaluateAnswers() {
-        var list = new ArrayList<Entry>();
-        game.evaluateAnswers().forEach(roundEntry -> {
             var category = roundEntry.getCategory();
             var playerUUID = roundEntry.getPlayer().getUUID();
             var answer = roundEntry.getAnswer();

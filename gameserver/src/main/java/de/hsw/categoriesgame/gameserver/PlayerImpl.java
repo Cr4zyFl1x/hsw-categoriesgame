@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,11 @@ public class PlayerImpl implements Player {
     @Override
     public void setHasAnswered(boolean hasAnswered) {
         this.hasAnswered = hasAnswered;
+    }
+
+    @Override
+    public void notifyPlayer(RoundState roundState) {
+        System.out.println("Neuer State: " + roundState.name());
     }
 
     //-----------------------

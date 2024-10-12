@@ -1,5 +1,7 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+
 import java.util.UUID;
 
 public interface Player {
@@ -40,4 +42,6 @@ public interface Player {
      * @param hasAnswered   true if they have answered, false if not answered
      */
     void setHasAnswered(boolean hasAnswered);
+
+    void notifyPlayer(RoundState roundState);
 }

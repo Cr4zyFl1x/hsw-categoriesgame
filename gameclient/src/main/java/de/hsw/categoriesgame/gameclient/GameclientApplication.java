@@ -84,8 +84,6 @@ public class GameclientApplication {
                 new NormalAnswer(player1.getUUID(), "Fluss", "B2"));
         lobby.sendAnswers(normalAnswers1);
 
-        lobby.evaluateAnswers();
-
         System.out.println(lobby.getPointsOfPlayer(player));
         System.out.println(lobby.getPointsOfPlayer(player1));
 

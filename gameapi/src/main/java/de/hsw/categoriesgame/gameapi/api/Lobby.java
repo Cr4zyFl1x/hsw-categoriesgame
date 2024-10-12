@@ -63,7 +63,10 @@ public interface Lobby {
      * Start a new round, setup data structures and generate new random letter.
      * @return  random letter for the new round
      */
-    char startNewRound();
+    void startNewRound();
+    void closeAnswerRound();
+    void closeDoubtingRound();
+
 
     /**
      * Sends list of answers to server to save.
@@ -77,12 +80,6 @@ public interface Lobby {
      * @return              list of entries
      */
     List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
-
-    /**
-     * Evaluates the answers if all players have answered and gives points for them.
-     * @return  list of entries
-     */
-    List<Entry> evaluateAnswers();
 
     int getPointsOfPlayer(Player player);
 
