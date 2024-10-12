@@ -6,6 +6,7 @@ import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.GameclientApplication;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
@@ -53,10 +54,14 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     private String lobbyCode;
 
     @Getter
-    private final List<String> categories;
+    private List<String> categories;
 
+    @Getter
     private char currentLetter;
+
     private int amountRounds;
+
+    @Getter
     private int currentRoundNumber;
 
     private List<Pair<String, Boolean>> answersDoubted;
@@ -87,10 +92,18 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
             throw new IllegalStateException("For initialization the lobby and local client must be present!");
 
         this.lobbyCode = lobby.getLobbyCode();
+        this.categories = lobby.getGameConfiguration().getCategories();
         updatePlayers();
     }
 
-    public void startNewRound() {
+    public void updateRoundDetails()
+    {
+        this.currentRoundNumber = lobby.getCurrentRoundNumber();
+        this.currentLetter = lobby.getCurrentLetter();
+    }
+
+    public void startNewRound()
+    {
         lobby.startNewRound();
         currentLetter = lobby.getCurrentLetter();
     }
@@ -135,13 +148,6 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         this.amountRounds = amountRounds;
     }
     //TODO: Muss in die GameConfi rein, an Server geschickt werden
-    /**
-     * Returns the current round number
-     * @return  current round
-     */
-    public int getCurrentRoundNumber() {
-        return currentRoundNumber;
-    }
     //TODO: Bekommt man vom Server
     /**
      * Sets the current round number
@@ -151,13 +157,6 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         this.currentRoundNumber = currentRoundNumber;
     }
     //TODO: Muss mit der maximalen game nummer verglichen werden (vom Server), start von jeder Runde
-    /**
-     * Returns all categories
-     * @return  list of all categories
-     */
-    public List<String> getCategories() {
-        return categories;
-    }
 
     //TODO: Bekommt man vom Server
     //TODO: SetCategories erstellen
@@ -193,16 +192,6 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
      */
     public int getPlayerCount() {
         return playerBeans.size();
-    }
-
-
-    /**
-     * Returns the current active letter
-     * @return  active letter
-     */
-    //TODO: Den aktuellen Letter aus der Lobby holen
-    public char getCurrentLetter() {
-        return currentLetter;
     }
 
     /**

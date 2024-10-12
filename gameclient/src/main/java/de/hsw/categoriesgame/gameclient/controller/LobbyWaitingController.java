@@ -84,6 +84,7 @@ public class LobbyWaitingController implements AdvancedObserver {
 
         log.debug("GO TO GAME ROUND VIEW");
         gameModel.getLobby().startGame();
+        gameModel.startNewRound();
         viewManager.changeView(View.GAME_ROUND);
     }
 
@@ -106,6 +107,7 @@ public class LobbyWaitingController implements AdvancedObserver {
     public void receiveNotification()
     {
         if (gameModel.getRoundState() == RoundState.ANSWERING_OPEN) {
+            gameModel.updateRoundDetails();
             viewManager.changeView(View.GAME_ROUND);
         }
 

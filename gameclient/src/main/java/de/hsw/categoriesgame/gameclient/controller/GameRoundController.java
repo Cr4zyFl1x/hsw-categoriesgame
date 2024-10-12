@@ -36,8 +36,6 @@ public class GameRoundController implements AdvancedObserver {
         this.view = view;
         this.model = model;
 
-        model.startNewRound();
-
         model.register(ObservableCategory.GAME_ROUND_CONTROLLER, this);
 
         // register listeners
