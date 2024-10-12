@@ -140,10 +140,16 @@ public class AnswerOverviewController implements AdvancedObserver {
         System.out.println(model.getAnswersDoubted());
     }
 
+    /**
+     * Updates the color of an answer if the answer is officially doubted
+     */
     private void updateAnswerColor() {
         for (int i = 0; i < view.getCategoryAnswerLabels().size(); i++) {
             for (int j = 0; j < view.getCategoryAnswerLabels().get(i).size(); j++) {
-                if (view.getDoubtAnswerCheckboxes().get(i).get(j).isSelected()) {
+
+                String answer = view.getCategoryAnswerLabels().get(i).get(j).getText();
+
+                if (model.getLobby().getDoubtedAnswers().get(i).answer().equals(answer)) {
                     view.getCategoryAnswerLabels().get(i).get(j).setForeground(Color.RED);
                 }
             }
@@ -159,5 +165,6 @@ public class AnswerOverviewController implements AdvancedObserver {
     public void receiveNotification() {
         log.debug("An Answer has been doubted! Processing change.");
         updateAnswersInGameModel();
+        updateAnswerColor();
     }
 }
