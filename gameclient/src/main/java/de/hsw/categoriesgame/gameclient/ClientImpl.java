@@ -1,27 +1,46 @@
 package de.hsw.categoriesgame.gameclient;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
-public class PlayerImpl implements Player {
+@Slf4j
+public class ClientImpl implements Client {
 
+    private final GameModel currentGame;
+
+    /**
+     * Client UUID (Same as respective {@link de.hsw.categoriesgame.gameapi.pojo.PlayerBean} UUID)
+     */
     private final UUID uuid;
+
+    /**
+     * Name of the client
+     */
     private final String name;
 
+    /**
+     * Points
+     */
     private int points;
 
+    // Kann das weg?
+    @Deprecated
     private boolean hasAnswered;
 
-    private final GameModel gameModel;
 
-    public PlayerImpl(final String name, final  GameModel gameModel) {
+
+    public ClientImpl(final GameModel currentGame, final String name) {
         uuid = UUID.randomUUID();
         this.name = name;
-        this.gameModel = gameModel;
+        this.currentGame = currentGame;
     }
+
+
 
     /**
      * {@inheritDoc}
@@ -31,14 +50,15 @@ public class PlayerImpl implements Player {
         return uuid;
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getName() {
-        System.out.println(name);
         return name;
     }
+
 
     /**
      * {@inheritDoc}
@@ -48,6 +68,7 @@ public class PlayerImpl implements Player {
         return points;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -55,6 +76,7 @@ public class PlayerImpl implements Player {
     public void setPoints(int points) {
         this.points = points;
     }
+
 
     /**
      * {@inheritDoc}
@@ -64,6 +86,7 @@ public class PlayerImpl implements Player {
         return hasAnswered;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -72,9 +95,17 @@ public class PlayerImpl implements Player {
         this.hasAnswered = hasAnswered;
     }
 
+
     @Override
-    public void notifyPlayer(RoundState roundState) {
+    public void notifyPlayerAboutRoundState(RoundState roundState) {
         System.out.println("Neuer State: " + roundState.name());
-        gameModel.setRoundState(roundState);
+    }
+
+
+    @Override
+    public void notifyPlayerAboutLobbyState()
+    {
+        log.debug("Player got notified");
+        currentGame.sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
     }
 }

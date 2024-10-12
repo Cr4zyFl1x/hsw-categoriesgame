@@ -1,16 +1,16 @@
 package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
-import de.hsw.categoriesgame.gameclient.pojos.Player;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     @Setter
     @Getter
-    private de.hsw.categoriesgame.gameapi.api.Player localPlayer;
+    private Client localClient;
 
     private char currentLetter;
 
@@ -36,7 +36,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     private int currentRoundNumber;
   
     private final List<String> categories;
-    private final List<Player> players;
+    private final List<PlayerBean> playerBeans;
     private List<Pair<String, Boolean>> answersDoubted;
 
     private List<String> answers;
@@ -50,7 +50,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
      */
     public GameModel() {
         categories = new ArrayList<>();
-        players = new ArrayList<>();
+        playerBeans = new ArrayList<>();
         answers = new ArrayList<>();
     }
 
@@ -69,7 +69,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         for (int i = 0; i < categories.size(); i++) {
             var category = categories.get(i);
             var answer = answers.get(i);
-            normalAnswers.add(new NormalAnswer(localPlayer.getUUID(), category, answer));
+            normalAnswers.add(new NormalAnswer(localClient.getUUID(), category, answer));
         }
         lobby.sendAnswers(normalAnswers);
     }
@@ -153,8 +153,8 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
      * Returns the list including all players
      * @return  list of players
      */
-    public List<Player> getPlayers() {
-        return players;
+    public List<PlayerBean> getPlayerBeans() {
+        return playerBeans;
     }
     //TODO: Bekommt man vom Server -> von Lobby
     /**
@@ -162,30 +162,30 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
      * @return  amount of players
      */
     public int getPlayerCount() {
-        return players.size();
+        return playerBeans.size();
     }
 
     /**
      * adds a new player to the player list
-     * @param player    new player to be added
+     * @param playerBean    new player to be added
      */
-    public void addPlayer(Player player) {
-        players.add(player);
+    public void addPlayer(PlayerBean playerBean) {
+        playerBeans.add(playerBean);
     }
 
     /**
      * removes a certain player from the player list
-     * @param player    player to be removed
+     * @param playerBean    player to be removed
      */
-    public void removePlayer(Player player) {
-        players.remove(player);
+    public void removePlayer(PlayerBean playerBean) {
+        playerBeans.remove(playerBean);
     }
 
     /**
      * clears the complete player list
      */
     public void clearPlayers() {
-        players.clear();
+        playerBeans.clear();
     }
 
     public void setAnswers(List<String> answers) {
@@ -194,8 +194,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     /**
      * Returns the current active letter
-     *
-     * @return active letter
+     * @return  active letter
      */
     //TODO: Den aktuellen Letter aus der Lobby holen
     public char getCurrentLetter() {
@@ -228,9 +227,9 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         this.amountRounds = 0;
         this.currentRoundNumber = 0;
         this.categories.clear();
-        this.players.clear();
+        this.playerBeans.clear();
         this.lobby = null;
-        this.localPlayer = null;
+        this.localClient = null;
     }
 
   
@@ -259,7 +258,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
             return;
         }
 
-        for (ObservableCategory cat : category) {
+        for (ObservableCategory cat : observers.keySet()) {
             observers.get(cat).forEach(AdvancedObserver::receiveNotification);
         }
     }

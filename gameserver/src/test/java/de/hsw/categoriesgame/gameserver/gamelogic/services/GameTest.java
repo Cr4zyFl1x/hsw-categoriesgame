@@ -1,10 +1,10 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.services;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
-import de.hsw.categoriesgame.gameserver.PlayerImpl;
+import de.hsw.categoriesgame.gameserver.ClientImpl;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameTest {
 
     private static Game game;
-    private static Player player1;
-    private static Player player2;
-    private static Player player3;
-    private static Player player4;
+    private static Client client1;
+    private static Client client2;
+    private static Client client3;
+    private static Client client4;
 
     private static String category1;
     private static String category2;
@@ -42,10 +42,10 @@ class GameTest {
 
     @BeforeEach
     void setUp() {
-        player1 = new PlayerImpl("Maria");
-        player2 = new PlayerImpl("Josef");
-        player3 = new PlayerImpl("Jesus");
-        player4 = new PlayerImpl("Patrick");
+        client1 = new ClientImpl("Maria");
+        client2 = new ClientImpl("Josef");
+        client3 = new ClientImpl("Jesus");
+        client4 = new ClientImpl("Patrick");
 
         category1 = "Stadt";
         category2 = "Land";
@@ -71,7 +71,7 @@ class GameTest {
 
     @Test
     void updateRoundNumber() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
+        game = new GameImpl(List.of(client1, client2, client3, client4), new GameConfigs(3, 5));
 
         game.startNewRound();
         assertEquals(2, game.getRoundNumber());
@@ -79,39 +79,39 @@ class GameTest {
 
     @Test
     void evaluateAnswers() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
+        game = new GameImpl(List.of(client1, client2, client3, client4), new GameConfigs(3, 5));
 
         game.startNewRound();
         game.setCategories(List.of(category1, category2, category3));
 
         var answersPlayer1 = List.of(
-                new NormalAnswer(player1.getUUID(), category1, a1),
-                new NormalAnswer(player1.getUUID(), category2, a2),
-                new NormalAnswer(player1.getUUID(), category3, a3));
+                new NormalAnswer(client1.getUUID(), category1, a1),
+                new NormalAnswer(client1.getUUID(), category2, a2),
+                new NormalAnswer(client1.getUUID(), category3, a3));
         game.sendAnswers(answersPlayer1);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player1));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client1));
 
         var answersPlayer2 = List.of(
-                new NormalAnswer(player2.getUUID(), category1, a4),
-                new NormalAnswer(player2.getUUID(), category2, a5),
-                new NormalAnswer(player2.getUUID(), category3, a6));
+                new NormalAnswer(client2.getUUID(), category1, a4),
+                new NormalAnswer(client2.getUUID(), category2, a5),
+                new NormalAnswer(client2.getUUID(), category3, a6));
         game.sendAnswers(answersPlayer2);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player2));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client2));
 
         var answersPlayer3 = List.of(
-                new NormalAnswer(player3.getUUID(), category1, a7),
-                new NormalAnswer(player3.getUUID(), category2, a8),
-                new NormalAnswer(player3.getUUID(), category3, a9));
+                new NormalAnswer(client3.getUUID(), category1, a7),
+                new NormalAnswer(client3.getUUID(), category2, a8),
+                new NormalAnswer(client3.getUUID(), category3, a9));
         game.sendAnswers(answersPlayer3);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player3));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client3));
 
         var answersPlayer4 = List.of(
-                new NormalAnswer(player4.getUUID(), category1, a10),
-                new NormalAnswer(player4.getUUID(), category2, a11),
-                new NormalAnswer(player4.getUUID(), category3, a12));
+                new NormalAnswer(client4.getUUID(), category1, a10),
+                new NormalAnswer(client4.getUUID(), category2, a11),
+                new NormalAnswer(client4.getUUID(), category3, a12));
         game.sendAnswers(answersPlayer4);
 
         assertFalse(game.answersWereDoubted());
@@ -121,15 +121,15 @@ class GameTest {
 
 
         assertAll(
-                () -> assertEquals(0, game.getCurrentPointsOfPlayer(player1)),
-                () -> assertEquals(0, game.getCurrentPointsOfPlayer(player2)),
-                () -> assertEquals(0, game.getCurrentPointsOfPlayer(player3)),
-                () -> assertEquals(0, game.getCurrentPointsOfPlayer(player4)));
+                () -> assertEquals(0, game.getCurrentPointsOfPlayer(client1)),
+                () -> assertEquals(0, game.getCurrentPointsOfPlayer(client2)),
+                () -> assertEquals(0, game.getCurrentPointsOfPlayer(client3)),
+                () -> assertEquals(0, game.getCurrentPointsOfPlayer(client4)));
     }
 
     @Test
     void doubtedOnce() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
+        game = new GameImpl(List.of(client1, client2, client3, client4), new GameConfigs(3, 5));
 
         game.setCategories(List.of(category1, category2, category3));
 
@@ -137,90 +137,90 @@ class GameTest {
         ((GameImpl) game).setCurrentLetter();
 
         var answersPlayer1 = List.of(
-                new NormalAnswer(player1.getUUID(), category1, a1),
-                new NormalAnswer(player1.getUUID(), category2, a2),
-                new NormalAnswer(player1.getUUID(), category3, a3));
+                new NormalAnswer(client1.getUUID(), category1, a1),
+                new NormalAnswer(client1.getUUID(), category2, a2),
+                new NormalAnswer(client1.getUUID(), category3, a3));
         game.sendAnswers(answersPlayer1);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player1));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client1));
 
         var answersPlayer2 = List.of(
-                new NormalAnswer(player2.getUUID(), category1, a4),
-                new NormalAnswer(player2.getUUID(), category2, a5),
-                new NormalAnswer(player2.getUUID(), category3, a6));
+                new NormalAnswer(client2.getUUID(), category1, a4),
+                new NormalAnswer(client2.getUUID(), category2, a5),
+                new NormalAnswer(client2.getUUID(), category3, a6));
         game.sendAnswers(answersPlayer2);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player2));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client2));
 
         var answersPlayer3 = List.of(
-                new NormalAnswer(player3.getUUID(), category1, a7),
-                new NormalAnswer(player3.getUUID(), category2, a8),
-                new NormalAnswer(player3.getUUID(), category3, a9));
+                new NormalAnswer(client3.getUUID(), category1, a7),
+                new NormalAnswer(client3.getUUID(), category2, a8),
+                new NormalAnswer(client3.getUUID(), category3, a9));
         game.sendAnswers(answersPlayer3);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player3));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client3));
 
         var answersPlayer4 = List.of(
-                new NormalAnswer(player4.getUUID(), category1, a10),
-                new NormalAnswer(player4.getUUID(), category2, a11),
-                new NormalAnswer(player4.getUUID(), category3, a12));
+                new NormalAnswer(client4.getUUID(), category1, a10),
+                new NormalAnswer(client4.getUUID(), category2, a11),
+                new NormalAnswer(client4.getUUID(), category3, a12));
         game.sendAnswers(answersPlayer4);
 
         assertFalse(game.answersWereDoubted());
 
         //game.startDoubtingRound();
 
-        game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player4.getUUID()));
-        game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player2.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client1.getUUID(), category2, a2, client4.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client1.getUUID(), category2, a2, client2.getUUID()));
 
-        game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category3, a3, player3.getUUID()));
-        game.doubtAnswer(new DoubtedAnswer(player2.getUUID(), category2, a8, player4.getUUID()));
-        game.doubtAnswer(new DoubtedAnswer(player4.getUUID(), category1, a10, player3.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client1.getUUID(), category3, a3, client3.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client2.getUUID(), category2, a8, client4.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client4.getUUID(), category1, a10, client3.getUUID()));
 
-        var expectedDoubted1 = new RoundEntry(category2, player1, a2);
-        expectedDoubted1.doubtAnswer(player4);
-        expectedDoubted1.doubtAnswer(player2);
+        var expectedDoubted1 = new RoundEntry(category2, client1, a2);
+        expectedDoubted1.doubtAnswer(client4);
+        expectedDoubted1.doubtAnswer(client2);
 
-        var expectedDoubted2 = new RoundEntry(category3, player1, a3);
-        expectedDoubted1.doubtAnswer(player3);
+        var expectedDoubted2 = new RoundEntry(category3, client1, a3);
+        expectedDoubted1.doubtAnswer(client3);
 
-        var expectedDoubted3 = new RoundEntry(category2, player3, a8);
-        expectedDoubted1.doubtAnswer(player4);
+        var expectedDoubted3 = new RoundEntry(category2, client3, a8);
+        expectedDoubted1.doubtAnswer(client4);
 
-        var expectedDoubted4 = new RoundEntry(category1, player4, a10);
-        expectedDoubted1.doubtAnswer(player3);
+        var expectedDoubted4 = new RoundEntry(category1, client4, a10);
+        expectedDoubted1.doubtAnswer(client3);
 
         List<RoundEntry> expected = List.of(
-                new RoundEntry(category1, player1, a1),
+                new RoundEntry(category1, client1, a1),
                 expectedDoubted1,
                 expectedDoubted2,
 
-                new RoundEntry(category1, player2, a4),
-                new RoundEntry(category2, player2, a5),
-                new RoundEntry(category3, player2, a6),
+                new RoundEntry(category1, client2, a4),
+                new RoundEntry(category2, client2, a5),
+                new RoundEntry(category3, client2, a6),
 
-                new RoundEntry(category1, player3, a7),
+                new RoundEntry(category1, client3, a7),
                 expectedDoubted3,
-                new RoundEntry(category3, player3, a9),
+                new RoundEntry(category3, client3, a9),
 
                 expectedDoubted4,
-                new RoundEntry(category2, player4, a11),
-                new RoundEntry(category3, player4, a12));
+                new RoundEntry(category2, client4, a11),
+                new RoundEntry(category3, client4, a12));
 
         game.setAnswersWereDoubted(true);
 
         game.closeDoubtingRound();
 
         assertAll(
-                () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(player1)),
-                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(player2)),
-                () -> assertEquals(10 + 0 + 10, game.getCurrentPointsOfPlayer(player3)),
-                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(player4)));
+                () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(client1)),
+                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(client2)),
+                () -> assertEquals(10 + 0 + 10, game.getCurrentPointsOfPlayer(client3)),
+                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(client4)));
     }
 
     @Test
     void doubtedTwice() {
-        game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
+        game = new GameImpl(List.of(client1, client2, client3, client4), new GameConfigs(3, 5));
 
         game.setCategories(List.of(category1, category2, category3));
 
@@ -229,84 +229,84 @@ class GameTest {
 
 
         var answersPlayer1 = List.of(
-                new NormalAnswer(player1.getUUID(), category1, a1),
-                new NormalAnswer(player1.getUUID(), category2, a2),
-                new NormalAnswer(player1.getUUID(), category3, a3));
+                new NormalAnswer(client1.getUUID(), category1, a1),
+                new NormalAnswer(client1.getUUID(), category2, a2),
+                new NormalAnswer(client1.getUUID(), category3, a3));
         game.sendAnswers(answersPlayer1);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player1));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client1));
 
         var answersPlayer2 = List.of(
-                new NormalAnswer(player2.getUUID(), category1, a4),
-                new NormalAnswer(player2.getUUID(), category2, a5),
-                new NormalAnswer(player2.getUUID(), category3, a6));
+                new NormalAnswer(client2.getUUID(), category1, a4),
+                new NormalAnswer(client2.getUUID(), category2, a5),
+                new NormalAnswer(client2.getUUID(), category3, a6));
         game.sendAnswers(answersPlayer2);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player2));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client2));
 
         var answersPlayer3 = List.of(
-                new NormalAnswer(player3.getUUID(), category1, a7),
-                new NormalAnswer(player3.getUUID(), category2, a8),
-                new NormalAnswer(player3.getUUID(), category3, a9));
+                new NormalAnswer(client3.getUUID(), category1, a7),
+                new NormalAnswer(client3.getUUID(), category2, a8),
+                new NormalAnswer(client3.getUUID(), category3, a9));
         game.sendAnswers(answersPlayer3);
 
-        assertEquals(0, game.getCurrentPointsOfPlayer(player3));
+        assertEquals(0, game.getCurrentPointsOfPlayer(client3));
 
         var answersPlayer4 = List.of(
-                new NormalAnswer(player4.getUUID(), category1, a10),
-                new NormalAnswer(player4.getUUID(), category2, a11),
-                new NormalAnswer(player4.getUUID(), category3, a12));
+                new NormalAnswer(client4.getUUID(), category1, a10),
+                new NormalAnswer(client4.getUUID(), category2, a11),
+                new NormalAnswer(client4.getUUID(), category3, a12));
         game.sendAnswers(answersPlayer4);
 
         assertFalse(game.answersWereDoubted());
 
 
 
-        game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player4.getUUID()));
-        game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player2.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client1.getUUID(), category2, a2, client4.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client1.getUUID(), category2, a2, client2.getUUID()));
 
-        game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category3, a3, player3.getUUID()));
-        game.doubtAnswer(new DoubtedAnswer(player2.getUUID(), category2, a8, player4.getUUID()));
-        game.doubtAnswer(new DoubtedAnswer(player4.getUUID(), category1, a10, player3.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client1.getUUID(), category3, a3, client3.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client2.getUUID(), category2, a8, client4.getUUID()));
+        game.doubtAnswer(new DoubtedAnswer(client4.getUUID(), category1, a10, client3.getUUID()));
 
-        var expectedDoubted1 = new RoundEntry(category2, player1, a2);
-        expectedDoubted1.doubtAnswer(player4);
-        expectedDoubted1.doubtAnswer(player2);
+        var expectedDoubted1 = new RoundEntry(category2, client1, a2);
+        expectedDoubted1.doubtAnswer(client4);
+        expectedDoubted1.doubtAnswer(client2);
 
-        var expectedDoubted2 = new RoundEntry(category3, player1, a3);
-        expectedDoubted1.doubtAnswer(player3);
+        var expectedDoubted2 = new RoundEntry(category3, client1, a3);
+        expectedDoubted1.doubtAnswer(client3);
 
-        var expectedDoubted3 = new RoundEntry(category2, player3, a8);
-        expectedDoubted1.doubtAnswer(player4);
+        var expectedDoubted3 = new RoundEntry(category2, client3, a8);
+        expectedDoubted1.doubtAnswer(client4);
 
-        var expectedDoubted4 = new RoundEntry(category1, player4, a10);
-        expectedDoubted1.doubtAnswer(player3);
+        var expectedDoubted4 = new RoundEntry(category1, client4, a10);
+        expectedDoubted1.doubtAnswer(client3);
 
         List<RoundEntry> expected = List.of(
-                new RoundEntry(category1, player1, a1),
+                new RoundEntry(category1, client1, a1),
                 expectedDoubted1,
                 expectedDoubted2,
 
-                new RoundEntry(category1, player2, a4),
-                new RoundEntry(category2, player2, a5),
-                new RoundEntry(category3, player2, a6),
+                new RoundEntry(category1, client2, a4),
+                new RoundEntry(category2, client2, a5),
+                new RoundEntry(category3, client2, a6),
 
-                new RoundEntry(category1, player3, a7),
+                new RoundEntry(category1, client3, a7),
                 expectedDoubted3,
-                new RoundEntry(category3, player3, a9),
+                new RoundEntry(category3, client3, a9),
 
                 expectedDoubted4,
-                new RoundEntry(category2, player4, a11),
-                new RoundEntry(category3, player4, a12));
+                new RoundEntry(category2, client4, a11),
+                new RoundEntry(category3, client4, a12));
 
         game.setAnswersWereDoubted(true);
 
         game.closeDoubtingRound();
 
         assertAll(
-                () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(player1)),
-                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(player2)),
-                () -> assertEquals(10 + 0 + 10, game.getCurrentPointsOfPlayer(player3)),
-                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(player4)));
+                () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(client1)),
+                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(client2)),
+                () -> assertEquals(10 + 0 + 10, game.getCurrentPointsOfPlayer(client3)),
+                () -> assertEquals(5 + 0 + 10, game.getCurrentPointsOfPlayer(client4)));
     }
 }

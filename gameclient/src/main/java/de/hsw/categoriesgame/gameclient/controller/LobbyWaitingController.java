@@ -1,63 +1,89 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
+import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.views.LobbyWaitingView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LobbyWaitingController {
+public class LobbyWaitingController implements AdvancedObserver {
 
     private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
     private final ViewManager viewManager;
     private final LobbyWaitingView view;
-    private final List<String> mockPlayer;
+    private final GameModel gameModel;
 
-    public LobbyWaitingController(ViewManager viewManager, LobbyWaitingView view) {
+
+    public LobbyWaitingController(final ViewManager viewManager,
+                                  final LobbyWaitingView view,
+                                  final GameModel model) {
         this.viewManager = viewManager;
         this.view = view;
+        this.gameModel = model;
 
-        mockPlayer = new ArrayList<>();
-
-        mockPlayer.add("Steven");
-        mockPlayer.add("Hans");
-        mockPlayer.add("Peter");
+        gameModel.register(ObservableCategory.LOBBY_WAIT_CONTROLLER, this);
 
         registerListener();
-        showActivePlayers(mockPlayer);
+        updateJoinedPlayers();
+        isStartGameButtonVisible();
     }
 
     private void registerListener() {
-        view.getLeaveButton().addActionListener(e -> goToStartView());
+        view.getLeaveButton().addActionListener(e -> leaveButtonPressed());
         view.getStartGameButton().addActionListener(e -> goToGameRoundView());
     }
 
     /**
      * Shows the button to start a game depending on if the player is the admin of the lobby
      */
-    private void isStartGameButtonVisible() {
-        // TODO: Wenn der Spieler der Admin ist, dann "Start Game" Button anzeigen lassen, ansonsten nicht
-        // Methode zum Anzeigen: view.isStartGameButtonVisible(true);
+    private void isStartGameButtonVisible()
+    {
+        final PlayerBean localPlayer = Mapper.map(gameModel.getLocalClient());
+        view.getStartGameButton().setVisible(gameModel.getLobby().isAdmin(localPlayer));
     }
 
-    // TODO: 11.10.2024 alle bisherigen spieler in einem textfeld anzeigen lassen (getPlayers aus Lobby) 
 
-    private void goToStartView() {
+
+    private void leaveButtonPressed()
+    {
+        try {
+            viewManager.getProxyFactory().createProxy(CategorieGame.class)
+                    .leaveLobby(gameModel.getLobby(), gameModel.getLocalClient());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return;
+        }
+
         log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
-    private void goToGameRoundView() {
+    private void goToGameRoundView()
+    {
         log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
 
-    private void showActivePlayers(List<String> players) {
-        // TODO: mockPlayer durch echte Spieler austauschen!!
-        view.showPlayers(players);
+    private void updateJoinedPlayers()
+    {
+        view.showPlayers(gameModel.getLobby().getPlayers().stream().map(PlayerBean::getName).toList());
     }
 
+
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
+
+    @Override
+    public void receiveNotification()
+    {
+        log.debug("Lobby has changed! Processing change.");
+        updateJoinedPlayers();
+    }
 }

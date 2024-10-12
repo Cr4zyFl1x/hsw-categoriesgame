@@ -1,12 +1,14 @@
 package de.hsw.categoriesgame.gameserver;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.UUID;
 
-public class PlayerImpl implements Player {
+public class ClientImpl implements Client {
+    private static final Logger log = LoggerFactory.getLogger(ClientImpl.class);
     private UUID uuid;
     private final String name;
 
@@ -14,7 +16,7 @@ public class PlayerImpl implements Player {
 
     private boolean hasAnswered;
 
-    public PlayerImpl(String name) {
+    public ClientImpl(String name) {
         this.uuid = UUID.randomUUID();
         this.name = name;
     }
@@ -51,8 +53,13 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public void notifyPlayer(RoundState roundState) {
+    public void notifyPlayerAboutRoundState(RoundState roundState) {
         System.out.println("Neuer State: " + roundState.name());
+    }
+
+    @Override
+    public void notifyPlayerAboutLobbyState() {
+        log.info("Lobby notification!");
     }
 
     //-----------------------
@@ -61,7 +68,7 @@ public class PlayerImpl implements Player {
         if (obj == null) {
             return false;
         }
-        final PlayerImpl other = (PlayerImpl) obj;
+        final ClientImpl other = (ClientImpl) obj;
         return this.uuid.equals(other.uuid);
     }
 }

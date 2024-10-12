@@ -1,14 +1,12 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.services;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
-import de.hsw.categoriesgame.gameserver.gamelogic.rules.PointRules;
 
 import java.util.List;
-import java.util.Map;
 
 public interface Game {
 
@@ -43,7 +41,7 @@ public interface Game {
     List<String> getCategories();
     int getRoundNumber();
     char getCurrentLetter();
-    int getCurrentPointsOfPlayer(Player player);
+    int getCurrentPointsOfPlayer(Client client);
 
     boolean answersWereDoubted();
     void setAnswersWereDoubted(boolean answersWereDoubted);

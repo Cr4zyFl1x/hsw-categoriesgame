@@ -2,9 +2,9 @@ package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
-import de.hsw.categoriesgame.gameclient.PlayerImpl;
+import de.hsw.categoriesgame.gameclient.ClientImpl;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.JoinLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -72,15 +72,24 @@ public class JoinLobbyController {
             return;
         }
 
-        final Player player = new PlayerImpl(view.getNameInput().getText(), gameModel);
+        final Client client = new ClientImpl(gameModel, view.getNameInput().getText());
         final String code = view.getCodeInput().getText();
 
         try {
-            final Lobby l = viewManager.getProxyFactory().createProxy(CategorieGame.class)
-                    .joinLobby(view.getCodeInput().getText(), player);
+            final String lobbyCode = view.getCodeInput().getText().trim();
+
+            final CategorieGame remoteGame = viewManager.getProxyFactory().createProxy(CategorieGame.class);
+            final Lobby l = remoteGame.getLobby(lobbyCode);
+
+            if (l.hasGameStarted()) {
+                view.throwErrorDialog("Der Lobby konnte nicht beigetreten werden!\nDas Spiel läuft bereits.");
+                return;
+            }
 
             gameModel.setLobby(l);
-            gameModel.setLocalPlayer(player);
+            remoteGame.joinLobby(code, client);
+            gameModel.setLocalClient(client);
+
 
         } catch (LobbyNotFoundException e) {
             log.error("No Lobby found under Code {}!", code);

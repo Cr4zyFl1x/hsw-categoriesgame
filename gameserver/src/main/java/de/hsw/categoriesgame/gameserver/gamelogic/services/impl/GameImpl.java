@@ -1,7 +1,6 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.services.impl;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
-import de.hsw.categoriesgame.gameapi.exception.AnsweringException;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
@@ -15,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,7 +25,7 @@ public class GameImpl implements Game {
     @Getter
     private int roundNumber;
 
-    private final List<Player> players;
+    private final List<Client> clients;
 
     @Getter
     private final List<String> categories;
@@ -40,8 +38,8 @@ public class GameImpl implements Game {
     @Setter
     private boolean answersWereDoubted;
 
-    public GameImpl(List<Player> players, GameConfigs gameConfigs) {
-        this.players = players;
+    public GameImpl(List<Client> clients, GameConfigs gameConfigs) {
+        this.clients = clients;
         this.categories = new ArrayList<>();
         this.gameConfigs = gameConfigs;
 
@@ -89,13 +87,13 @@ public class GameImpl implements Game {
     }
 
 
-    private void addPointsForPlayer(Player player, PointRules pointRule) {
-        var withAddedPoints = player.getPoints() + pointRule.getPoints();
-        player.setPoints(withAddedPoints);
+    private void addPointsForPlayer(Client client, PointRules pointRule) {
+        var withAddedPoints = client.getPoints() + pointRule.getPoints();
+        client.setPoints(withAddedPoints);
     }
 
     private void resetPoints() {
-        players.forEach(player -> player.setPoints(0));
+        clients.forEach(player -> player.setPoints(0));
     }
 
     /**
@@ -204,8 +202,8 @@ public class GameImpl implements Game {
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
             entriesOfCategory.forEach(roundEntry -> {
-                PointRules pointRules = getPointRules(players.size(), amountOfAnswers, numberOfBlanks, roundEntry.getAnswer(), roundEntry.getDoubtedBy().size());
-                this.addPointsForPlayer(roundEntry.getPlayer(), pointRules);
+                PointRules pointRules = getPointRules(clients.size(), amountOfAnswers, numberOfBlanks, roundEntry.getAnswer(), roundEntry.getDoubtedBy().size());
+                this.addPointsForPlayer(roundEntry.getClient(), pointRules);
             });
         });
     }
@@ -238,17 +236,17 @@ public class GameImpl implements Game {
     }
 
     private boolean haveAllPlayersAnswered() {
-        var answered = players.stream().filter(Player::hasAnswered).toList();
-        return players.size() == answered.size();
+        var answered = clients.stream().filter(Client::hasAnswered).toList();
+        return clients.size() == answered.size();
     }
 
     private void resetHasAnswered() {
-        players.forEach(player -> player.setHasAnswered(false));
+        clients.forEach(player -> player.setHasAnswered(false));
     }
 
     @Override
-    public int getCurrentPointsOfPlayer(Player player) {
-        return player.getPoints();
+    public int getCurrentPointsOfPlayer(Client client) {
+        return client.getPoints();
     }
 
     @Override
@@ -256,22 +254,22 @@ public class GameImpl implements Game {
         return answersWereDoubted;
     }
 
-    private Player getPlayerByUUID(UUID uuid) {
-        var optionalPlayer = players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst();
+    private Client getPlayerByUUID(UUID uuid) {
+        var optionalPlayer = clients.stream().filter(player -> player.getUUID().equals(uuid)).findFirst();
         return optionalPlayer.orElse(null);
     }
 
     private boolean isFirstPlayer() {
-        var answered = players.stream().filter(Player::hasAnswered).toList();
+        var answered = clients.stream().filter(Client::hasAnswered).toList();
         return answered.size() == 1;
     }
 
     private void notifyPlayersOfState() {
-        players.forEach(player -> player.notifyPlayer(this.roundState));
+        clients.forEach(player -> player.notifyPlayerAboutRoundState(this.roundState));
     }
 
     private void notifyPlayersOfState(RoundState roundState) {
-        players.forEach(player -> player.notifyPlayer(roundState));
+        clients.forEach(player -> player.notifyPlayerAboutRoundState(roundState));
     }
 
 }
