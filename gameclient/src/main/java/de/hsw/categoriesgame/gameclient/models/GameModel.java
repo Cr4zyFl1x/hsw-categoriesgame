@@ -1,12 +1,16 @@
 package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
+import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.pojos.Player;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,13 +39,42 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     private final List<Player> players;
     private List<Pair<String, Boolean>> answersDoubted;
 
+    private List<String> answers;
+
+    @Getter
+    @Setter
+    private RoundState roundState;
+
     /**
      * Constructor
      */
     public GameModel() {
         categories = new ArrayList<>();
         players = new ArrayList<>();
+        answers = new ArrayList<>();
     }
+
+    // tmp
+    public void startNewGame() {
+        lobby.startGame(new GameConfigs(3, 5));
+    }
+
+    public void startNewRound() {
+        lobby.startNewRound();
+        this.currentLetter = lobby.getCurrentLetter();
+    }
+
+    public void sendAnswers() {
+        List<NormalAnswer> normalAnswers = new ArrayList<>();
+        for (int i = 0; i < categories.size(); i++) {
+            var category = categories.get(i);
+            var answer = answers.get(i);
+            normalAnswers.add(new NormalAnswer(localPlayer.getUUID(), category, answer));
+        }
+        lobby.sendAnswers(normalAnswers);
+    }
+
+
     //TODO: Lobby Methode aufrufen (sendAnsw)
     //TODO: "" evaluateAnswers aufrufen
     /**
@@ -155,9 +188,14 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         players.clear();
     }
 
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
+    }
+
     /**
      * Returns the current active letter
-     * @return  active letter
+     *
+     * @return active letter
      */
     //TODO: Den aktuellen Letter aus der Lobby holen
     public char getCurrentLetter() {

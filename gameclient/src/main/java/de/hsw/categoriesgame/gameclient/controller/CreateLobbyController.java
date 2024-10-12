@@ -99,7 +99,7 @@ public class CreateLobbyController {
             view.throwErrorDialog("Der Benutzername kann nicht leer sein!");
             return;
         }
-        final Player admin = new PlayerImpl(view.getAdminUsernameInput().getText());
+        final Player admin = new PlayerImpl(view.getAdminUsernameInput().getText(), gameModel);
 
 
         // Validate config

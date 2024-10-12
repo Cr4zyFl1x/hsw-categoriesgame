@@ -72,7 +72,7 @@ public class JoinLobbyController {
             return;
         }
 
-        final Player player = new PlayerImpl(view.getNameInput().getText());
+        final Player player = new PlayerImpl(view.getNameInput().getText(), gameModel);
         final String code = view.getCodeInput().getText();
 
         try {

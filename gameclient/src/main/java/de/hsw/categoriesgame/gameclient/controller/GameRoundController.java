@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.GameRoundView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 
 /**
@@ -31,12 +34,19 @@ public class GameRoundController {
         this.view = view;
         this.model = model;
 
+        //tmp
+        model.startNewGame();
+
+        model.startNewRound();
+
         // register listeners
         registerListener();
 
         // prepare view for gameplay
         updateRoundNumber(model.getCurrentRoundNumber());
         generateCategoryRows(model.getCategories());
+        view.getCurrentLetter().setText(String.valueOf(model.getCurrentLetter()));
+        registerKeyListeners();
     }
 
     /**
@@ -45,6 +55,23 @@ public class GameRoundController {
     private void registerListener() {
         view.getFinishButton().addActionListener(e -> goToAnswerOverviewView());
         view.getLeaveRoundButton().addActionListener(e -> goToStartView());
+
+    }
+
+    private void registerKeyListeners() {
+        view.getCategoryInputFields().forEach(inputField -> inputField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
+                model.setAnswers(answers);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        }));
     }
 
     /**
@@ -64,14 +91,21 @@ public class GameRoundController {
      */
     private void goToAnswerOverviewView() {
         // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
-        viewManager.changeView(View.ANSWERS);
+        //viewManager.changeView(View.ANSWERS);
 
-//        if (validateInputs()) {
-//            log.info("GO TO ANSWER OVERVIEW VIEW");
-//            viewManager.changeView(View.ANSWERS);
-//        } else {
-//            view.throwErrorDialog();
-//        }
+        if (validateInputs()) {
+            log.info("GO TO ANSWER OVERVIEW VIEW");
+            var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
+            model.setAnswers(answers);
+            model.sendAnswers();
+
+            // TODO: 12.10.2024 Only if State is Doubting_open
+            if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
+                viewManager.changeView(View.ANSWERS);
+            }
+        } else {
+            view.throwErrorDialog();
+        }
     }
 
     /**

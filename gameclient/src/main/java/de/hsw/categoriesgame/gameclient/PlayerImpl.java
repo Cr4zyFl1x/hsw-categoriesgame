@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameclient;
 
 import de.hsw.categoriesgame.gameapi.api.Player;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameclient.models.GameModel;
 
 import java.util.UUID;
 
@@ -14,9 +15,12 @@ public class PlayerImpl implements Player {
 
     private boolean hasAnswered;
 
-    public PlayerImpl(final String name) {
+    private final GameModel gameModel;
+
+    public PlayerImpl(final String name, final  GameModel gameModel) {
         uuid = UUID.randomUUID();
         this.name = name;
+        this.gameModel = gameModel;
     }
 
     /**
@@ -71,5 +75,6 @@ public class PlayerImpl implements Player {
     @Override
     public void notifyPlayer(RoundState roundState) {
         System.out.println("Neuer State: " + roundState.name());
+        gameModel.setRoundState(roundState);
     }
 }

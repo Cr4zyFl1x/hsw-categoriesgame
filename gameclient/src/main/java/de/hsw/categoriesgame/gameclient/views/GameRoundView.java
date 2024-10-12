@@ -1,8 +1,13 @@
 package de.hsw.categoriesgame.gameclient.views;
+import de.hsw.categoriesgame.gameclient.GameclientApplication;
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
