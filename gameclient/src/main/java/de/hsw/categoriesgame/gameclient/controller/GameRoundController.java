@@ -147,7 +147,7 @@ public class GameRoundController implements AdvancedObserver {
 
     @Override
     public void receiveNotification() {
-        log.debug("Changed");
-        this.sendAnswers();
+        log.debug("Changed! - " + model.getRoundState());
+        //this.sendAnswers();
     }
 }

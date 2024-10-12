@@ -234,6 +234,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
+
     /**
      * Resets the whole model
      */
