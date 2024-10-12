@@ -45,7 +45,6 @@ public class LobbyWaitingController implements AdvancedObserver {
     private void isStartGameButtonVisible()
     {
         final PlayerBean localPlayer = Mapper.map(gameModel.getLocalClient());
-        System.out.println(gameModel.getLobby().getAdmin());
         view.getStartGameButton().setVisible(gameModel.getLobby().isAdmin(localPlayer));
     }
 
@@ -54,12 +53,11 @@ public class LobbyWaitingController implements AdvancedObserver {
     private void leaveButtonPressed()
     {
         try {
-            viewManager.getProxyFactory().createProxy(CategorieGame.class)
-                    .leaveLobby(gameModel.getLobby(), gameModel.getLocalClient());
-            gameModel.reset();
+            gameModel.leave();
         } catch (Exception e) {
+
+            // Log error but go back to start
             log.error(e.getMessage(), e);
-            return;
         }
 
         log.info("GO TO START VIEW");
