@@ -70,6 +70,15 @@ public class CreateLobbyController {
         });
         view.getCategoryButton().addActionListener(e -> removeCategory(view.getCategoryButton()));
         view.getReloadLobbyCodeButton().addActionListener(e -> loadLobbyCode());
+
+        view.getAdminUsernameInput().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    goToGameRoundView();
+                }
+            }
+        });
     }
 
     private void loadLobbyCode()
@@ -128,6 +137,9 @@ public class CreateLobbyController {
             game.joinLobby(lobby.getLobbyCode(), admin);
             gameModel.setLocalClient(admin);
 
+            // Initialize Model
+            gameModel.initialize();
+
 
         } catch (Exception e) {
             log.error("Unable to create lobby", e);
@@ -159,6 +171,12 @@ public class CreateLobbyController {
     private void addNewCategory(String newCategory) {
         newCategory = newCategory.trim();
         JButton categoryButton = new JButton();
+
+        // Max of 5 reached?
+        if (view.getCategoryButtons().size() >= 5) {
+            view.throwErrorDialog("Es können maximal fünf Kategorien hinzugefügt werden!");
+            return;
+        }
 
         // Already exists?
         String finalNewCategory = newCategory;

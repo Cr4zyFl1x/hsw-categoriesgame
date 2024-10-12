@@ -116,4 +116,12 @@ public interface Lobby {
      * @return true if game has started
      */
     boolean hasGameStarted();
+
+
+    /**
+     * Gets the configuration of the game
+     *
+     * @return the config
+     */
+    GameConfigs getGameConfiguration();
 }

@@ -23,13 +23,13 @@ public class LobbyImpl implements Lobby {
     private Game game;
 
     @Getter
-    private GameConfigs gameConfig;
+    private final GameConfigs gameConfiguration;
 
     public LobbyImpl(String lobbyCode, GameConfigs gameConfigs)
     {
         this.lobbyCode = lobbyCode;
         this.clients = new ArrayList<>();
-        this.gameConfig = gameConfigs;
+        this.gameConfiguration = gameConfigs;
     }
 
 
@@ -91,7 +91,7 @@ public class LobbyImpl implements Lobby {
     @Override
     public void startGame()
     {
-        game = new GameImpl(getClients(), getGameConfig());
+        game = new GameImpl(getClients(), getGameConfiguration());
     }
 
 
