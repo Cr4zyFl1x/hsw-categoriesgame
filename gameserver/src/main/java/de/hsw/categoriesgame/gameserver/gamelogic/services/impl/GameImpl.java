@@ -123,12 +123,13 @@ public class GameImpl implements Game {
 
 
             if (noneAnswered()) {
-                setAnswered(client);
 
                 this.roundState = RoundState.ANSWERING_CLOSED;
 
                 this.notifyPlayersOfState();
             }
+            setAnswered(client);
+            log.debug("Player {} answered.", client.getName());
         }
 
         log.debug("{} Players answered", answered.size());
@@ -243,7 +244,7 @@ public class GameImpl implements Game {
 
     private Client getPlayerByUUID(UUID uuid) {
         var optionalPlayer = clients.stream().filter(player -> player.getUUID().equals(uuid)).findFirst();
-        return optionalPlayer.orElse(null);
+        return optionalPlayer.orElseThrow(() -> new RuntimeException("Player not found."));
     }
 
     private void notifyPlayersOfState() {

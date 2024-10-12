@@ -111,8 +111,10 @@ public class LobbyWaitingController implements AdvancedObserver {
             viewManager.changeView(View.GAME_ROUND);
         }
 
-        log.debug("Lobby has changed! Processing change.");
-        updateJoinedPlayers();
-        isStartGameButtonVisible();
+        if (gameModel.getRoundState() == null) {
+            log.debug("Lobby has changed! Processing change.");
+            updateJoinedPlayers();
+            isStartGameButtonVisible();
+        }
     }
 }
