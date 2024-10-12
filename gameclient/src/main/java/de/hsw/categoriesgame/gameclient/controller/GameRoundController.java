@@ -139,9 +139,9 @@ public class GameRoundController implements AdvancedObserver {
     }
 
     private void sendAnswers() {
-        if (!model.getLocalClient().hasAnswered()) {
-            model.sendAnswers();
-        }
+
+        model.sendAnswers();
+
 
         if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
             viewManager.changeView(View.ANSWERS);
