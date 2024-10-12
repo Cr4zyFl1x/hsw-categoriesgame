@@ -68,7 +68,9 @@ public class LobbyWaitingController implements AdvancedObserver {
     private void goToGameRoundView()
     {
         log.info("GO TO GAME ROUND VIEW");
-        gameModel.getLobby().startGame();
+        if (!gameModel.getLobby().hasGameStarted()) {
+            gameModel.getLobby().startGame();
+        }
         viewManager.changeView(View.GAME_ROUND);
     }
 
@@ -77,6 +79,7 @@ public class LobbyWaitingController implements AdvancedObserver {
     {
         view.showPlayers(gameModel.getLobby().getPlayers().stream().map(PlayerBean::getName).toList());
     }
+
 
 
     /////////////////////////////////////////////
@@ -89,5 +92,10 @@ public class LobbyWaitingController implements AdvancedObserver {
         log.debug("Lobby has changed! Processing change.");
         updateJoinedPlayers();
         isStartGameButtonVisible();
+
+        if (gameModel.getLobby().hasGameStarted()) {
+            viewManager.changeView(View.GAME_ROUND);
+
+        }
     }
 }
