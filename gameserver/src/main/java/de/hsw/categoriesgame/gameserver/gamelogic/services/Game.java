@@ -37,6 +37,8 @@ public interface Game {
      */
     List<RoundEntry> doubtAnswer(DoubtedAnswer doubtedAnswer);
 
+    List<RoundEntry> getRoundEntries();
+
     // Getter
     List<String> getCategories();
     int getRoundNumber();

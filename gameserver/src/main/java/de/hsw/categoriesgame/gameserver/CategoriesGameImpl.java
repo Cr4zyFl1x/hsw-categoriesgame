@@ -5,6 +5,7 @@ import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,8 +94,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void deleteLobby(String lobbyCode) throws LobbyNotFoundException
-    {
+    public void deleteLobby(String lobbyCode) throws LobbyNotFoundException, UserNotInLobbyException {
         if (!lobbies.containsKey(lobbyCode)) {
             throw new LobbyNotFoundException("Lobby " + lobbyCode + " does not exist!");
         }
@@ -109,7 +109,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void deleteLobby(Lobby lobby) throws LobbyNotFoundException {
+    public void deleteLobby(Lobby lobby) throws LobbyNotFoundException, UserNotInLobbyException {
         deleteLobby(lobby.getLobbyCode());
     }
 
@@ -118,7 +118,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void leaveLobby(String lobbyCode, Client client) throws LobbyNotFoundException {
+    public void leaveLobby(String lobbyCode, Client client) throws LobbyNotFoundException, UserNotInLobbyException {
         if (!lobbies.containsKey(lobbyCode)) {
             throw new LobbyNotFoundException("Lobby " + lobbyCode + " does not exist!");
         }
@@ -139,7 +139,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void leaveLobby(String lobbyCode, List<Client> clients) throws LobbyNotFoundException {
+    public void leaveLobby(String lobbyCode, List<Client> clients) throws LobbyNotFoundException, UserNotInLobbyException {
         for (Client client : clients) {
             leaveLobby(lobbyCode, client);
         }
@@ -149,7 +149,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void leaveLobby(Lobby lobby, Client client) throws LobbyNotFoundException {
+    public void leaveLobby(Lobby lobby, Client client) throws LobbyNotFoundException, UserNotInLobbyException {
         leaveLobby(lobby.getLobbyCode(), client);
     }
 
@@ -157,7 +157,7 @@ public class CategoriesGameImpl implements CategorieGame {
      * {@inheritDoc}
      */
     @Override
-    public void leaveLobby(Lobby lobby, List<Client> clients) throws LobbyNotFoundException {
+    public void leaveLobby(Lobby lobby, List<Client> clients) throws LobbyNotFoundException, UserNotInLobbyException {
         for (Client client : clients) {
             leaveLobby(lobby, client);
         }

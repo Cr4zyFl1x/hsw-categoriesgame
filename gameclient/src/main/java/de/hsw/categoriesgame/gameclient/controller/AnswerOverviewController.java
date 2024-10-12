@@ -1,6 +1,9 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -8,15 +11,13 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Controller class which enables logical operations can be made on AnswerOverviewView
  */
-public class AnswerOverviewController {
+public class AnswerOverviewController implements AdvancedObserver {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerOverviewController.class);
     private final ViewManager viewManager;
@@ -25,7 +26,7 @@ public class AnswerOverviewController {
 
     // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
 
-    List<String> mockPlayers;
+    List<String> playerNames;
 
     /**
      * Constructor
@@ -38,15 +39,17 @@ public class AnswerOverviewController {
         this.view = view;
         this.model = model;
 
-        mockPlayers = new ArrayList<>();
+        model.register(ObservableCategory.ANSWER_CONTROLLER, this);
 
-        mockPlayers.add("SwaggerBoi33");
-        mockPlayers.add("StadtBanause12");
-        mockPlayers.add("Andy");
+        playerNames = model.getPlayerBeans().stream().map(PlayerBean::getName).toList();
+//
+//        mockPlayers.add("SwaggerBoi33");
+//        mockPlayers.add("StadtBanause12");
+//        mockPlayers.add("Andy");
 
         registerListener();
-        createAnswerOverview(mockPlayers, model.getCategories());
-        showPoints(mockPlayers);
+        createAnswerOverview(playerNames, model.getCategories());
+        showPoints(playerNames);
 
     }
 
@@ -131,4 +134,13 @@ public class AnswerOverviewController {
         System.out.println(model.getAnswersDoubted());
     }
 
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
+
+
+    @Override
+    public void receiveNotification() {
+        log.debug("Answer was doubted! Process change.");
+
+    }
 }

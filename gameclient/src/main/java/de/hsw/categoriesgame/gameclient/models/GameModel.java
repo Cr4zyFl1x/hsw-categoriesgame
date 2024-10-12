@@ -2,6 +2,9 @@ package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
@@ -18,6 +21,9 @@ import java.util.List;
  */
 public class GameModel implements AdvancedObservable<ObservableCategory> {
 
+    /**
+     * The lobby (REMOTE use little!)
+     */
     @Setter
     @Getter
     private Lobby lobby;
@@ -26,15 +32,25 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     @Getter
     private Client localClient;
 
+    /**
+     * Players in the game
+     */
+    @Getter
+    private List<PlayerBean> playerBeans;
+
+
     private char currentLetter;
-
     private int amountRounds;
-
     private int currentRoundNumber;
-  
     private final List<String> categories;
     private final List<PlayerBean> playerBeans;
     private List<Pair<String, Boolean>> answersDoubted;
+
+    private List<String> answers;
+
+    @Getter
+    @Setter
+    private RoundState roundState;
 
     /**
      * Constructor
@@ -45,6 +61,16 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
     //TODO: Lobby Methode aufrufen (sendAnsw)
     //TODO: "" evaluateAnswers aufrufen
+
+    public void startNewRound() {
+        lobby.startNewRound();
+        this.currentLetter = lobby.getCurrentLetter();
+    }
+
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
+    }
+
     /**
      * returns the amount of rounds
      * @return      amount of rounds
@@ -84,6 +110,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public List<String> getCategories() {
         return categories;
     }
+
     //TODO: Bekommt man vom Server
     //TODO: SetCategories erstellen
     /**
@@ -101,6 +128,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public void addCategory(String category) {
         categories.add(category);
     }
+
     //TODO: Bekommt man vom Server
     /**
      * removes a category from the category list
@@ -182,6 +210,39 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     public List<Pair<String, Boolean>> getAnswersDoubted() {
         return answersDoubted;
+    }
+
+
+    public void leave() throws IllegalStateException
+    {
+        if (localClient == null && lobby != null) {
+            throw new IllegalStateException("A lobby is existing but no LocalPlayer. WRONG STATE!");
+        }
+
+        // TODO:
+    }
+
+
+    /**
+     * Reads the userlist from remote and notifies views/controller
+     */
+    public void updatePlayers()
+    {
+        this.playerBeans = lobby.getPlayers();
+
+        // Notification required in WaitingList
+        sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
+    }
+
+    public void sendAnswers() {
+        var list = new ArrayList<NormalAnswer>();
+        for (int i = 0; i < categories.size(); i++) {
+            var clientUUID = localClient.getUUID();
+            var category = categories.get(i);
+            var answer = answers.get(i);
+            list.add(new NormalAnswer(clientUUID, category, answer));
+        }
+        lobby.sendAnswers(list);
     }
 
 

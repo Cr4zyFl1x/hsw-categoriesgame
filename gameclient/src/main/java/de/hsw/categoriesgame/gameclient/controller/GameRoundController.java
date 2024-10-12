@@ -1,6 +1,9 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.views.GameRoundView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
@@ -8,12 +11,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
+
+import static de.hsw.categoriesgame.gameapi.pojo.RoundState.ANSWERING_CLOSED;
+import static de.hsw.categoriesgame.gameapi.pojo.RoundState.ANSWERING_OPEN;
 
 /**
  * Controller class of the GameRoundView to handle logical operations
  */
-public class GameRoundController {
+public class GameRoundController implements AdvancedObserver {
 
     private static final Logger log = LoggerFactory.getLogger(GameRoundController.class);
     private final ViewManager viewManager;
@@ -31,12 +39,20 @@ public class GameRoundController {
         this.view = view;
         this.model = model;
 
+        model.startNewRound();
+
+        model.register(ObservableCategory.GAME_ROUND_CONTROLLER, this);
+
+
+
         // register listeners
         registerListener();
 
         // prepare view for gameplay
         updateRoundNumber(model.getCurrentRoundNumber());
         generateCategoryRows(model.getCategories());
+        view.getCurrentLetter().setText(String.valueOf(model.getCurrentLetter()));
+        registerKeyListeners();
     }
 
     /**
@@ -45,6 +61,23 @@ public class GameRoundController {
     private void registerListener() {
         view.getFinishButton().addActionListener(e -> goToAnswerOverviewView());
         view.getLeaveRoundButton().addActionListener(e -> goToStartView());
+
+    }
+
+    private void registerKeyListeners() {
+        view.getCategoryInputFields().forEach(inputField -> inputField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
+                model.setAnswers(answers);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        }));
     }
 
     /**
@@ -64,14 +97,16 @@ public class GameRoundController {
      */
     private void goToAnswerOverviewView() {
         // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
-        viewManager.changeView(View.ANSWERS);
+        //viewManager.changeView(View.ANSWERS);
 
-//        if (validateInputs()) {
-//            log.info("GO TO ANSWER OVERVIEW VIEW");
-//            viewManager.changeView(View.ANSWERS);
-//        } else {
-//            view.throwErrorDialog();
-//        }
+        if (validateInputs()) {
+            log.info("GO TO ANSWER OVERVIEW VIEW");
+            var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
+            model.setAnswers(answers);
+            //this.sendAnswers();
+        } else {
+            view.throwErrorDialog();
+        }
     }
 
     /**
@@ -107,5 +142,25 @@ public class GameRoundController {
      */
     private void generateCategoryRows(List<String> categories) {
         view.buildCategoryInputs(categories);
+    }
+
+    private void sendAnswers() {
+        if (!model.getLocalClient().hasAnswered()) {
+            model.sendAnswers();
+        }
+
+        if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
+            viewManager.changeView(View.ANSWERS);
+        }
+    }
+
+    @Override
+    public void receiveNotification() {
+        log.debug("Answering mode changed! Process change. - " + model.getLocalClient().hasAnswered());
+        //sendAnswers();
+
+        if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
+            viewManager.changeView(View.ANSWERS);
+        }
     }
 }
