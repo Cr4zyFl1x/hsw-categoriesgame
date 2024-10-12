@@ -42,21 +42,25 @@ public class GameRoundController implements AdvancedObserver {
         registerListener();
 
         // prepare view for gameplay
-        updateRoundNumber(model.getCurrentRoundNumber());
+        updateRoundNumber();
         generateCategoryRows(model.getCategories());
         view.getCurrentLetter().setText(String.valueOf(model.getCurrentLetter()));
         registerKeyListeners();
     }
 
+
     /**
      * registers all ActionListeners
      */
-    private void registerListener() {
-        view.getFinishButton().addActionListener(e -> goToAnswerOverviewView());
-        view.getLeaveRoundButton().addActionListener(e -> goToStartView());
+    private void registerListener()
+    {
+        view.getFinishButton().addActionListener(e -> finishButtonPressed());
+        view.getLeaveRoundButton().addActionListener(e -> leaveButtonPressed());
     }
 
-    private void registerKeyListeners() {
+
+    private void registerKeyListeners()
+    {
         view.getCategoryInputFields().forEach(inputField -> inputField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -72,30 +76,27 @@ public class GameRoundController implements AdvancedObserver {
         }));
     }
 
+
     /**
      * Updates the game round number
      */
-    private void updateRoundNumber(int currentRound) {
-        // TODO: 11.10.2024 get round number from service
-        // save changes in model
-        model.setCurrentRoundNumber(currentRound + 1);
-
+    private void updateRoundNumber()
+    {
         // update header in view
-        view.getHeader().setText("Game Round #" + (currentRound + 1));
+        view.getHeader().setText("Game Round #" + model.getCurrentRoundNumber());
     }
 
     /**
      * Navigate to answer overview
      */
-    private void goToAnswerOverviewView() {
+    private void finishButtonPressed()
+    {
         // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
-        //viewManager.changeView(View.ANSWERS);
 
         if (validateInputs()) {
             log.info("GO TO ANSWER OVERVIEW VIEW");
             var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
             model.setAnswers(answers);
-            this.sendAnswers();
         } else {
             view.throwErrorDialog();
         }
@@ -105,7 +106,8 @@ public class GameRoundController implements AdvancedObserver {
      * Method checks if all conditions are met to navigate to another view
      * @return  true - conditions are met / false - conditions are not met
      */
-    private boolean validateInputs() {
+    private boolean validateInputs()
+    {
         List<JTextField> fields = view.getCategoryInputFields();
         char currentLetter = model.getCurrentLetter();
 
@@ -123,8 +125,9 @@ public class GameRoundController implements AdvancedObserver {
     /**
      * Navigate to start screen
      */
-    private void goToStartView() {
-        log.info("GO TO START VIEW");
+    private void leaveButtonPressed()
+    {
+        // TODO: Leave model.leave
         viewManager.changeView(View.START);
     }
 
@@ -132,23 +135,17 @@ public class GameRoundController implements AdvancedObserver {
      * Updating the amount of rows on the view according to the amount of categories
      * @param categories  selected categories
      */
-    private void generateCategoryRows(List<String> categories) {
+    private void generateCategoryRows(List<String> categories)
+    {
         view.buildCategoryInputs(categories);
-    }
-
-    private void sendAnswers() {
-
-        model.sendAnswers();
-
-
-        if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
-            viewManager.changeView(View.ANSWERS);
-        }
     }
 
     @Override
     public void receiveNotification() {
         log.debug("Changed! - " + model.getRoundState());
-        //this.sendAnswers();
+
+        if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
+            viewManager.changeView(View.ANSWERS);
+        }
     }
 }

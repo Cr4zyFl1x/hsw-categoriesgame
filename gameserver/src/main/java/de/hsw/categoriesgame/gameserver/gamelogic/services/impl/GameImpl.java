@@ -122,17 +122,17 @@ public class GameImpl implements Game {
                 this.roundState = RoundState.ANSWERING_CLOSED;
                 this.notifyPlayersOfState();
 
-                var thread = new Thread(() -> {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException ignored) {}
-                    if (!noTimeoutActionNecessary) {
-                        this.roundState = RoundState.DOUBTING_OPEN;
-                        this.notifyPlayersOfState();
-                        noTimeoutActionNecessary = false;
-                    }
-                });
-                thread.start();
+//                var thread = new Thread(() -> {
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException ignored) {}
+//                    if (!noTimeoutActionNecessary) {
+//                        this.roundState = RoundState.DOUBTING_OPEN;
+//                        this.notifyPlayersOfState();
+//                        noTimeoutActionNecessary = false;
+//                    }
+//                });
+//                thread.start();
             }
         }
 //        normalAnswers.forEach(normalAnswer -> {
@@ -144,6 +144,7 @@ public class GameImpl implements Game {
 //            player.setHasAnswered(true);
 //        });
         // wenn der erste, dann close und timer start (wenn gültige antwort und noch offen war)
+
         if (this.haveAllPlayersAnswered()) {
             this.roundState = RoundState.DOUBTING_OPEN;
             this.notifyPlayersOfState();
