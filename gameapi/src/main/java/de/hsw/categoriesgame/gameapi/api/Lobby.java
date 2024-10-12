@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface Lobby {
      * Removes player from lobby.
      * @param client    object of class Player
      */
-    void leaveClient(Client client);
+    void leaveClient(Client client) throws UserNotInLobbyException;
 
     /**
      * Set the categories for the game/lobby.
@@ -68,6 +69,8 @@ public interface Lobby {
      * @return              list of entries
      */
     List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
+
+    List<Entry> getDoubtedAnswers();
 
 
     /**

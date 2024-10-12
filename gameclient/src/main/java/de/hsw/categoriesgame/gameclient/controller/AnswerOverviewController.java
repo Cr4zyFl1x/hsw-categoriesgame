@@ -2,6 +2,8 @@ package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
@@ -14,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class AnswerOverviewController implements AdvancedObserver {
 
     // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
 
-    List<String> mockPlayers;
+    List<String> playerNames;
 
     /**
      * Constructor
@@ -46,15 +47,15 @@ public class AnswerOverviewController implements AdvancedObserver {
 
         model.register(ObservableCategory.ANSWER_CONTROLLER, this);
 
-        mockPlayers = new ArrayList<>();
-
-        mockPlayers.add("SwaggerBoi33");
-        mockPlayers.add("StadtBanause12");
-        mockPlayers.add("Andy");
+        playerNames = model.getPlayerBeans().stream().map(PlayerBean::getName).toList();
+//
+//        mockPlayers.add("SwaggerBoi33");
+//        mockPlayers.add("StadtBanause12");
+//        mockPlayers.add("Andy");
 
         registerListener();
-        createAnswerOverview(mockPlayers, model.getCategories());
-        showPoints(mockPlayers);
+        createAnswerOverview(playerNames, model.getCategories());
+        showPoints(playerNames);
 
     }
 

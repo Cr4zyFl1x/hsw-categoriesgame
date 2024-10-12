@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.*;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
@@ -20,6 +21,9 @@ public class LobbyImpl implements Lobby {
     private final List<Client> clients;
 
     private Game game;
+
+    @Getter
+    private GameConfigs gameConfig;
 
     public LobbyImpl(String lobbyCode, GameConfigs gameConfigs)
     {
@@ -42,8 +46,10 @@ public class LobbyImpl implements Lobby {
      * {@inheritDoc}
      */
     @Override
-    public void leaveClient(Client client) {
-        this.clients.remove(client);
+    public void leaveClient(Client client) throws UserNotInLobbyException {
+        if (!this.clients.remove(client)) {
+            throw new UserNotInLobbyException("User can not leave this lobby! User was not in lobby.");
+        }
         log.info("Client {} left lobby {}!", client.getName(), lobbyCode);
     }
 
@@ -77,14 +83,9 @@ public class LobbyImpl implements Lobby {
         return game.getCurrentLetter();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void startGame(GameConfigs gameConfigs)
-    {
-        game = new GameImpl(getClients(), gameConfigs);
+    public void startGame(GameConfigs gameConfigs) {
+        game = new GameImpl(clients, gameConfigs);
     }
 
 
@@ -129,6 +130,20 @@ public class LobbyImpl implements Lobby {
     public List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer) {
         var list = new ArrayList<Entry>();
         game.doubtAnswer(doubtedAnswer).forEach(roundEntry -> {
+            var category = roundEntry.getCategory();
+            var playerUUID = roundEntry.getClient().getUUID();
+            var answer = roundEntry.getAnswer();
+            var doubted = roundEntry.isDoubted();
+            var doubtedBy = roundEntry.getDoubtedBy().stream().map(Client::getUUID).toList();
+            list.add(new Entry(category, playerUUID, answer, doubted, doubtedBy));
+        });
+        return list;
+    }
+
+    @Override
+    public List<Entry> getDoubtedAnswers() {
+        var list = new ArrayList<Entry>();
+        game.getRoundEntries().forEach(roundEntry -> {
             var category = roundEntry.getCategory();
             var playerUUID = roundEntry.getClient().getUUID();
             var answer = roundEntry.getAnswer();

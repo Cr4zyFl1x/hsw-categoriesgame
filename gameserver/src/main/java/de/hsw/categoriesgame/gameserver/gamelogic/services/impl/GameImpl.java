@@ -1,10 +1,7 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.services.impl;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
-import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
-import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
-import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameapi.pojo.*;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.Round;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
 import de.hsw.categoriesgame.gameserver.gamelogic.rules.PointRules;
@@ -168,6 +165,11 @@ public class GameImpl implements Game {
         var entry = round.getEntry(player, category);
         entry.doubtAnswer(doubtedBy);
         this.notifyPlayersOfState(RoundState.DOUBTING_UPDATE_NEEDED);
+        return round.getRoundEntries();
+    }
+
+    @Override
+    public List<RoundEntry> getRoundEntries() {
         return round.getRoundEntries();
     }
 
