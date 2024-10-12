@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameserver.gamelogic;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.GameData;
 import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
@@ -20,8 +21,11 @@ public class ServerGame {
     @Getter
     private final GameConfigs gameConfigs;
 
-
+    /**
+     * Clients in this game
+     */
     private final List<Client> clients;
+
 
     /**
      * The results per round
@@ -34,16 +38,19 @@ public class ServerGame {
     /**
      * Defines if game has started
      */
+    @Getter
     private boolean started = false;
 
     /**
      * The current character
      */
+    @Getter
     private char currentChar;
 
     /**
      * The current round number
      */
+    @Getter
     private int currentRoundNumber = 0;
 
     /**
@@ -86,6 +93,9 @@ public class ServerGame {
      */
     public void startRound()
     {
+        if (!isStarted())
+            throw new IllegalStateException("Game has not been started yet!");
+
         // If was last round
         if (getGameConfigs().getMaxRounds() == currentRoundNumber) {
             updateRoundState(GameRoundState.FINAL_RESULTS);
@@ -196,7 +206,7 @@ public class ServerGame {
         // Notify clients about new state
         for (Client client : clients)
         {
-            client.notifyRoundState(newRoundState);
+            client.notifyRoundState(newRoundState, new GameData(getCurrentChar(), getCurrentRoundNumber()));
         }
     }
 }

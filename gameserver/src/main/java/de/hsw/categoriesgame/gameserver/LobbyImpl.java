@@ -1,29 +1,44 @@
 package de.hsw.categoriesgame.gameserver;
 
-import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
-import de.hsw.categoriesgame.gameapi.pojo.*;
-import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
-import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameserver.gamelogic.ServerGame;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class LobbyImpl implements Lobby {
 
+    /**
+     * The code of the lobby
+     */
     @Getter
     private final String lobbyCode;
 
+    /**
+     * Clients in this lobby
+     */
     private final List<Client> clients;
 
-    private Game game;
+    /**
+     * The "core" game
+     */
+    private ServerGame game;
 
+    /**
+     * Game configuration used to start the game
+     */
     @Getter
     private final GameConfigs gameConfiguration;
+
 
     public LobbyImpl(String lobbyCode, GameConfigs gameConfigs)
     {
@@ -52,16 +67,6 @@ public class LobbyImpl implements Lobby {
             throw new UserNotInLobbyException("User can not leave this lobby! User was not in lobby.");
         }
         log.info("Client {} left lobby {}!", client.getName(), lobbyCode);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPointsOfPlayer(PlayerBean player)
-    {
-        return game.getCurrentPointsOfPlayer(map(player));
     }
 
 
@@ -111,9 +116,31 @@ public class LobbyImpl implements Lobby {
      * {@inheritDoc}
      */
     @Override
+    public GameConfigs getGameConfigs()
+    {
+        return this.gameConfiguration;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean hasGameStarted()
     {
-        return game != null;
+        return game != null && game.isStarted();
+    }
+
+    @Override
+    public void startGame() {
+        if (game == null) {
+            game = new ServerGame(getClients(), getGameConfiguration());
+        }
+        if (!game.isStarted()) {
+            game.startGame();
+            return;
+        }
+        throw new IllegalStateException("Game already started!");
     }
 
 

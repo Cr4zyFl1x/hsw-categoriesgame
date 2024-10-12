@@ -1,11 +1,14 @@
 package de.hsw.categoriesgame.gameclient;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameapi.api.GameData;
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
-import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -79,39 +82,30 @@ public class ClientImpl implements Client {
 
 
     /**
-     * {@inheritDoc}
+     * Called when the round state changes
+     * @param roundState    the new round state
+     * @param gameData      the game data
      */
     @Override
-    public boolean hasAnswered() {
-        return hasAnswered;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setHasAnswered(boolean hasAnswered) {
-        this.hasAnswered = hasAnswered;
-    }
-
-
-    @Override
-    public void notifyPlayerAboutRoundState(RoundState roundState) {
-        System.out.println("Neuer State: " + roundState.name());
-        currentGame.setRoundState(roundState);
-        currentGame.sendNotification(ObservableCategory.GAME_ROUND_CONTROLLER);
-        currentGame.sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
-    }
-
-
-    /**
-     * Called when lobby has changed e. g. Players in lobby
-     */
-    @Override
-    public void notifyPlayerAboutLobbyState()
+    public void notifyRoundState(GameRoundState roundState, GameData gameData)
     {
-        // Update Players in model
-        currentGame.updatePlayers();
+        this.currentGame.setCurrentRoundNumber(gameData.getCurrentRound());
+        this.currentGame.setCurrentLetter(gameData.getCurrentLetter());
+        this.currentGame.setGameRoundState(roundState);
+
+        // NOTIFY Runnables to handle round state change
+        this.currentGame.callRunnable(ExecutorCategory.ROUND_STATE_CHANGE);
+    }
+
+
+    /**
+     * Called when player joins/leaves
+     * @param players   Actual list of players
+     */
+    @Override
+    public void notifyPlayerJoinLeave(List<PlayerBean> players)
+    {
+        currentGame.setPlayerBeans(players);
+        currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE);
     }
 }

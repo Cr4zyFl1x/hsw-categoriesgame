@@ -1,7 +1,9 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface Client {
@@ -30,28 +32,17 @@ public interface Client {
      */
     void setPoints(int points);
 
-
-    /**
-     * Check if the player has already answered for this round.
-     * @return  true if player has answered for the round
-     */
-    boolean hasAnswered();
-
-    /**
-     * Set answer status of player
-     * @param hasAnswered   true if they have answered, false if not answered
-     */
-    void setHasAnswered(boolean hasAnswered);
-
     /**
      * Notifies the client of the new state
      *
      * @param roundState
      */
-    void notifyRoundState(GameRoundState roundState);
-
-    void notifyPlayerAboutRoundState(RoundState roundState);
+    void notifyRoundState(GameRoundState roundState, GameData gameData);
 
 
-    void notifyPlayerAboutLobbyState();
+    /**
+     * Notifies the client about lobby joins/leaves
+     * @param players
+     */
+    void notifyPlayerJoinLeave(List<PlayerBean> players);
 }

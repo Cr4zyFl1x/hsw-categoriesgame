@@ -86,7 +86,7 @@ public class AnswerOverviewController {
      * @return  true - the amount of rounds was reached / false - the amount is not reached yet
      */
     private boolean isRoundAmountReached() {
-        return model.getAmountRounds() == model.getCurrentRoundNumber();
+        return model.getGameConfiguration().getMaxRounds() == model.getCurrentRoundNumber();
     }
 
     /**
@@ -125,10 +125,6 @@ public class AnswerOverviewController {
                 answers.add(pair);
             }
         }
-
-        model.setAnswersDoubted(answers);
-
-        System.out.println(model.getAnswersDoubted());
     }
 
 }

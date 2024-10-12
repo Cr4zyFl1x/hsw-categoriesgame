@@ -124,7 +124,7 @@ public class CreateLobbyController {
         final GameConfigs config = new GameConfigs(
                 (Integer) view.getAmountRoundsSpinner().getValue(),
                 (Integer) view.getMaxPlayerSpinner().getValue());
-        config.setCategories(gameModel.getCategories());
+        config.setCategories(view.getCategoryButtons().stream().map(JButton::getText).toList());
 
 
         // Create Lobby
@@ -134,10 +134,10 @@ public class CreateLobbyController {
 
             lobby = game.createLobby(view.getLobbyCodeInput().getText(), config);
             gameModel.setLobby(lobby);
-            game.joinLobby(lobby.getLobbyCode(), admin);
             gameModel.setLocalClient(admin);
 
-            // Initialize Model
+            game.joinLobby(lobby.getLobbyCode(), admin);
+
             gameModel.initialize();
 
 
@@ -160,7 +160,7 @@ public class CreateLobbyController {
         // TODO: 11.10.2024 vergleichen mit GameConfigs aus lobby
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
-        int amountCategories = gameModel.getCategoriesCount();
+        int amountCategories = view.getCategoryButtons().size();
 
         return maxPlayers >= 2 && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
     }
@@ -199,9 +199,6 @@ public class CreateLobbyController {
             JButton finalCategoryButton = categoryButton;
             categoryButton.addActionListener(e -> removeCategory(finalCategoryButton));
 
-            // Adding category to model
-            gameModel.addCategory(newCategory);
-
             // Clear input
             view.getNewCategoryInput().setText("");
         }
@@ -213,8 +210,5 @@ public class CreateLobbyController {
     private void removeCategory(JButton categoryButton) {
         // Removing the button component on the view
         view.removeCategory(categoryButton);
-
-        // Removing the category in the model
-        gameModel.removeCategory(categoryButton.getText());
     }
 }

@@ -1,10 +1,14 @@
 package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.GameData;
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ClientImpl implements Client {
@@ -41,28 +45,20 @@ public class ClientImpl implements Client {
         this.points = points;
     }
 
-
     @Override
-    public boolean hasAnswered() {
-        return hasAnswered;
+    public void notifyRoundState(GameRoundState roundState, GameData gameData)
+    {
+
     }
 
     @Override
-    public void setHasAnswered(boolean hasAnswered) {
-        this.hasAnswered = hasAnswered;
+    public void notifyPlayerJoinLeave(List<PlayerBean> players) {
+
     }
 
-    @Override
-    public void notifyPlayerAboutRoundState(RoundState roundState) {
-        System.out.println("Neuer State: " + roundState.name());
-    }
-
-    @Override
-    public void notifyPlayerAboutLobbyState() {
-        log.info("Lobby notification!");
-    }
 
     //-----------------------
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

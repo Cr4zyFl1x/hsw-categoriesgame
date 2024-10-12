@@ -4,6 +4,7 @@ import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.views.LobbyWaitingView;
@@ -27,7 +28,10 @@ public class LobbyWaitingController implements AdvancedObserver {
         this.view = view;
         this.gameModel = model;
 
-        gameModel.register(ObservableCategory.LOBBY_WAIT_CONTROLLER, this);
+
+        gameModel.register(ExecutorCategory.PLAYER_JOIN_LEAVE, this::onPlayerJoinLeave);
+        gameModel.register(ExecutorCategory.ROUND_STATE_CHANGE, this::onGameRoundStateChange);
+
 
         registerListener();
         updateJoinedPlayers();
@@ -77,6 +81,7 @@ public class LobbyWaitingController implements AdvancedObserver {
      */
     private void startGameButtonPressed()
     {
+        // At least 2 players in lobby
         if (gameModel.getPlayerBeans().size() < 2) {
             view.throwErrorDialog("Es müssen mindestens zwei Spieler der Lobby beigetreten sein!");
             return;
@@ -84,8 +89,6 @@ public class LobbyWaitingController implements AdvancedObserver {
 
         log.debug("GO TO GAME ROUND VIEW");
         gameModel.getLobby().startGame();
-        gameModel.startNewRound();
-        viewManager.changeView(View.GAME_ROUND);
     }
 
 
@@ -102,19 +105,19 @@ public class LobbyWaitingController implements AdvancedObserver {
     /////////////////////////////////////////////
     /////////////////////////////////////////////
 
+    public void onPlayerJoinLeave()
+    {
+        updateJoinedPlayers();
+    }
+
+    public void onGameRoundStateChange()
+    {
+
+    }
+
 
     @Override
     public void receiveNotification()
     {
-        if (gameModel.getRoundState() == RoundState.ANSWERING_OPEN) {
-            gameModel.updateRoundDetails();
-            viewManager.changeView(View.GAME_ROUND);
-        }
-
-        if (gameModel.getRoundState() == null) {
-            log.debug("Lobby has changed! Processing change.");
-            updateJoinedPlayers();
-            isStartGameButtonVisible();
-        }
     }
 }

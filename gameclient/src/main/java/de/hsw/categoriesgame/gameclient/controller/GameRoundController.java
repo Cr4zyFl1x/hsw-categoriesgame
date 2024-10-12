@@ -68,7 +68,6 @@ public class GameRoundController implements AdvancedObserver {
             @Override
             public void keyTyped(KeyEvent e) {
                 var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
-                model.setAnswers(answers);
             }
 
             @Override
@@ -99,8 +98,6 @@ public class GameRoundController implements AdvancedObserver {
         if (validateInputs()) {
             log.info("GO TO ANSWER OVERVIEW VIEW");
             var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
-            model.setAnswers(answers);
-            model.sendAnswers();
             answered = true;
         } else {
             view.throwErrorDialog();
@@ -147,17 +144,5 @@ public class GameRoundController implements AdvancedObserver {
 
     @Override
     public void receiveNotification() {
-        log.debug("Changed! - " + model.getRoundState());
-
-        if (model.getRoundState() == RoundState.ANSWERING_CLOSED) {
-            if (!answered) {
-                model.sendAnswers();
-                answered = true;
-            }
-        }
-
-        if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
-            viewManager.changeView(View.ANSWERS);
-        }
     }
 }

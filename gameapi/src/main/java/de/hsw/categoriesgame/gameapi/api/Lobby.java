@@ -28,14 +28,6 @@ public interface Lobby {
 
 
     /**
-     * Gets the current points of a player
-     * @param player
-     * @return
-     */
-    int getPointsOfPlayer(PlayerBean player);
-
-
-    /**
      * Checks if the given player is an administrator
      *
      * @param playerBean    the player dto
@@ -67,9 +59,22 @@ public interface Lobby {
 
 
     /**
+     * Gets the game configuration
+     *
+     * @return The game configuration
+     */
+    GameConfigs getGameConfigs();
+
+    /**
      * Checks if game has started
      *
      * @return true if game has started
      */
     boolean hasGameStarted();
+
+
+    /**
+     * Starts the game
+     */
+    void startGame();
 }

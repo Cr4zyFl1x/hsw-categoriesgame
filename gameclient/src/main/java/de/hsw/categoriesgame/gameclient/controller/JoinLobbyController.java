@@ -91,10 +91,10 @@ public class JoinLobbyController {
             }
 
             gameModel.setLobby(l);
-            remoteGame.joinLobby(code, client);
             gameModel.setLocalClient(client);
 
-            // Initialize GameModel
+            remoteGame.joinLobby(code, client);
+
             gameModel.initialize();
 
         } catch (LobbyNotFoundException e) {

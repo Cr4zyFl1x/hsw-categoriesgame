@@ -7,6 +7,7 @@ import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyFullException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +46,7 @@ public class CategoriesGameImpl implements CategorieGame {
     {
         Lobby lobby = getLobby(lobbyCode);
 
-        if (lobby.getPlayers().size() >= lobby.getGameConfiguration().getMaxPlayers()) {
+        if (lobby.getPlayers().size() >= lobby.getGameConfigs().getMaxPlayers()) {
             throw new LobbyFullException("Maximum number of players reached for this Lobby!");
         }
 
@@ -54,7 +55,7 @@ public class CategoriesGameImpl implements CategorieGame {
         // Notify
         lobby.getClients().stream()
                 .filter(j -> j != client)
-                .forEach(Client::notifyPlayerAboutLobbyState);
+                .forEach(j -> j.notifyPlayerJoinLeave(lobby.getPlayers()));
 
         return lobby;
     }
@@ -129,7 +130,7 @@ public class CategoriesGameImpl implements CategorieGame {
         // Notify
         lobby.getClients().stream()
                 .filter(j -> j != client)
-                .forEach(Client::notifyPlayerAboutLobbyState);
+                .forEach(j -> j.notifyPlayerJoinLeave(lobby.getPlayers()));
     }
 
 

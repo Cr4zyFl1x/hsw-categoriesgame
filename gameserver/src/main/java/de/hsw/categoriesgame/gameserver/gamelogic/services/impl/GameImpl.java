@@ -57,13 +57,11 @@ public class GameImpl implements Game {
         this.round = new Round(generateRandomLetter());
 
         this.roundState = RoundState.ANSWERING_OPEN;
-        this.notifyPlayersOfState();
     }
 
     @Override
     public void closeAnsweringRound() {
         this.roundState = RoundState.ANSWERING_OPEN;
-        this.notifyPlayersOfState();
     }
 
     @Override
@@ -74,7 +72,6 @@ public class GameImpl implements Game {
     @Override
     public void closeDoubtingRound() {
         this.roundState = RoundState.DOUBTING_CLOSED;
-        this.notifyPlayersOfState();
         evaluateAnswers();
     }
 
@@ -130,7 +127,6 @@ public class GameImpl implements Game {
 
                 this.roundState = RoundState.ANSWERING_CLOSED;
 
-                this.notifyPlayersOfState();
             }
             setAnswered(client);
             log.debug("Player {} answered.", client.getName());
@@ -141,7 +137,6 @@ public class GameImpl implements Game {
         if (allAnswered()) {
             log.debug("All players answered.");
             this.roundState = RoundState.DOUBTING_OPEN;
-            this.notifyPlayersOfState();
         }
     }
 
@@ -159,7 +154,6 @@ public class GameImpl implements Game {
 
         var entry = round.getEntry(player, category);
         entry.doubtAnswer(doubtedBy);
-        this.notifyPlayersOfState(RoundState.DOUBTING_UPDATE_NEEDED);
         return round.getRoundEntries();
     }
 
@@ -250,15 +244,6 @@ public class GameImpl implements Game {
         var optionalPlayer = clients.stream().filter(player -> player.getUUID().equals(uuid)).findFirst();
         return optionalPlayer.orElseThrow(() -> new RuntimeException("Player not found."));
     }
-
-    private void notifyPlayersOfState() {
-        clients.forEach(player -> player.notifyPlayerAboutRoundState(this.roundState));
-    }
-    private void notifyPlayersOfState(RoundState roundState) {
-        clients.forEach(player -> player.notifyPlayerAboutRoundState(roundState));
-    }
-
-
 
 
 

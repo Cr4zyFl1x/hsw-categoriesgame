@@ -1,13 +1,17 @@
 package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.GameclientApplication;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
+import de.hsw.categoriesgame.gameclient.interfaces.RunnableExecutor;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
@@ -25,7 +29,7 @@ import java.util.Optional;
 /**
  * This class contains all necessary data while the game is running
  */
-public class GameModel implements AdvancedObservable<ObservableCategory> {
+public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedObservable<ObservableCategory> {
 
     /**
      * Logger
@@ -48,170 +52,41 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
      * Players in the game
      */
     @Getter
+    @Setter
     private List<PlayerBean> playerBeans;
+
 
     @Getter
     private String lobbyCode;
 
-    @Getter
-    private List<String> categories;
 
     @Getter
+    @Setter
     private char currentLetter;
 
-    private int amountRounds;
-
     @Getter
+    @Setter
     private int currentRoundNumber;
 
-    private List<Pair<String, Boolean>> answersDoubted;
+    @Getter
+    @Setter
+    private List<String> categories = new ArrayList<>();
 
     @Getter
     @Setter
-    private List<String> answers = new ArrayList<>();
+    private GameRoundState gameRoundState;
 
     @Getter
-    @Setter
-    private RoundState roundState;
+    private GameConfigs gameConfiguration;
 
     /**
      * Constructor
      */
     public GameModel() {
-        categories = new ArrayList<>();
         playerBeans = new ArrayList<>();
     }
 
 
-    /**
-     * Get initial data from remote to avoid doing this again and again
-     */
-    public void initialize()
-    {
-        if (lobby == null || localClient == null)
-            throw new IllegalStateException("For initialization the lobby and local client must be present!");
-
-        this.lobbyCode = lobby.getLobbyCode();
-        this.categories = lobby.getGameConfiguration().getCategories();
-        updatePlayers();
-    }
-
-    public void updateRoundDetails()
-    {
-        this.currentRoundNumber = lobby.getCurrentRoundNumber();
-        this.currentLetter = lobby.getCurrentLetter();
-    }
-
-    public void startNewRound()
-    {
-        lobby.startNewRound();
-        currentLetter = lobby.getCurrentLetter();
-    }
-
-    public void sendAnswers() {
-        var list = new ArrayList<NormalAnswer>();
-        for (int i = 0; i < categories.size(); i++) {
-            var clientUUID = localClient.getUUID();
-            var category = categories.get(i);
-            var answer = answers.get(i);
-            list.add(new NormalAnswer(clientUUID, category, answer));
-        }
-        lobby.sendAnswers(list);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    //TODO: Lobby Methode aufrufen (sendAnsw)
-    //TODO: "" evaluateAnswers aufrufen
-    /**
-     * returns the amount of rounds
-     * @return      amount of rounds
-     */
-    public int getAmountRounds() {
-        return amountRounds;
-    }
-    //TODO: Bekommt man vom Server -> von der Lobby
-    /**
-     * sets the amount of rounds
-     * @param amountRounds      amounts of rounds
-     */
-    public void setAmountRounds(int amountRounds) {
-        this.amountRounds = amountRounds;
-    }
-    //TODO: Muss in die GameConfi rein, an Server geschickt werden
-    //TODO: Bekommt man vom Server
-    /**
-     * Sets the current round number
-     * @param currentRoundNumber    current round
-     */
-    public void setCurrentRoundNumber(int currentRoundNumber) {
-        this.currentRoundNumber = currentRoundNumber;
-    }
-    //TODO: Muss mit der maximalen game nummer verglichen werden (vom Server), start von jeder Runde
-
-    //TODO: Bekommt man vom Server
-    //TODO: SetCategories erstellen
-    /**
-     * Returns the amount of categories
-     * @return  amount of categories
-     */
-    public int getCategoriesCount() {
-        return categories.size();
-    }
-
-    /**
-     * adds a new category to the category list
-     * @param category  new category to add
-     */
-    public void addCategory(String category) {
-        categories.add(category);
-    }
-
-    //TODO: Bekommt man vom Server
-    /**
-     * removes a category from the category list
-     * @param category  category to be removed
-     */
-    public void removeCategory(String category) {
-        categories.remove(category);
-    }
-
-
-    /**
-     * returns the amount of players
-     * @return  amount of players
-     */
-    public int getPlayerCount() {
-        return playerBeans.size();
-    }
-
-    /**
-     * Sets a new current letter
-     * @param currentLetter     new active letter
-     */
-    //TODO: PAssiert durch start new game
-    public void setCurrentLetter(char currentLetter) {
-        this.currentLetter = currentLetter;
-    }
-
-
-    public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
-        this.answersDoubted = answersDoubted;
-    }
-
-
-    public List<Pair<String, Boolean>> getAnswersDoubted() {
-        return answersDoubted;
-    }
 
 
     /**
@@ -245,8 +120,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     {
         this.playerBeans = lobby.getPlayers();
 
-        // Notification required in WaitingList
-        sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
+
     }
 
 
@@ -256,12 +130,22 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public void reset()
     {
         this.currentLetter = 0;
-        this.amountRounds = 0;
         this.currentRoundNumber = 0;
         this.categories.clear();
         this.playerBeans.clear();
         this.lobby = null;
         this.localClient = null;
+        this.runnables.clear();
+        this.observers.clear();
+    }
+
+
+    public void initialize()
+    {
+        this.categories = lobby.getGameConfigs().getCategories();
+        this.playerBeans = lobby.getPlayers();
+        this.lobbyCode = lobby.getLobbyCode();
+        this.gameConfiguration = lobby.getGameConfigs();
     }
 
   
@@ -301,6 +185,34 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
         for (ObservableCategory cat : observers.keySet()) {
             observers.get(cat).forEach(AdvancedObserver::receiveNotification);
+        }
+    }
+
+    //////////////////////////////////////////
+    //////////////////////////////////////////
+
+    final HashMap<ExecutorCategory, List<Runnable>> runnables = new HashMap<>();
+
+    @Override
+    public void register(ExecutorCategory category, Runnable runnable)
+    {
+        if (!runnables.containsKey(category))
+            runnables.put(category, new ArrayList<>());
+
+        runnables.get(category).add(runnable);
+    }
+
+    @Override
+    public void callRunnable(ExecutorCategory... category) {
+        if (category == null || category.length == 0) {
+            for (List<Runnable> rbls : runnables.values()) {
+                rbls.forEach(Runnable::run);
+            }
+            return;
+        }
+
+        for (ExecutorCategory cat : runnables.keySet()) {
+            runnables.get(cat).forEach(Runnable::run);
         }
     }
 }
