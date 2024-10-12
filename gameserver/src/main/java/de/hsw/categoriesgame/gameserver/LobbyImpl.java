@@ -192,6 +192,16 @@ public class LobbyImpl implements Lobby {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasGameStarted()
+    {
+        return game != null;
+    }
+
+
     // ----------------------------------------
     // ----------------------------------------
 

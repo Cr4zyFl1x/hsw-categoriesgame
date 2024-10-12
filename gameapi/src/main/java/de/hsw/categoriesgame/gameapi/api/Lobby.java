@@ -107,4 +107,12 @@ public interface Lobby {
      * @return List of clients in this lobby
      */
     List<Client> getClients();
+
+
+    /**
+     * Checks if game has started
+     *
+     * @return true if game has started
+     */
+    boolean hasGameStarted();
 }
