@@ -1,5 +1,8 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
+import de.hsw.categoriesgame.gameclient.ClientImpl;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
@@ -82,10 +85,10 @@ public class ResultController implements AdvancedObserver {
      * Calculates the top 3 players of the game
      */
     private void calculatePlacements() {
-        // TODO: 11.10.2024 get current top three players from server
+        List<PlayerBean> players = model.getLobby().getPlayers();
 
-        mockPlayerBeans.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
-        ArrayList<PlayerBean> sortedList = new ArrayList<>(mockPlayerBeans);
+        players.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
+        ArrayList<PlayerBean> sortedList = new ArrayList<>(players);
 
         view.getPlayer1Label().setText(sortedList.get(0).getName());
         view.getPlayer2Label().setText(sortedList.get(1).getName());
