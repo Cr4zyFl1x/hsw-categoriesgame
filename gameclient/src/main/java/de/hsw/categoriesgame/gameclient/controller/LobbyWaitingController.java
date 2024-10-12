@@ -3,6 +3,7 @@ package de.hsw.categoriesgame.gameclient.controller;
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
@@ -69,7 +70,6 @@ public class LobbyWaitingController implements AdvancedObserver {
         log.info("GO TO GAME ROUND VIEW");
         gameModel.getLobby().startGame();
         viewManager.changeView(View.GAME_ROUND);
-        gameModel.sendNotification(ObservableCategory.GAME_ROUND_CONTROLLER);
     }
 
 
@@ -89,5 +89,9 @@ public class LobbyWaitingController implements AdvancedObserver {
         log.debug("Lobby has changed! Processing change.");
         updateJoinedPlayers();
         isStartGameButtonVisible();
+
+        if (gameModel.getRoundState() == RoundState.ANSWERING_OPEN) {
+            viewManager.changeView(View.GAME_ROUND);
+        }
     }
 }
