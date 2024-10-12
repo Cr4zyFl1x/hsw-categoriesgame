@@ -1,10 +1,7 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.services.impl;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
-import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
-import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
-import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameapi.pojo.*;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.Round;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
 import de.hsw.categoriesgame.gameserver.gamelogic.rules.PointRules;
@@ -112,15 +109,14 @@ public class GameImpl implements Game {
     @Override
     public void sendAnswers(List<NormalAnswer> normalAnswers) {
         if (this.roundState == RoundState.ANSWERING_OPEN || this.roundState == RoundState.ANSWERING_CLOSED) {
-
+            Client client = getPlayerByUUID(normalAnswers.get(0).playerUUID());;
             normalAnswers.forEach(normalAnswer -> {
                 var category = normalAnswer.category();
-                var player = getPlayerByUUID(normalAnswer.playerUUID());
                 var answer = normalAnswer.answer();
 
-                round.addEntry(category, player, answer);
-                player.setHasAnswered(true);
+                round.addEntry(category, client, answer);
             });
+            client.setHasAnswered(true);
 
             if (this.isFirstPlayer()) {
                 this.roundState = RoundState.ANSWERING_CLOSED;
