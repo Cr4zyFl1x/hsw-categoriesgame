@@ -28,7 +28,7 @@ public class RandomStringUtil {
         final StringBuilder result = new StringBuilder(length);
         final Random random = new Random();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < length; i++) {
             int index = random.nextInt(type.getLetters().length());
             result.append(type.getLetters().charAt(index));
         }
