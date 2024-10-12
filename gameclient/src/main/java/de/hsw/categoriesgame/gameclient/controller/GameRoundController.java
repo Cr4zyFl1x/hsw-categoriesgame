@@ -150,8 +150,10 @@ public class GameRoundController implements AdvancedObserver {
         log.debug("Changed! - " + model.getRoundState());
 
         if (model.getRoundState() == RoundState.ANSWERING_CLOSED) {
-            if (!answered)
+            if (!answered) {
                 model.sendAnswers();
+                answered = true;
+            }
         }
 
         if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
