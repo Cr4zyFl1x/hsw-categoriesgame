@@ -77,7 +77,7 @@ public class ResultController implements AdvancedObserver {
      * Calculates the top 3 players of the game
      */
     private void calculatePlacements() {
-        List<PlayerBean> players = model.getLobby().getPlayers();
+        List<PlayerBean> players = model.getPlayerBeans();
 
         players.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
         ArrayList<PlayerBean> sortedList = new ArrayList<>(players);
