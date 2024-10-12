@@ -1,5 +1,7 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
+import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.LobbyWaitingView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
@@ -14,11 +16,16 @@ public class LobbyWaitingController {
     private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
     private final ViewManager viewManager;
     private final LobbyWaitingView view;
+    private final GameModel gameModel;
+
     private final List<String> mockPlayer;
 
-    public LobbyWaitingController(ViewManager viewManager, LobbyWaitingView view) {
+    public LobbyWaitingController(final ViewManager viewManager,
+                                  final LobbyWaitingView view,
+                                  final GameModel model) {
         this.viewManager = viewManager;
         this.view = view;
+        this.gameModel = model;
 
         mockPlayer = new ArrayList<>();
 
@@ -28,10 +35,11 @@ public class LobbyWaitingController {
 
         registerListener();
         showActivePlayers(mockPlayer);
+        isStartGameButtonVisible();
     }
 
     private void registerListener() {
-        view.getLeaveButton().addActionListener(e -> goToStartView());
+        view.getLeaveButton().addActionListener(e -> leaveButtonPressed());
         view.getStartGameButton().addActionListener(e -> goToGameRoundView());
     }
 
@@ -39,13 +47,25 @@ public class LobbyWaitingController {
      * Shows the button to start a game depending on if the player is the admin of the lobby
      */
     private void isStartGameButtonVisible() {
-        // TODO: Wenn der Spieler der Admin ist, dann "Start Game" Button anzeigen lassen, ansonsten nicht
-        // Methode zum Anzeigen: view.isStartGameButtonVisible(true);
+        if (gameModel.getLobby().isAdmin(gameModel.getLocalPlayer())) {
+            view.getStartGameButton().setVisible(true);
+        } else {
+            view.getStartGameButton().setVisible(false);
+        }
     }
 
     // TODO: 11.10.2024 alle bisherigen spieler in einem textfeld anzeigen lassen (getPlayers aus Lobby) 
 
-    private void goToStartView() {
+    private void leaveButtonPressed()
+    {
+        try {
+            viewManager.getProxyFactory().createProxy(CategorieGame.class)
+                    .leaveLobby(gameModel.getLobby(), gameModel.getLocalPlayer());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return;
+        }
+
         log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }

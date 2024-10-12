@@ -149,6 +149,12 @@ public class LobbyImpl implements Lobby {
         }
     }
 
+    @Override
+    public boolean isAdmin(Player player)
+    {
+        return admin.getUUID().equals(player.getUUID());
+    }
+
 
     ///////////////////////////////////////////
     ///////////////////////////////////////////

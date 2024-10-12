@@ -87,4 +87,6 @@ public interface Lobby {
      * Changes the admin of the lobby if the current admin leaves.
      */
     void changeAdmin();
+
+    boolean isAdmin(Player player);
 }
