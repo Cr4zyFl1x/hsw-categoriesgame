@@ -77,7 +77,7 @@ public class LobbyWaitingController implements AdvancedObserver {
     private void startGameButtonPressed()
     {
         if (gameModel.getPlayerBeans().size() < 2) {
-            view.throwErrorDialog("Es müssen mindestens zwei Spieler der Lobby beigetreten sein!");
+            view.throwErrorDialog("Es m\u00FCssen mindestens zwei Spieler der Lobby beigetreten sein!");
             return;
         }
 
