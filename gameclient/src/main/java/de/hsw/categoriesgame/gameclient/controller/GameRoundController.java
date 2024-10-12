@@ -25,6 +25,9 @@ public class GameRoundController implements AdvancedObserver {
     private final GameRoundView view;
     private final GameModel model;
 
+    private boolean answered = false;
+
+
     /**
      * Constructor
      * @param viewManager   View Manager to make navigation between views possible
@@ -97,6 +100,8 @@ public class GameRoundController implements AdvancedObserver {
             log.info("GO TO ANSWER OVERVIEW VIEW");
             var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
             model.setAnswers(answers);
+            model.sendAnswers();
+            answered = true;
         } else {
             view.throwErrorDialog();
         }
@@ -143,6 +148,11 @@ public class GameRoundController implements AdvancedObserver {
     @Override
     public void receiveNotification() {
         log.debug("Changed! - " + model.getRoundState());
+
+        if (model.getRoundState() == RoundState.ANSWERING_CLOSED) {
+            if (!answered)
+                model.sendAnswers();
+        }
 
         if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
             viewManager.changeView(View.ANSWERS);

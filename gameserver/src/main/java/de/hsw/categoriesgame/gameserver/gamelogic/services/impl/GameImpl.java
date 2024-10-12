@@ -9,6 +9,8 @@ import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
 import de.hsw.categoriesgame.gameserver.gamelogic.util.RandomLetterUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Function;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 public class GameImpl implements Game {
 
+    private static final Logger log = LoggerFactory.getLogger(GameImpl.class);
     @Getter
     @Setter
     private GameConfigs gameConfigs;
@@ -146,6 +149,7 @@ public class GameImpl implements Game {
         // wenn der erste, dann close und timer start (wenn gültige antwort und noch offen war)
 
         if (this.haveAllPlayersAnswered()) {
+            log.debug("All players answered.");
             this.roundState = RoundState.DOUBTING_OPEN;
             this.notifyPlayersOfState();
             noTimeoutActionNecessary = true;
