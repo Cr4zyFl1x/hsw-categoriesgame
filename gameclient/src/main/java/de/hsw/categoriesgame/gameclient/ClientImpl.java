@@ -101,6 +101,7 @@ public class ClientImpl implements Client {
         System.out.println("Neuer State: " + roundState.name());
         currentGame.setRoundState(roundState);
         currentGame.sendNotification(ObservableCategory.GAME_ROUND_CONTROLLER);
+        currentGame.sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
     }
 
 

@@ -68,9 +68,7 @@ public class LobbyWaitingController implements AdvancedObserver {
     private void goToGameRoundView()
     {
         log.info("GO TO GAME ROUND VIEW");
-        if (!gameModel.getLobby().hasGameStarted()) {
-            gameModel.getLobby().startGame();
-        }
+        gameModel.getLobby().startGame();
         viewManager.changeView(View.GAME_ROUND);
     }
 
@@ -89,13 +87,12 @@ public class LobbyWaitingController implements AdvancedObserver {
     @Override
     public void receiveNotification()
     {
+        if (gameModel.getRoundState() == RoundState.ANSWERING_OPEN) {
+            viewManager.changeView(View.GAME_ROUND);
+        }
+
         log.debug("Lobby has changed! Processing change.");
         updateJoinedPlayers();
         isStartGameButtonVisible();
-
-        if (gameModel.getLobby().hasGameStarted()) {
-            viewManager.changeView(View.GAME_ROUND);
-
-        }
     }
 }
