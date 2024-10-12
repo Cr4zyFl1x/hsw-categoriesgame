@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.GameRoundView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Controller class of the GameRoundView to handle logical operations
  */
-public class GameRoundController {
+public class GameRoundController implements AdvancedObserver {
 
     private static final Logger log = LoggerFactory.getLogger(GameRoundController.class);
     private final ViewManager viewManager;
@@ -33,9 +34,6 @@ public class GameRoundController {
         this.viewManager = viewManager;
         this.view = view;
         this.model = model;
-
-        //tmp
-        model.startNewGame();
 
         model.startNewRound();
 
@@ -55,7 +53,6 @@ public class GameRoundController {
     private void registerListener() {
         view.getFinishButton().addActionListener(e -> goToAnswerOverviewView());
         view.getLeaveRoundButton().addActionListener(e -> goToStartView());
-
     }
 
     private void registerKeyListeners() {
@@ -97,12 +94,7 @@ public class GameRoundController {
             log.info("GO TO ANSWER OVERVIEW VIEW");
             var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
             model.setAnswers(answers);
-            model.sendAnswers();
-
-            // TODO: 12.10.2024 Only if State is Doubting_open
-            if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
-                viewManager.changeView(View.ANSWERS);
-            }
+            this.sendAnswers();
         } else {
             view.throwErrorDialog();
         }
@@ -141,5 +133,21 @@ public class GameRoundController {
      */
     private void generateCategoryRows(List<String> categories) {
         view.buildCategoryInputs(categories);
+    }
+
+    private void sendAnswers() {
+        if (!model.getLocalClient().hasAnswered()) {
+            model.sendAnswers();
+        }
+
+        if (model.getRoundState() == RoundState.DOUBTING_OPEN) {
+            viewManager.changeView(View.ANSWERS);
+        }
+    }
+
+    @Override
+    public void receiveNotification() {
+        log.debug("Changed");
+        this.sendAnswers();
     }
 }

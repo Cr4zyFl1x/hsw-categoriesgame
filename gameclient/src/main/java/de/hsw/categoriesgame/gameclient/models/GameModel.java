@@ -3,6 +3,8 @@ package de.hsw.categoriesgame.gameclient.models;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
@@ -46,6 +48,14 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     private List<Pair<String, Boolean>> answersDoubted;
 
+    @Getter
+    @Setter
+    private List<String> answers;
+
+    @Getter
+    @Setter
+    private RoundState roundState;
+
     /**
      * Constructor
      */
@@ -53,6 +63,23 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         categories = new ArrayList<>();
         playerBeans = new ArrayList<>();
     }
+
+    public void startNewRound() {
+        lobby.startNewRound();
+        currentLetter = lobby.getCurrentLetter();
+    }
+
+    public void sendAnswers() {
+        var list = new ArrayList<NormalAnswer>();
+        for (int i = 0; i < categories.size(); i++) {
+            var clientUUID = localClient.getUUID();
+            var category = categories.get(i);
+            var answer = answers.get(i);
+            list.add(new NormalAnswer(clientUUID, category, answer));
+        }
+        lobby.sendAnswers(list);
+    }
+
     //TODO: Lobby Methode aufrufen (sendAnsw)
     //TODO: "" evaluateAnswers aufrufen
     /**
