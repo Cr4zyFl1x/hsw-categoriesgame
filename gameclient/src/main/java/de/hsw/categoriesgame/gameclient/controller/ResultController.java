@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller class to control actions on the ResultView
@@ -23,9 +24,6 @@ public class ResultController implements AdvancedObserver {
     private final ResultView view;
     private final GameModel model;
 
-    // TODO: mockPlayers-Referenzen durch getter in model ersetzen
-
-    List<Player> mockPlayers;
 
     /**
      * Constructor
@@ -40,10 +38,7 @@ public class ResultController implements AdvancedObserver {
 
         model.register(ObservableCategory.RESULT_CONTROLLER, this);
 
-        mockPlayers = new ArrayList<>();
-        mockPlayers.add(new Player("Jeff", 100));
-        mockPlayers.add(new Player("Kevin", 80));
-        mockPlayers.add(new Player("Marc", 120));
+        List<Player> players = model.getPlayers();
 
         registerListener();
         calculatePlacements();
@@ -81,15 +76,16 @@ public class ResultController implements AdvancedObserver {
     /**
      * Calculates the top 3 players of the game
      */
-    private void calculatePlacements() {
-        // TODO: 11.10.2024 get current top three players from server
+    private List<Player> calculatePlacements() {
 
-        mockPlayers.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
-        ArrayList<Player> sortedList = new ArrayList<>(mockPlayers);
+        ArrayList<Player> sortedList = new ArrayList<>(model.getPlayers());
+        sortedList.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
 
         view.getPlayer1Label().setText(sortedList.get(0).getName());
         view.getPlayer2Label().setText(sortedList.get(1).getName());
         view.getPlayer3Label().setText(sortedList.get(2).getName());
+
+        return sortedList.stream().limit(3).collect(Collectors.toList());
     }
 
     @Override
