@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class contains all necessary data while the game is running
@@ -32,8 +33,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     /**
      * The lobby (REMOTE use little!)
      */
-    @Setter
-    @Getter
+    @Setter @Getter
     private Lobby lobby;
 
     /**
@@ -48,11 +48,15 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     @Getter
     private List<PlayerBean> playerBeans;
 
+    @Getter
+    private String lobbyCode;
+
+    @Getter
+    private final List<String> categories;
 
     private char currentLetter;
     private int amountRounds;
     private int currentRoundNumber;
-    private final List<String> categories;
 
     private List<Pair<String, Boolean>> answersDoubted;
 
@@ -63,6 +67,31 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         categories = new ArrayList<>();
         playerBeans = new ArrayList<>();
     }
+
+
+    /**
+     * Get initial data from remote to avoid doing this again and again
+     */
+    public void initialize()
+    {
+        if (lobby == null || localClient == null)
+            throw new IllegalStateException("For initialization the lobby and local client must be present!");
+
+        this.lobbyCode = lobby.getLobbyCode();
+        updatePlayers();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     //TODO: Lobby Methode aufrufen (sendAnsw)
     //TODO: "" evaluateAnswers aufrufen
     /**
@@ -96,14 +125,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public void setCurrentRoundNumber(int currentRoundNumber) {
         this.currentRoundNumber = currentRoundNumber;
     }
-    //TODO: Muss mit der maximalen game nummer verglichen werden (vom Server), start von jeder Runde
-    /**
-     * Returns all categories
-     * @return  list of all categories
-     */
-    public List<String> getCategories() {
-        return categories;
-    }
+
 
     //TODO: Bekommt man vom Server
     //TODO: SetCategories erstellen
@@ -233,7 +255,16 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     {
         if (!observers.containsKey(category))
             observers.put(category, new ArrayList<>());
-        observers.get(category).add(observer);
+
+        final List<AdvancedObserver> catObservers = observers.get(category);
+        Optional<AdvancedObserver> existingOfType = catObservers.stream()
+                        .filter(j -> j.getClass().equals(observer.getClass()))
+                        .findFirst();
+
+        existingOfType.ifPresent(catObservers::remove);
+        catObservers.add(observer);
+
+//        observers.get(category).add(observer);
     }
 
 

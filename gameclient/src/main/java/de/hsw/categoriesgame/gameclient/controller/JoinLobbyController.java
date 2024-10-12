@@ -48,7 +48,10 @@ public class JoinLobbyController {
      */
     private void registerListener() {
         view.getBackButton().addActionListener(e -> backToStartButtonPressed());
-        view.getJoinButton().addActionListener(e -> joinButtonPressed());
+        view.getJoinButton().addActionListener(e -> {
+            view.getJoinButton().setEnabled(false);
+            new Thread(this::joinButtonPressed).start();
+        });
     }
 
 
@@ -90,6 +93,8 @@ public class JoinLobbyController {
             remoteGame.joinLobby(code, client);
             gameModel.setLocalClient(client);
 
+            // Initialize GameModel
+            gameModel.initialize();
 
         } catch (LobbyNotFoundException e) {
             log.error("No Lobby found under Code {}!", code);
@@ -99,6 +104,8 @@ public class JoinLobbyController {
             log.error("Error while joining a Lobby!", e);
             view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nBitte schauen Sie im Protokoll für weitere Informationen.");
             return;
+        } finally {
+            view.getJoinButton().setEnabled(true);
         }
 
         viewManager.changeView(View.WAITING);

@@ -1,6 +1,5 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
-import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
@@ -32,11 +31,16 @@ public class LobbyWaitingController implements AdvancedObserver {
         registerListener();
         updateJoinedPlayers();
         isStartGameButtonVisible();
+        view.setLobbyCode(gameModel.getLobbyCode());
     }
 
-    private void registerListener() {
-        view.getLeaveButton().addActionListener(e -> leaveButtonPressed());
-        view.getStartGameButton().addActionListener(e -> goToGameRoundView());
+    private void registerListener()
+    {
+        view.getLeaveButton().addActionListener(e -> {
+            view.getLeaveButton().setEnabled(false);
+            new Thread(this::leaveButtonPressed).start();
+        });
+        view.getStartGameButton().addActionListener(e -> startGameButtonPressed());
     }
 
     /**
@@ -49,7 +53,9 @@ public class LobbyWaitingController implements AdvancedObserver {
     }
 
 
-
+    /**
+     * Leave lobby
+     */
     private void leaveButtonPressed()
     {
         try {
@@ -64,7 +70,11 @@ public class LobbyWaitingController implements AdvancedObserver {
         viewManager.changeView(View.START);
     }
 
-    private void goToGameRoundView()
+
+    /**
+     * Button for the lobby admin to start the game
+     */
+    private void startGameButtonPressed()
     {
         log.info("GO TO GAME ROUND VIEW");
         gameModel.getLobby().startGame();
@@ -72,9 +82,12 @@ public class LobbyWaitingController implements AdvancedObserver {
     }
 
 
+    /**
+     * Updates the list in the waiting room with the joined players
+     */
     private void updateJoinedPlayers()
     {
-        view.showPlayers(gameModel.getLobby().getPlayers().stream().map(PlayerBean::getName).toList());
+        view.showPlayers(gameModel.getPlayerBeans().stream().map(PlayerBean::getName).toList());
     }
 
 
