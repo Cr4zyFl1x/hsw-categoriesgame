@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +12,28 @@ import java.awt.*;
 public class JoinLobbyView extends JPanel implements InitializableView {
 
     private JLabel joinHeader;
+
     private JLabel codeLabel;
+
     private JLabel nameLabel;
+
+    @Getter
     private JTextField codeInput;
+
+    @Getter
     private JTextField nameInput;
+
+    @Getter
     private JButton joinButton;
+
+    @Getter
     private JButton backButton;
+
     private JPanel buttonPanel;
+
     private JPanel inputPanel;
+
+
 
     /**
      * Constructor
@@ -28,61 +43,7 @@ public class JoinLobbyView extends JPanel implements InitializableView {
         buildView();
     }
 
-    /**
-     * Returns the JLabel header
-     * @return  JLabel
-     */
-    public JLabel getJoinHeader() {
-        return joinHeader;
-    }
 
-    /**
-     * Returns the label for the code input row
-     * @return  JLabel
-     */
-    public JLabel getCodeLabel() {
-        return codeLabel;
-    }
-
-    /**
-     * Returns the label for the name input row
-     * @return  JLabel
-     */
-    public JLabel getNameLabel() {
-        return nameLabel;
-    }
-
-    /**
-     * returns the input field for the code input row
-     * @return  JTextField
-     */
-    public JTextField getCodeInput() {
-        return codeInput;
-    }
-
-    /**
-     * returns the input field for the name input row
-     * @return  JTextField
-     */
-    public JTextField getNameInput() {
-        return nameInput;
-    }
-
-    /**
-     * Returns the join button
-     * @return  JButton
-     */
-    public JButton getJoinButton() {
-        return joinButton;
-    }
-
-    /**
-     * Returns the back button
-     * @return  JButton
-     */
-    public JButton getBackButton() {
-        return backButton;
-    }
 
     /**
      * Initializes all components needed

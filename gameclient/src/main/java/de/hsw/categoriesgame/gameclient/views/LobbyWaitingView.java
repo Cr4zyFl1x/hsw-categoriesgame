@@ -114,4 +114,9 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
     {
         lobbyCodeLabel.setText("LobbyCode: " + lobbyCode);
     }
+
+    public void throwErrorDialog(final String message)
+    {
+        JOptionPane.showMessageDialog(this, message, "Es ist ein Fehler aufgetreten!", JOptionPane.ERROR_MESSAGE);
+    }
 }

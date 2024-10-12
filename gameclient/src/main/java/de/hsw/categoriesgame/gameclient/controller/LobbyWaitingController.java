@@ -76,7 +76,12 @@ public class LobbyWaitingController implements AdvancedObserver {
      */
     private void startGameButtonPressed()
     {
-        log.info("GO TO GAME ROUND VIEW");
+        if (gameModel.getPlayerBeans().size() < 2) {
+            view.throwErrorDialog("Es müssen mindestens zwei Spieler der Lobby beigetreten sein!");
+            return;
+        }
+
+        log.debug("GO TO GAME ROUND VIEW");
         gameModel.getLobby().startGame();
         viewManager.changeView(View.GAME_ROUND);
     }

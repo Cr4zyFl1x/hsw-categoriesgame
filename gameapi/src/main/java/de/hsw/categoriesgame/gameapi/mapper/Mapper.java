@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public class Mapper {
 
-    private static HashMap<Client, PlayerBean> clients = new HashMap<>();
+    private static final HashMap<Client, PlayerBean> clients = new HashMap<>();
 
     public static PlayerBean map(final Client client)
     {
