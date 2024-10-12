@@ -16,23 +16,12 @@ public class GameConfigs implements Serializable {
     private final int maxPlayers;
 
     @Getter
-    private final int minDoubtingPlayers;
-
-    @Getter
     @Setter
     private List<String> categories;
-
-    public GameConfigs(int maxRounds, int maxPlayers, int minDoubtingPlayers) {
-        this.maxRounds = maxRounds;
-        this.maxPlayers = maxPlayers;
-        this.minDoubtingPlayers = minDoubtingPlayers;
-        this.categories = new ArrayList<>();
-    }
 
     public GameConfigs(int maxRounds, int maxPlayers) {
         this.maxRounds = maxRounds;
         this.maxPlayers = maxPlayers;
-        this.minDoubtingPlayers = 1;
         this.categories = new ArrayList<>();
     }
 }
