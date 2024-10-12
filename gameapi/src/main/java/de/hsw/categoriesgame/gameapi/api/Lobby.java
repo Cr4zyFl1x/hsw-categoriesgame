@@ -12,32 +12,18 @@ public interface Lobby {
      */
     String getLobbyCode();
 
+
     /**
      * Adds player to lobby.
-     * @param player    object of class Player
+     * @param client    object of class Player
      */
-    void addPlayer(Player player);
+    void joinClient(Client client);
 
     /**
      * Removes player from lobby.
-     * @param player    object of class Player
+     * @param client    object of class Player
      */
-    void removePlayer(Player player);
-
-    /**
-     * Get all players in lobby.
-     * @return  list of players
-     */
-    List<Player> getPlayers();
-
-    /**
-     * Get player that is currently admin of lobby.
-     * @return  object of class Player
-     */
-    Player getAdmin();
-
-    void setGameConfigs(GameConfigs gameConfigs);
-    GameConfigs getGameConfigs();
+    void leaveClient(Client client);
 
     /**
      * Set the categories for the game/lobby.
@@ -52,6 +38,8 @@ public interface Lobby {
     List<String> getCategories();
 
     int getCurrentRoundNumber();
+
+
     char getCurrentLetter();
 
     /**
@@ -81,12 +69,42 @@ public interface Lobby {
      */
     List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
 
-    int getPointsOfPlayer(Player player);
 
     /**
-     * Changes the admin of the lobby if the current admin leaves.
+     * Gets the current points of a player
+     * @param player
+     * @return
      */
-    void changeAdmin();
+    int getPointsOfPlayer(PlayerBean player);
 
-    boolean isAdmin(Player player);
+
+    /**
+     * Checks if the given player is an administrator
+     *
+     * @param playerBean    the player dto
+     * @return              true if is administrator
+     */
+    boolean isAdmin(PlayerBean playerBean);
+
+
+    /**
+     * Gets the administrator player
+     *
+     * @return  the administrative player
+     */
+    PlayerBean getAdmin();
+
+
+    /**
+     * Gets a list of players of this lobby
+     * @return List of players
+     */
+    List<PlayerBean> getPlayers();
+
+
+    /**
+     * Returns a list of remote Clients ("Players")
+     * @return List of clients in this lobby
+     */
+    List<Client> getClients();
 }

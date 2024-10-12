@@ -89,11 +89,11 @@ public class ViewManager {
             @Override
             public void windowClosing(WindowEvent e) {
                 log.trace("Window closing event started ...");
-                if (gameModel.getLocalPlayer() != null && gameModel.getLobby() != null) {
+                if (gameModel.getLocalClient() != null && gameModel.getLobby() != null) {
                     log.debug("Player is in lobby. Leaving game...");
                     try {
                         proxyFactory.createProxy(CategorieGame.class)
-                                .leaveLobby(gameModel.getLobby(), gameModel.getLocalPlayer());
+                                .leaveLobby(gameModel.getLobby(), gameModel.getLocalClient());
                         log.debug("Player left game!");
                     } catch (LobbyNotFoundException ex) {
                         log.error("Unable to leave lobby!", ex);

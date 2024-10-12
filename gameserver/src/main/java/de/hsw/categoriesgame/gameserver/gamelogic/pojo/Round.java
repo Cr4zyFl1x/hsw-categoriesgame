@@ -1,6 +1,6 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.pojo;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,12 +26,12 @@ public class Round {
     /**
      * Adds an entry to the list of entries.
      * @param category  category fo answer
-     * @param player    player that answered
+     * @param client    player that answered
      * @param answer    original answer
      * @return          if entry already existed in list
      */
-    public boolean addEntry(String category, Player player, String answer) {
-        RoundEntry entry = new RoundEntry(category, player, answer);
+    public boolean addEntry(String category, Client client, String answer) {
+        RoundEntry entry = new RoundEntry(category, client, answer);
         if (!roundEntries.contains(entry)) {
             roundEntries.add(entry);
             return true;
@@ -52,14 +52,14 @@ public class Round {
 
     /**
      * Get an entry by player and category.
-     * @param player    player that answered
+     * @param client    player that answered
      * @param category  category of answer
      * @return          object of class RoundEntry
      */
-    public RoundEntry getEntry(Player player, String category) {
+    public RoundEntry getEntry(Client client, String category) {
         var optionalEntry = roundEntries.stream()
                 .filter(roundEntry -> roundEntry.getCategory().equals(category))
-                .filter(roundEntry -> roundEntry.getPlayer().equals(player))
+                .filter(roundEntry -> roundEntry.getClient().equals(client))
                 .findFirst();
 
         return optionalEntry.orElseThrow();

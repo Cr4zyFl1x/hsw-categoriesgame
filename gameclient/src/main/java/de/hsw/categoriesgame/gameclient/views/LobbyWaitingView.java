@@ -4,6 +4,7 @@ import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyWaitingView extends JPanel implements InitializableView {
@@ -13,7 +14,7 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
     private JButton startGameButton;
     private JPanel buttonPanel;
     private JPanel playerPanel;
-    private List<JLabel> playerLabels;
+    private List<JLabel> playerLabels = new ArrayList<>();
 
     public LobbyWaitingView() {
         initializeComponents();
@@ -83,6 +84,9 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
     }
 
     public void showPlayers(List<String> players) {
+
+        playerPanel.removeAll();
+
         playerPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbcPlayers = new GridBagConstraints();
         gbcPlayers.insets = new Insets(10, 10, 10, 10);
@@ -94,6 +98,7 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
             gbcPlayers.weightx = 1.0;
 
             JLabel playerName = new JLabel(players.get(i));
+            playerLabels.add(playerName);
             playerPanel.add(playerName, gbcPlayers);
         }
     }

@@ -2,10 +2,10 @@ package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.util.RandomStringUtil;
-import de.hsw.categoriesgame.gameclient.PlayerImpl;
+import de.hsw.categoriesgame.gameclient.ClientImpl;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.CreateLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -99,7 +99,7 @@ public class CreateLobbyController {
             view.throwErrorDialog("Der Benutzername kann nicht leer sein!");
             return;
         }
-        final Player admin = new PlayerImpl(view.getAdminUsernameInput().getText());
+        final Client admin = new ClientImpl(gameModel, view.getAdminUsernameInput().getText());
 
 
         // Validate config
@@ -124,10 +124,10 @@ public class CreateLobbyController {
             final CategorieGame game = viewManager.getProxyFactory().createProxy(CategorieGame.class);
 
             lobby = game.createLobby(view.getLobbyCodeInput().getText(), config);
-            game.joinLobby(lobby.getLobbyCode(), admin);
-
             gameModel.setLobby(lobby);
-            gameModel.setLocalPlayer(admin);
+            gameModel.setLocalClient(admin);
+
+            game.joinLobby(lobby.getLobbyCode(), admin);
 
         } catch (Exception e) {
             log.error("Unable to create lobby", e);
@@ -135,6 +135,7 @@ public class CreateLobbyController {
             loadLobbyCode();
             return;
         }
+
 
         log.info("Created a new game lobby with code {}", lobby.getLobbyCode());
         viewManager.changeView(View.WAITING);

@@ -1,23 +1,44 @@
 package de.hsw.categoriesgame.gameclient;
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 
 import java.util.UUID;
 
-public class PlayerImpl implements Player {
+public class ClientImpl implements Client {
 
+    private final GameModel currentGame;
+
+    /**
+     * Client UUID (Same as respective {@link de.hsw.categoriesgame.gameapi.pojo.PlayerBean} UUID)
+     */
     private final UUID uuid;
+
+    /**
+     * Name of the client
+     */
     private final String name;
 
+    /**
+     * Points
+     */
     private int points;
 
+    // Kann das weg?
+    @Deprecated
     private boolean hasAnswered;
 
-    public PlayerImpl(final String name) {
+
+
+    public ClientImpl(final GameModel currentGame, final String name) {
         uuid = UUID.randomUUID();
         this.name = name;
+        this.currentGame = currentGame;
     }
+
+
 
     /**
      * {@inheritDoc}
@@ -26,6 +47,7 @@ public class PlayerImpl implements Player {
     public UUID getUUID() {
         return uuid;
     }
+
 
     /**
      * {@inheritDoc}
@@ -36,6 +58,7 @@ public class PlayerImpl implements Player {
         return name;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -43,6 +66,7 @@ public class PlayerImpl implements Player {
     public int getPoints() {
         return points;
     }
+
 
     /**
      * {@inheritDoc}
@@ -52,6 +76,7 @@ public class PlayerImpl implements Player {
         this.points = points;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -59,6 +84,7 @@ public class PlayerImpl implements Player {
     public boolean hasAnswered() {
         return hasAnswered;
     }
+
 
     /**
      * {@inheritDoc}
@@ -68,8 +94,16 @@ public class PlayerImpl implements Player {
         this.hasAnswered = hasAnswered;
     }
 
+
     @Override
-    public void notifyPlayer(RoundState roundState) {
+    public void notifyPlayerAboutRoundState(RoundState roundState) {
         System.out.println("Neuer State: " + roundState.name());
+    }
+
+
+    @Override
+    public void notifyPlayerAboutLobbyState()
+    {
+        currentGame.sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
     }
 }

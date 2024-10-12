@@ -19,11 +19,11 @@ public interface CategorieGame {
     /**
      * Specified player joins a specified lobby.
      * @param lobbyCode string that is specified when creating a lobby
-     * @param player    player has to be initialized beforehand
+     * @param client    player has to be initialized beforehand
      * @return          object of class Lobby that the user joined
      * @throws LobbyNotFoundException if lobby is not found (e.g. not valid lobbyCode)
      */
-    Lobby joinLobby(String lobbyCode, final Player player) throws LobbyNotFoundException;
+    Lobby joinLobby(String lobbyCode, final Client client) throws LobbyNotFoundException;
 
     /**
      * Create lobby with random UUID lobby code.
@@ -61,30 +61,30 @@ public interface CategorieGame {
     /**
      * Specified player leaves the specified lobby.
      * @param lobbyCode string that identifies the lobby
-     * @param player    object of class Player
+     * @param client    object of class Player
      * @throws LobbyNotFoundException if lobby is not found (e.g. not valid lobbyCode)
      */
-    void leaveLobby(String lobbyCode, Player player) throws LobbyNotFoundException;
+    void leaveLobby(String lobbyCode, Client client) throws LobbyNotFoundException;
 
     /**
      * List of players leave the specified lobby.
      * @param lobbyCode string that identifies the lobby
-     * @param players   list of players
+     * @param clients   list of players
      * @throws LobbyNotFoundException   if lobby is not found (e.g. not valid lobbyCode)
      */
-    void leaveLobby(String lobbyCode, List<Player> players) throws LobbyNotFoundException;
+    void leaveLobby(String lobbyCode, List<Client> clients) throws LobbyNotFoundException;
 
     /**
      * Specified player leaves the specified lobby.
      * @param lobby     object of class Lobby
-     * @param player    object of class Player
+     * @param client    object of class Player
      */
-    void leaveLobby(Lobby lobby, Player player) throws LobbyNotFoundException;
+    void leaveLobby(Lobby lobby, Client client) throws LobbyNotFoundException;
 
     /**
      * Specified list of players leave the specified lobby.
      * @param lobby     object of class Lobby
-     * @param players   list of players
+     * @param clients   list of players
      */
-    void leaveLobby(Lobby lobby, List<Player> players) throws LobbyNotFoundException;
+    void leaveLobby(Lobby lobby, List<Client> clients) throws LobbyNotFoundException;
 }
