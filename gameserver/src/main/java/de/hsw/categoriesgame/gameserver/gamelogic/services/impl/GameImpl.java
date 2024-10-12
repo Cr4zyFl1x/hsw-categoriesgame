@@ -115,6 +115,10 @@ public class GameImpl implements Game {
 
             Client client = getPlayerByUUID(normalAnswers.get(0).playerUUID());
 
+            if (hasAnswered(client)) {
+                return;
+            }
+
             normalAnswers.forEach(normalAnswer -> {
                 var category = normalAnswer.category();
                 var answer = normalAnswer.answer();

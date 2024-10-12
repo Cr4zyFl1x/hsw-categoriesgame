@@ -68,7 +68,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     @Getter
     @Setter
-    private List<String> answers;
+    private List<String> answers = new ArrayList<>();
 
     @Getter
     @Setter
