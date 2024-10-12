@@ -4,6 +4,7 @@ import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class LobbyWaitingView extends JPanel implements InitializableView {
 
@@ -11,6 +12,8 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
     private JButton leaveButton;
     private JButton startGameButton;
     private JPanel buttonPanel;
+    private JPanel playerPanel;
+    private List<JLabel> playerLabels;
 
     public LobbyWaitingView() {
         initializeComponents();
@@ -45,8 +48,9 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         startGameButton.setOpaque(false);
         startGameButton.setBorderPainted(false);
 
-        // Panel for the buttons
+        // Panel for the buttons and players
         buttonPanel = new JPanel();
+        playerPanel = new JPanel();
     }
 
     @Override
@@ -60,6 +64,9 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         gbc.gridwidth = 2;
         add(waitingHeader, gbc);
 
+        gbc.gridy = 1;
+        add(playerPanel, gbc);
+
         buttonPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbcButton = new GridBagConstraints();
         gbcButton.insets = new Insets(10, 10, 10, 10);
@@ -71,8 +78,24 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         gbcButton.gridx = 1;
         buttonPanel.add(startGameButton, gbcButton);
 
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         add(buttonPanel, gbc);
+    }
+
+    public void showPlayers(List<String> players) {
+        playerPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbcPlayers = new GridBagConstraints();
+        gbcPlayers.insets = new Insets(10, 10, 10, 10);
+
+        for (int i = 0; i < players.size(); i++) {
+            gbcPlayers.gridx = 0;
+            gbcPlayers.gridy = i;
+            gbcPlayers.gridwidth = 2;
+            gbcPlayers.weightx = 1.0;
+
+            JLabel playerName = new JLabel(players.get(i));
+            playerPanel.add(playerName, gbcPlayers);
+        }
     }
 
     public void isStartGameButtonVisible(boolean visible) {

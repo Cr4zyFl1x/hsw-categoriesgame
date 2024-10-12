@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameclient.models;
 
+import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.pojos.Player;
@@ -19,6 +20,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     private int currentRoundNumber;
     private final List<String> categories;
     private final List<Player> players;
+    private List<Pair<String, Boolean>> answersDoubted;
 
     /**
      * Constructor
@@ -188,5 +190,13 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         for (ObservableCategory cat : category) {
             observers.get(cat).forEach(AdvancedObserver::receiveNotification);
         }
+    }
+
+    public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
+        this.answersDoubted = answersDoubted;
+    }
+
+    public List<Pair<String, Boolean>> getAnswersDoubted() {
+        return answersDoubted;
     }
 }

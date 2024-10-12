@@ -64,12 +64,14 @@ public class GameRoundController {
      */
     private void goToAnswerOverviewView() {
         // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
-        if (validateInputs()) {
-            log.info("GO TO ANSWER OVERVIEW VIEW");
-            viewManager.changeView(View.ANSWERS);
-        } else {
-            view.throwErrorDialog();
-        }
+        viewManager.changeView(View.ANSWERS);
+
+//        if (validateInputs()) {
+//            log.info("GO TO ANSWER OVERVIEW VIEW");
+//            viewManager.changeView(View.ANSWERS);
+//        } else {
+//            view.throwErrorDialog();
+//        }
     }
 
     /**
