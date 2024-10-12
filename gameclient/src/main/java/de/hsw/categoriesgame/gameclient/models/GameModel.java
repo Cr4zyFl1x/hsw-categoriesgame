@@ -43,7 +43,6 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     private int amountRounds;
     private int currentRoundNumber;
     private final List<String> categories;
-    private final List<PlayerBean> playerBeans;
     private List<Pair<String, Boolean>> answersDoubted;
 
     private List<String> answers;
