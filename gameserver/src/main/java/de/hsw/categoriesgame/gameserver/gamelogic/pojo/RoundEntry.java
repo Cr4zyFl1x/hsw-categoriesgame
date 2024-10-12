@@ -1,7 +1,7 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.pojo;
 
 
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +14,7 @@ public class RoundEntry {
     private final String category;
 
     @Getter
-    private final Player player;
+    private final Client client;
 
     @Getter
     @Setter
@@ -24,22 +24,22 @@ public class RoundEntry {
     private boolean doubted;
 
     @Getter
-    private final List<Player> doubtedBy;
+    private final List<Client> doubtedBy;
 
-    public RoundEntry(String category, Player player, String answer) {
+    public RoundEntry(String category, Client client, String answer) {
         this.category = category;
-        this.player = player;
+        this.client = client;
         this.answer = answer;
         this.doubtedBy = new ArrayList<>();
     }
 
     /**
      * Doubt an answer.
-     * @param doubtingPlayer    player that doubted the answer
+     * @param doubtingClient    player that doubted the answer
      */
-    public void doubtAnswer(Player doubtingPlayer) {
+    public void doubtAnswer(Client doubtingClient) {
         this.doubted = true;
-        doubtedBy.add(doubtingPlayer);
+        doubtedBy.add(doubtingClient);
     }
 
     @Override
@@ -48,6 +48,6 @@ public class RoundEntry {
             return false;
         }
         final RoundEntry other = (RoundEntry) obj;
-        return this.category.equals(other.category) && this.player.equals(other.player);
+        return this.category.equals(other.category) && this.client.equals(other.client);
     }
 }

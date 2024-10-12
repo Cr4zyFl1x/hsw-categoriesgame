@@ -2,7 +2,7 @@ package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
-import de.hsw.categoriesgame.gameclient.pojos.Player;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.ResultView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -25,7 +25,7 @@ public class ResultController implements AdvancedObserver {
 
     // TODO: mockPlayers-Referenzen durch getter in model ersetzen
 
-    List<Player> mockPlayers;
+    List<PlayerBean> mockPlayerBeans;
 
     /**
      * Constructor
@@ -40,10 +40,10 @@ public class ResultController implements AdvancedObserver {
 
         model.register(ObservableCategory.RESULT_CONTROLLER, this);
 
-        mockPlayers = new ArrayList<>();
-        mockPlayers.add(new Player("Jeff", 100));
-        mockPlayers.add(new Player("Kevin", 80));
-        mockPlayers.add(new Player("Marc", 120));
+        mockPlayerBeans = new ArrayList<>();
+        mockPlayerBeans.add(new PlayerBean("Jeff"));
+        mockPlayerBeans.add(new PlayerBean("Kevin"));
+        mockPlayerBeans.add(new PlayerBean("Marc"));
 
         registerListener();
         calculatePlacements();
@@ -84,8 +84,8 @@ public class ResultController implements AdvancedObserver {
     private void calculatePlacements() {
         // TODO: 11.10.2024 get current top three players from server
 
-        mockPlayers.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
-        ArrayList<Player> sortedList = new ArrayList<>(mockPlayers);
+        mockPlayerBeans.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
+        ArrayList<PlayerBean> sortedList = new ArrayList<>(mockPlayerBeans);
 
         view.getPlayer1Label().setText(sortedList.get(0).getName());
         view.getPlayer2Label().setText(sortedList.get(1).getName());

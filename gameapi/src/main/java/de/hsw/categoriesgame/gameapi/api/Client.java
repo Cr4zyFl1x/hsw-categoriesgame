@@ -4,7 +4,7 @@ import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 
 import java.util.UUID;
 
-public interface Player {
+public interface Client {
 
     /**
      * Get the UUID that was set when initializing the player.
@@ -43,5 +43,9 @@ public interface Player {
      */
     void setHasAnswered(boolean hasAnswered);
 
-    void notifyPlayer(RoundState roundState);
+
+    void notifyPlayerAboutRoundState(RoundState roundState);
+
+
+    void notifyPlayerAboutLobbyState();
 }

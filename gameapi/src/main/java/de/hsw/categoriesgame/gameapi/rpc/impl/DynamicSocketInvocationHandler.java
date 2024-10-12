@@ -137,6 +137,7 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
             // If is exception -> throw exception
             if (result instanceof ProxyException) {
+                log.warn("Exception occurred during processing answer for {}", sock.getRemoteSocketAddress());
                 throw ((ProxyException) result).buildException();
             }
 

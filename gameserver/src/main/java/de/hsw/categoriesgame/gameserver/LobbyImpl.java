@@ -1,61 +1,52 @@
 package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
-import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.*;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
+@Slf4j
 public class LobbyImpl implements Lobby {
 
     @Getter
     private final String lobbyCode;
 
-    @Getter
-    private final List<Player> players;
-
-    @Getter
-    private Player admin;
+    private final List<Client> clients;
 
     private Game game;
 
     public LobbyImpl(String lobbyCode, GameConfigs gameConfigs)
     {
         this.lobbyCode = lobbyCode;
-        this.players = new ArrayList<>();
+        this.clients = new ArrayList<>();
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void addPlayer(Player player) {
-        this.players.add(player);
+    public void joinClient(Client client) {
+        this.clients.add(client);
+        log.info("Client {} joined lobby {}!", client.getName(), lobbyCode);
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void removePlayer(Player player) {
-        this.players.remove(player);
-        if (player.equals(admin)) {
-            changeAdmin();
-        }
+    public void leaveClient(Client client) {
+        this.clients.remove(client);
+        log.info("Client {} left lobby {}!", client.getName(), lobbyCode);
     }
 
-    @Override
-    public void setGameConfigs(GameConfigs gameConfigs) {
-        game.setGameConfigs(gameConfigs);
-    }
-
-    @Override
-    public GameConfigs getGameConfigs() {
-        return game.getGameConfigs();
-    }
 
     /**
      * {@inheritDoc}
@@ -65,6 +56,7 @@ public class LobbyImpl implements Lobby {
         game.setCategories(categories);
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -73,23 +65,28 @@ public class LobbyImpl implements Lobby {
         return game.getCategories();
     }
 
+
     @Override
     public int getCurrentRoundNumber() {
         return game.getRoundNumber();
     }
+
 
     @Override
     public char getCurrentLetter() {
         return game.getCurrentLetter();
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void startGame(GameConfigs gameConfigs) {
-        game = new GameImpl(getPlayers(), gameConfigs);
+    public void startGame(GameConfigs gameConfigs)
+    {
+        game = new GameImpl(getClients(), gameConfigs);
     }
+
 
     /**
      * {@inheritDoc}
@@ -99,15 +96,22 @@ public class LobbyImpl implements Lobby {
         game.startNewRound();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void closeAnswerRound() {
         game.closeAnsweringRound();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void closeDoubtingRound() {
         game.closeDoubtingRound();
     }
+
 
     /**
      * {@inheritDoc}
@@ -117,6 +121,7 @@ public class LobbyImpl implements Lobby {
         game.sendAnswers(normalAnswers);
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -125,33 +130,92 @@ public class LobbyImpl implements Lobby {
         var list = new ArrayList<Entry>();
         game.doubtAnswer(doubtedAnswer).forEach(roundEntry -> {
             var category = roundEntry.getCategory();
-            var playerUUID = roundEntry.getPlayer().getUUID();
+            var playerUUID = roundEntry.getClient().getUUID();
             var answer = roundEntry.getAnswer();
             var doubted = roundEntry.isDoubted();
-            var doubtedBy = roundEntry.getDoubtedBy().stream().map(Player::getUUID).toList();
+            var doubtedBy = roundEntry.getDoubtedBy().stream().map(Client::getUUID).toList();
             list.add(new Entry(category, playerUUID, answer, doubted, doubtedBy));
         });
         return list;
     }
 
-    @Override
-    public int getPointsOfPlayer(Player player) {
-        return game.getCurrentPointsOfPlayer(player);
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void changeAdmin() {
-        if (!players.isEmpty()) {
-            this.admin = players.get(0);
-        }
+    public int getPointsOfPlayer(PlayerBean player)
+    {
+        return game.getCurrentPointsOfPlayer(map(player));
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAdmin(PlayerBean playerBean)
+    {
+        return getAdmin().equals(playerBean);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PlayerBean getAdmin()
+    {
+        final Client admin = clients.stream().filter(Objects::nonNull).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Lobby exists but no player is existent that could be an admin!"));
+
+        return Mapper.map(admin);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<PlayerBean> getPlayers() {
+        final List<PlayerBean> players = new ArrayList<>();
+        this.clients.forEach(player -> players.add(Mapper.map(player)));
+        return players;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Client> getClients() {
+        return this.clients;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasGameStarted()
+    {
+        return game != null;
+    }
+
+
+    // ----------------------------------------
+    // ----------------------------------------
+
+
+    private Client map(PlayerBean playerBean)
+    {
+        return clients.stream().filter(p -> p.getUUID().equals(playerBean.getUUID())).findFirst()
+                .orElseThrow(() -> new IllegalStateException("This player is does not exist in lobby!"));
     }
 
 
     ///////////////////////////////////////////
     ///////////////////////////////////////////
+
 
     @Override
     public boolean equals(Object o) {
@@ -161,9 +225,9 @@ public class LobbyImpl implements Lobby {
         return Objects.equals(lobbyCode, lobby.lobbyCode);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hashCode(lobbyCode);
     }
-
 }
