@@ -1,7 +1,9 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.views.GameRoundView;
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * Controller class of the GameRoundView to handle logical operations
  */
-public class GameRoundController implements AdvancedObserver {
+public class GameRoundController {
 
     private static final Logger log = LoggerFactory.getLogger(GameRoundController.class);
     private final ViewManager viewManager;
@@ -39,7 +41,7 @@ public class GameRoundController implements AdvancedObserver {
         this.view = view;
         this.model = model;
 
-        model.register(ObservableCategory.GAME_ROUND_CONTROLLER, this);
+        model.register(ExecutorCategory.ROUND_STATE_CHANGE, this::onRoundStateChange);
 
         // register listeners
         registerListener();
@@ -142,7 +144,15 @@ public class GameRoundController implements AdvancedObserver {
         view.buildCategoryInputs(categories);
     }
 
-    @Override
-    public void receiveNotification() {
+
+    ///////////////////////
+    ///////////////////////
+
+
+    // ON ROUND STATE CHANGE
+    public void onRoundStateChange()
+    {
+        final GameRoundState state = model.getGameRoundState();
+
     }
 }

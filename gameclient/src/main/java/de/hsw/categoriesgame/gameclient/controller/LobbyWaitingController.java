@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
@@ -13,7 +14,7 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LobbyWaitingController implements AdvancedObserver {
+public class LobbyWaitingController {
 
     private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
     private final ViewManager viewManager;
@@ -108,16 +109,15 @@ public class LobbyWaitingController implements AdvancedObserver {
     public void onPlayerJoinLeave()
     {
         updateJoinedPlayers();
+        isStartGameButtonVisible();
     }
 
     public void onGameRoundStateChange()
     {
+        final GameRoundState state = gameModel.getGameRoundState();
 
-    }
-
-
-    @Override
-    public void receiveNotification()
-    {
+        if (state.equals(GameRoundState.ANSWERS_OPEN)) {
+            viewManager.changeView(View.GAME_ROUND);
+        }
     }
 }

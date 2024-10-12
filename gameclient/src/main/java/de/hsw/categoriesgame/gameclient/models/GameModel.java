@@ -131,7 +131,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
     {
         this.currentLetter = 0;
         this.currentRoundNumber = 0;
-        this.categories.clear();
+        this.categories = new ArrayList<>();
         this.playerBeans.clear();
         this.lobby = null;
         this.localClient = null;

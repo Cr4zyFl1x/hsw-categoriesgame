@@ -89,11 +89,11 @@ public class ClientImpl implements Client {
     @Override
     public void notifyRoundState(GameRoundState roundState, GameData gameData)
     {
+        this.currentGame.setGameRoundState(roundState);
         this.currentGame.setCurrentRoundNumber(gameData.getCurrentRound());
         this.currentGame.setCurrentLetter(gameData.getCurrentLetter());
-        this.currentGame.setGameRoundState(roundState);
 
-        // NOTIFY Runnables to handle round state change
+        // Notify Runnables to handle round state change
         this.currentGame.callRunnable(ExecutorCategory.ROUND_STATE_CHANGE);
     }
 
