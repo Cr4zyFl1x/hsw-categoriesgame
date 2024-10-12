@@ -1,22 +1,28 @@
 package de.hsw.categoriesgame.gameclient.views;
 
+import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
 import de.hsw.categoriesgame.gameclient.controller.*;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import lombok.Getter;
 
 import javax.swing.*;
 
 public class ViewManager {
 
-    JFrame frame;
-    JPanel currentPanel;
-    GameModel gameModel;
+    private final JFrame frame;
+
+    @Getter
+    private final ProxyFactory proxyFactory;
+    private JPanel currentPanel;
+    private GameModel gameModel;
 
     /**
      * Constructor for the ViewManager
      * @param frame     frame
      */
-    public ViewManager(JFrame frame) {
+    public ViewManager(final JFrame frame, final ProxyFactory proxyFactory) {
         this.frame = frame;
+        this.proxyFactory = proxyFactory;
         this.gameModel = new GameModel();
     }
 
@@ -42,7 +48,7 @@ public class ViewManager {
             }
             case JOIN_LOBBY -> {
                 newView = new JoinLobbyView();
-                new JoinLobbyController(this, (JoinLobbyView) newView);
+                new JoinLobbyController(this, (JoinLobbyView) newView, gameModel);
             }
             case CREATE_LOBBY -> {
                 newView = new CreateLobbyView();
