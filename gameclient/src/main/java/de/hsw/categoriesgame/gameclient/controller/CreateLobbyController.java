@@ -1,5 +1,11 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
+import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
+import de.hsw.categoriesgame.gameapi.util.RandomStringUtil;
+import de.hsw.categoriesgame.gameclient.PlayerImpl;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.CreateLobbyView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -10,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controller class for CreateLobbyView to make operations possible
@@ -23,74 +27,117 @@ public class CreateLobbyController {
     private final CreateLobbyView view;
     private final GameModel gameModel;
 
-    // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
-
-    List<String> mockPlayers;
-
     /**
      * Constructor
      * @param viewManager   View Manager in order to navigate between different views
      * @param view          referring view of the controller
      * @param gameModel     model to save specific data
      */
-    public CreateLobbyController(ViewManager viewManager, CreateLobbyView view, GameModel gameModel) {
+    public CreateLobbyController(final ViewManager viewManager,
+                                 final CreateLobbyView view,
+                                 final GameModel gameModel)
+    {
         this.viewManager = viewManager;
         this.view = view;
         this.gameModel = gameModel;
 
-        mockPlayers = new ArrayList<>();
-
-        mockPlayers.add("1");
-        mockPlayers.add("2");
-        mockPlayers.add("3");
-
-        clearModel();
+        gameModel.reset();
         registerListener();
+        loadLobbyCode();
+
+        addNewCategory("Stadt");
+        addNewCategory("Land");
+        addNewCategory("Fluss");
     }
+
+
 
     /**
      * registers all ActionListeners
      */
-    private void registerListener() {
+    private void registerListener()
+    {
         view.getCancelButton().addActionListener(e -> goToStartView());
         view.getCreateButton().addActionListener(e -> goToGameRoundView());
-        view.getAddCategoryButton().addActionListener(e -> addNewCategory());
+        view.getAddCategoryButton().addActionListener(e -> addNewCategory(view.getNewCategoryInput().getText()));
         view.getNewCategoryInput().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    addNewCategory();
+                    addNewCategory(view.getNewCategoryInput().getText());
                 }
             }
         });
         view.getCategoryButton().addActionListener(e -> removeCategory(view.getCategoryButton()));
+        view.getReloadLobbyCodeButton().addActionListener(e -> loadLobbyCode());
     }
+
+    private void loadLobbyCode()
+    {
+        view.getLobbyCodeInput().setText(RandomStringUtil.generate(RandomStringUtil.Type.CAPITAL_DIGITS, 6));
+    }
+
 
     /**
      * Navigates to the start screen
      */
-    private void goToStartView() {
+    private void goToStartView()
+    {
         log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
 
+
     /**
      * Navigates into the game round view including saving the amount of rounds in the model
      */
-    private void goToGameRoundView() {
-        if (validateInputs()) {
-            // save the amount of rounds in model
-            gameModel.setAmountRounds((int) view.getAmountRoundsSpinner().getValue());
-
-            // save the amount of rounds in model
-            gameModel.setDoubtsNeeded((int) view.getDoubtsNeededSpinner().getValue());
-
-            // switch view
-            log.info("GO TO GAME ROUND VIEW");
-            viewManager.changeView(View.GAME_ROUND);
-        } else {
-            view.throwErrorDialog();
+    private void goToGameRoundView()
+    {
+        // Validate Admin username
+        final String adminUsername = view.getAdminUsernameInput().getText();
+        if (adminUsername.isBlank()) {
+            view.throwErrorDialog("Der Benutzername kann nicht leer sein!");
+            return;
         }
+        final Player admin = new PlayerImpl(view.getAdminUsernameInput().getText());
+
+
+        // Validate config
+        if (!validateInputs()) {
+            log.error("Unable to create a new game lobby due to invalid game configuration");
+            view.throwErrorDialog("Fehler in der Spielkonfiguration!\n" +
+                    "- Sind Kategorien hinzugefügt?");
+            return;
+        }
+
+  
+        // Create Game config
+        final GameConfigs config = new GameConfigs(
+                (Integer) view.getAmountRoundsSpinner().getValue(),
+                (Integer) view.getMaxPlayerSpinner().getValue());
+        config.setCategories(gameModel.getCategories());
+
+
+        // Create Lobby
+        final Lobby lobby;
+        try {
+            final CategorieGame game = viewManager.getProxyFactory().createProxy(CategorieGame.class);
+
+            lobby = game.createLobby(view.getLobbyCodeInput().getText(), config);
+            game.joinLobby(lobby.getLobbyCode(), admin);
+
+            gameModel.setLobby(lobby);
+            gameModel.setLocalPlayer(admin);
+
+        } catch (Exception e) {
+            log.error("Unable to create lobby", e);
+            view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nFür weitere Informationen sehen Sie bitte im Protokoll nach.");
+            loadLobbyCode();
+            return;
+        }
+
+        log.info("Created a new game lobby with code {}", lobby.getLobbyCode());
+        viewManager.changeView(View.WAITING);
     }
 
     /**
@@ -98,20 +145,19 @@ public class CreateLobbyController {
      * @return  true - conditions are met / false - conditions are not met
      */
     private boolean validateInputs() {
+        // TODO: 11.10.2024 vergleichen mit GameConfigs aus lobby
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
         int amountCategories = gameModel.getCategoriesCount();
         int amountsNeededCounts = (int) view.getDoubtsNeededSpinner().getValue();
 
-        return maxPlayers >= mockPlayers.size() && !lobbyCode.getText().isEmpty() && amountCategories >= 1 && amountsNeededCounts <= maxPlayers;
+        return maxPlayers >= 2 && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
     }
 
     /**
      * Method triggers the addition of a new category including adding it to the model
      */
-    private void addNewCategory() {
-        JTextField inputField = view.getNewCategoryInput();
-        String newCategory = inputField.getText().trim();
+    private void addNewCategory(final String newCategory) {
         JButton categoryButton = new JButton();
 
         for (int i = 0; i < view.getCategoryButtons().size(); i++) {
@@ -132,7 +178,7 @@ public class CreateLobbyController {
             gameModel.addCategory(newCategory);
 
             // Clear input
-            inputField.setText("");
+            view.getNewCategoryInput().setText("");
         }
     }
 
@@ -146,12 +192,4 @@ public class CreateLobbyController {
         // Removing the category in the model
         gameModel.removeCategory(categoryButton.getText());
     }
-
-    /**
-     * Clears the model when creating a new lobby
-     */
-    private void clearModel() {
-        gameModel.clearCategories();
-    }
-
 }

@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,8 +12,14 @@ import java.awt.*;
 public class StartView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
+
+    @Getter
     private JButton createLobbyButton;
+
+    @Getter
     private JButton joinLobbyButton;
+
+    @Getter
     private JLabel headerLabel;
 
     /**
@@ -81,29 +88,6 @@ public class StartView extends JPanel implements InitializableView {
         add(joinLobbyButton, gbc);
     }
 
-    /**
-     * Returns the button to create a lobby
-     * @return      button component to create a lobby
-     */
-    public JButton getCreateLobbyButton() {
-        return createLobbyButton;
-    }
-
-    /**
-     * Returns the button to join a lobby
-     * @return      button component to join a lobby
-     */
-    public JButton getJoinLobbyButton() {
-        return joinLobbyButton;
-    }
-
-    /**
-     * Returns the header (JLabel) of the start screen
-     * @return      header of start screen
-     */
-    public JLabel getHeaderLabel() {
-        return headerLabel;
-    }
 
     /**
      * Adds a background image to the view

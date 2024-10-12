@@ -51,6 +51,7 @@ public class GameRoundController {
      * Updates the game round number
      */
     private void updateRoundNumber(int currentRound) {
+        // TODO: 11.10.2024 get round number from service
         // save changes in model
         model.setCurrentRoundNumber(currentRound + 1);
 
@@ -62,12 +63,15 @@ public class GameRoundController {
      * Navigate to answer overview
      */
     private void goToAnswerOverviewView() {
-        if (validateInputs()) {
-            log.info("GO TO ANSWER OVERVIEW VIEW");
-            viewManager.changeView(View.ANSWERS);
-        } else {
-            view.throwErrorDialog();
-        }
+        // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
+        viewManager.changeView(View.ANSWERS);
+
+//        if (validateInputs()) {
+//            log.info("GO TO ANSWER OVERVIEW VIEW");
+//            viewManager.changeView(View.ANSWERS);
+//        } else {
+//            view.throwErrorDialog();
+//        }
     }
 
     /**

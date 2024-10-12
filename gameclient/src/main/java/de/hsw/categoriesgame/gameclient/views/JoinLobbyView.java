@@ -186,8 +186,8 @@ public class JoinLobbyView extends JPanel implements InitializableView {
         add(buttonPanel, gbc);
     }
 
-    public void throwErrorDialog() {
-        JOptionPane.showMessageDialog(null, "Es existiert keine Lobby unter diesem Lobbycode",
-                "Lobby nicht gefunden", JOptionPane.ERROR_MESSAGE);
+    public void throwErrorDialog(final String message) {
+        JOptionPane.showMessageDialog(this, message,
+                "Es ist ein Fehler aufgetreten!", JOptionPane.ERROR_MESSAGE);
     }
 }
