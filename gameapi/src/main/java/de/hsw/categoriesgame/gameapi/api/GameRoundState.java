@@ -6,6 +6,11 @@ package de.hsw.categoriesgame.gameapi.api;
 public enum GameRoundState {
 
     /**
+     * State before game has started
+     */
+    PREPARING,
+
+    /**
      * Users can write their answers and have time to send them
      */
     ANSWERS_OPEN,

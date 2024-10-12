@@ -67,6 +67,7 @@ public class ServerGame {
         }
         this.gameConfigs = gameConfigs;
         this.clients = clients;
+        this.currentRoundState = GameRoundState.PREPARING;
     }
 
 

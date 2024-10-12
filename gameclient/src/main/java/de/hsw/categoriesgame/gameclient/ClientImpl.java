@@ -89,6 +89,7 @@ public class ClientImpl implements Client {
     @Override
     public void notifyRoundState(GameRoundState roundState, GameData gameData)
     {
+        log.debug("notifyRoundState was called with {}", roundState);
         this.currentGame.setGameRoundState(roundState);
         this.currentGame.setCurrentRoundNumber(gameData.getCurrentRound());
         this.currentGame.setCurrentLetter(gameData.getCurrentLetter());
@@ -105,6 +106,7 @@ public class ClientImpl implements Client {
     @Override
     public void notifyPlayerJoinLeave(List<PlayerBean> players)
     {
+        log.debug("notifyPlayerJoinLeave was called with {} players", players.size());
         currentGame.setPlayerBeans(players);
         currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE);
     }
