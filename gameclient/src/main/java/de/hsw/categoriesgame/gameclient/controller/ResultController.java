@@ -26,10 +26,6 @@ public class ResultController implements AdvancedObserver {
     private final ResultView view;
     private final GameModel model;
 
-    // TODO: mockPlayers-Referenzen durch getter in model ersetzen
-
-    List<PlayerBean> mockPlayerBeans;
-
     /**
      * Constructor
      * @param viewManager   ViewManager to be able to navigate between views
@@ -42,11 +38,6 @@ public class ResultController implements AdvancedObserver {
         this.model = model;
 
         model.register(ObservableCategory.RESULT_CONTROLLER, this);
-
-        mockPlayerBeans = new ArrayList<>();
-        mockPlayerBeans.add(new PlayerBean("Jeff"));
-        mockPlayerBeans.add(new PlayerBean("Kevin"));
-        mockPlayerBeans.add(new PlayerBean("Marc"));
 
         registerListener();
         calculatePlacements();
@@ -76,6 +67,7 @@ public class ResultController implements AdvancedObserver {
         model.setCurrentRoundNumber(0);
 
         // TODO: 11.10.2024 start new round
+        // TODO: Evtl. am Ende implementieren, wenn alles fertig?
 
         log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
