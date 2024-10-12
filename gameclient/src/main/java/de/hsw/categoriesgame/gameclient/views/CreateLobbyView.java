@@ -26,8 +26,6 @@ public class CreateLobbyView extends JPanel implements InitializableView {
     private JSpinner maxPlayerSpinner;
     private JLabel amountRoundsLabel;
     private JSpinner amountRoundsSpinner;
-    private JLabel doubtsNeededLabel;
-    private JSpinner doubtsNeededSpinner;
     private JButton cancelButton;
     private JButton createButton;
     private JLabel newCategoryLabel;
@@ -175,21 +173,6 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         return categoryButtons;
     }
 
-    /**
-     * Returns the label for doubts needed spinner component
-     * @return
-     */
-    public JLabel getDoubtsNeededLabel() {
-        return doubtsNeededLabel;
-    }
-
-    /**
-     * Returns the doubts needed Spinner component
-     * @return  JSpinner
-     */
-    public JSpinner getDoubtsNeededSpinner() {
-        return doubtsNeededSpinner;
-    }
 
     /**
      * Initializes all components needed
@@ -221,10 +204,6 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         // Amount rounds components
         amountRoundsLabel = new JLabel("Amount Rounds:");
         amountRoundsSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 20, 1));
-
-        // Amount doubts components
-        doubtsNeededLabel = new JLabel("Amount Doubts:");
-        doubtsNeededSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
 
         // Components for adding a new category
         newCategoryLabel = new JLabel("New Category:");

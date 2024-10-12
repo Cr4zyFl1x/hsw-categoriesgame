@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameapi.api;
 
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface Lobby {
      * Removes player from lobby.
      * @param client    object of class Player
      */
-    void leaveClient(Client client);
+    void leaveClient(Client client) throws UserNotInLobbyException;
 
     /**
      * Set the categories for the game/lobby.
@@ -45,7 +46,7 @@ public interface Lobby {
     /**
      * Create new object of class Game with players in the lobby.
      */
-    void startGame(GameConfigs gameConfigs);
+    void startGame();
 
     /**
      * Start a new round, setup data structures and generate new random letter.
@@ -115,4 +116,12 @@ public interface Lobby {
      * @return true if game has started
      */
     boolean hasGameStarted();
+
+
+    /**
+     * Gets the configuration of the game
+     *
+     * @return the config
+     */
+    GameConfigs getGameConfiguration();
 }

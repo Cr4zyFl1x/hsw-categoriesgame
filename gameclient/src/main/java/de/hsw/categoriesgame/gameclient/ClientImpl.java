@@ -102,10 +102,13 @@ public class ClientImpl implements Client {
     }
 
 
+    /**
+     * Called when lobby has changed e. g. Players in lobby
+     */
     @Override
     public void notifyPlayerAboutLobbyState()
     {
-        log.debug("Player got notified");
-        currentGame.sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
+        // Update Players in model
+        currentGame.updatePlayers();
     }
 }

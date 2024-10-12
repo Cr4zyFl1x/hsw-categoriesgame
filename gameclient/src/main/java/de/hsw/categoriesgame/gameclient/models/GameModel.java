@@ -1,39 +1,63 @@
 package de.hsw.categoriesgame.gameclient.models;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameclient.GameclientApplication;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class contains all necessary data while the game is running
  */
 public class GameModel implements AdvancedObservable<ObservableCategory> {
 
-    @Setter
-    @Getter
+    /**
+     * Logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(GameModel.class);
+
+    /**
+     * The lobby (REMOTE use little!)
+     */
+    @Setter @Getter
     private Lobby lobby;
 
-    @Setter
-    @Getter
+    /**
+     * The represented client / player (REMOTE use little)
+     */
+    @Setter @Getter
     private Client localClient;
 
-    private char currentLetter;
+    /**
+     * Players in the game
+     */
+    @Getter
+    private List<PlayerBean> playerBeans;
 
-    private int amountRounds;
+    @Getter
+    private String lobbyCode;
 
-    private int currentRoundNumber;
-  
+    @Getter
     private final List<String> categories;
-    private final List<PlayerBean> playerBeans;
+
+    private char currentLetter;
+    private int amountRounds;
+    private int currentRoundNumber;
+
     private List<Pair<String, Boolean>> answersDoubted;
 
     /**
@@ -43,6 +67,31 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         categories = new ArrayList<>();
         playerBeans = new ArrayList<>();
     }
+
+
+    /**
+     * Get initial data from remote to avoid doing this again and again
+     */
+    public void initialize()
+    {
+        if (lobby == null || localClient == null)
+            throw new IllegalStateException("For initialization the lobby and local client must be present!");
+
+        this.lobbyCode = lobby.getLobbyCode();
+        updatePlayers();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     //TODO: Lobby Methode aufrufen (sendAnsw)
     //TODO: "" evaluateAnswers aufrufen
     /**
@@ -76,14 +125,8 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public void setCurrentRoundNumber(int currentRoundNumber) {
         this.currentRoundNumber = currentRoundNumber;
     }
-    //TODO: Muss mit der maximalen game nummer verglichen werden (vom Server), start von jeder Runde
-    /**
-     * Returns all categories
-     * @return  list of all categories
-     */
-    public List<String> getCategories() {
-        return categories;
-    }
+
+
     //TODO: Bekommt man vom Server
     //TODO: SetCategories erstellen
     /**
@@ -101,6 +144,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public void addCategory(String category) {
         categories.add(category);
     }
+
     //TODO: Bekommt man vom Server
     /**
      * removes a category from the category list
@@ -110,21 +154,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         categories.remove(category);
     }
 
-    /**
-     * clears the complete category list
-     */
-    public void clearCategories() {
-        categories.clear();
-    }
 
-    /**
-     * Returns the list including all players
-     * @return  list of players
-     */
-    public List<PlayerBean> getPlayerBeans() {
-        return playerBeans;
-    }
-    //TODO: Bekommt man vom Server -> von Lobby
     /**
      * returns the amount of players
      * @return  amount of players
@@ -133,28 +163,6 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         return playerBeans.size();
     }
 
-    /**
-     * adds a new player to the player list
-     * @param playerBean    new player to be added
-     */
-    public void addPlayer(PlayerBean playerBean) {
-        playerBeans.add(playerBean);
-    }
-
-    /**
-     * removes a certain player from the player list
-     * @param playerBean    player to be removed
-     */
-    public void removePlayer(PlayerBean playerBean) {
-        playerBeans.remove(playerBean);
-    }
-
-    /**
-     * clears the complete player list
-     */
-    public void clearPlayers() {
-        playerBeans.clear();
-    }
 
     /**
      * Returns the current active letter
@@ -185,6 +193,45 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
+    /**
+     * If the user/client is currently in a lobby/game it leaves from it.
+     *
+     * @throws IllegalStateException if user is not existing or not in lobby etc.
+     */
+    public void leave() throws IllegalStateException
+    {
+        if (localClient == null && lobby != null) {
+            throw new IllegalStateException("A lobby is existing but no LocalPlayer. WRONG STATE!");
+        }
+
+        try {
+            CategorieGame game = GameclientApplication.getRemoteGame();
+            game.leaveLobby(getLobby(), getLocalClient());
+        } catch (UserNotInLobbyException | LobbyNotFoundException e) {
+            log.error("Unable to leave user/client from lobby!", e);
+            throw new IllegalStateException("Unable to leave user/client from lobby!", e);
+        }
+
+        // Reset model to be ready for new game
+        this.reset();
+    }
+
+
+    /**
+     * Reads the userlist from remote and notifies views/controller
+     */
+    public void updatePlayers()
+    {
+        this.playerBeans = lobby.getPlayers();
+
+        // Notification required in WaitingList
+        sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
+    }
+
+
+    /**
+     * Resets the whole model
+     */
     public void reset()
     {
         this.currentLetter = 0;
@@ -208,7 +255,16 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     {
         if (!observers.containsKey(category))
             observers.put(category, new ArrayList<>());
-        observers.get(category).add(observer);
+
+        final List<AdvancedObserver> catObservers = observers.get(category);
+        Optional<AdvancedObserver> existingOfType = catObservers.stream()
+                        .filter(j -> j.getClass().equals(observer.getClass()))
+                        .findFirst();
+
+        existingOfType.ifPresent(catObservers::remove);
+        catObservers.add(observer);
+
+//        observers.get(category).add(observer);
     }
 
 

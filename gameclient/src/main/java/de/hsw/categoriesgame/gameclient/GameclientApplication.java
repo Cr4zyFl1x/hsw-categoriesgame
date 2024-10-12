@@ -1,8 +1,10 @@
 package de.hsw.categoriesgame.gameclient;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
+import de.hsw.categoriesgame.gameapi.util.NetUtil;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.net.Socket;
 import java.util.PropertyResourceBundle;
 
 /**
@@ -35,16 +38,20 @@ public class GameclientApplication {
     @Getter
     private static ProxyFactory proxyFactory;
 
+    @Getter
+    private static CategorieGame remoteGame;
+
     static {
         mySideServer = new SocketRemoteServer(new DomainRegistry());
     }
 
     public static void main(String[] args)
     {
+        setupTheme();
         readConfig();
+        connectivityCheck();
         setupServerAndProxyFactory();
 
-        SwingUtilities.invokeLater(GameclientApplication::setupTheme);
         SwingUtilities.invokeLater(GameclientApplication::createViewManager);
     }
 
@@ -90,6 +97,7 @@ public class GameclientApplication {
                 Integer.parseInt(getConfig().getString("remote-server.port"))
         );
         proxyFactory = new RememberableProxyFactory(connectionDetails, mySideServer);
+        remoteGame = proxyFactory.createProxy(CategorieGame.class);
     }
 
 
@@ -103,6 +111,21 @@ public class GameclientApplication {
         } catch (Exception e) {
             log.error("Error reading application.properties", e);
             System.exit(1);
+        }
+    }
+
+
+    private static void connectivityCheck()
+    {
+        final String hostname   = getConfig().getString("remote-server.hostname");
+        final int port          = Integer.parseInt(getConfig().getString("remote-server.port"));
+
+        if (!NetUtil.isListening(hostname, port)) {
+            JOptionPane.showMessageDialog(null,
+                    "Der RemoteServer konnte nicht erreicht werden!\nBitte prüfen Sie die Konfiguration.",
+                    "Es ist ein Initialisierungsfehler aufgetreten!", JOptionPane.ERROR_MESSAGE);
+
+            System.exit(2);
         }
     }
 }

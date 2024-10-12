@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,10 +11,19 @@ import java.util.List;
 public class LobbyWaitingView extends JPanel implements InitializableView {
 
     private JLabel waitingHeader;
+
+    private JLabel lobbyCodeLabel;
+
+    @Getter
     private JButton leaveButton;
+
+    @Getter
     private JButton startGameButton;
+
     private JPanel buttonPanel;
+
     private JPanel playerPanel;
+
     private List<JLabel> playerLabels = new ArrayList<>();
 
     public LobbyWaitingView() {
@@ -21,23 +31,15 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         buildView();
     }
 
-    public JLabel getWaitingHeader() {
-        return waitingHeader;
-    }
-
-    public JButton getLeaveButton() {
-        return leaveButton;
-    }
-
-    public JButton getStartGameButton() {
-        return startGameButton;
-    }
 
     @Override
     public void initializeComponents() {
         // Header
         waitingHeader = new JLabel("Waiting for the game...");
         waitingHeader.setFont(new Font("Arial", Font.BOLD, 24));
+
+        lobbyCodeLabel = new JLabel("Lobby Code: ");
+        lobbyCodeLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
         // leave button
         leaveButton = new JButton("Leave");
@@ -66,6 +68,9 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         add(waitingHeader, gbc);
 
         gbc.gridy = 1;
+        add(lobbyCodeLabel, gbc);
+
+        gbc.gridy = 2;
         add(playerPanel, gbc);
 
         buttonPanel.setLayout(new GridBagLayout());
@@ -79,7 +84,7 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         gbcButton.gridx = 1;
         buttonPanel.add(startGameButton, gbcButton);
 
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         add(buttonPanel, gbc);
     }
 
@@ -105,7 +110,13 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
         playerPanel.repaint();
     }
 
-    public void isStartGameButtonVisible(boolean visible) {
-        startGameButton.setOpaque(visible);
+    public void setLobbyCode(String lobbyCode)
+    {
+        lobbyCodeLabel.setText("LobbyCode: " + lobbyCode);
+    }
+
+    public void throwErrorDialog(final String message)
+    {
+        JOptionPane.showMessageDialog(this, message, "Es ist ein Fehler aufgetreten!", JOptionPane.ERROR_MESSAGE);
     }
 }
