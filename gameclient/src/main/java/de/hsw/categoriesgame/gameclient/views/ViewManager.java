@@ -95,9 +95,8 @@ public class ViewManager {
                         proxyFactory.createProxy(CategorieGame.class)
                                 .leaveLobby(gameModel.getLobby(), gameModel.getLocalClient());
                         log.debug("Player left game!");
-                    } catch (LobbyNotFoundException ex) {
+                    } catch (Exception ex) {
                         log.error("Unable to leave lobby!", ex);
-                        throw new RuntimeException(ex);
                     }
                 }
             }
