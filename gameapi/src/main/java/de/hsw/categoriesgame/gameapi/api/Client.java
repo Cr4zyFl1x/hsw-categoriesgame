@@ -43,6 +43,12 @@ public interface Client {
      */
     void setHasAnswered(boolean hasAnswered);
 
+    /**
+     * Notifies the client of the new state
+     *
+     * @param roundState
+     */
+    void notifyRoundState(GameRoundState roundState);
 
     void notifyPlayerAboutRoundState(RoundState roundState);
 

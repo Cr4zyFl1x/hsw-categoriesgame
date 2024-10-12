@@ -26,50 +26,6 @@ public interface Lobby {
      */
     void leaveClient(Client client) throws UserNotInLobbyException;
 
-    /**
-     * Set the categories for the game/lobby.
-     * @param categories    list of categories (e.g. name, country, ...)
-     */
-    void setCategories(List<String> categories);
-
-    /**
-     * Get the categories of the game/lobby.
-     * @return  list of categories as strings
-     */
-    List<String> getCategories();
-
-    int getCurrentRoundNumber();
-
-
-    char getCurrentLetter();
-
-    /**
-     * Create new object of class Game with players in the lobby.
-     */
-    void startGame();
-
-    /**
-     * Start a new round, setup data structures and generate new random letter.
-     * @return  random letter for the new round
-     */
-    void startNewRound();
-    void closeAnswerRound();
-    void closeDoubtingRound();
-
-
-    /**
-     * Sends list of answers to server to save.
-     * @param answers   list of normal answers
-     */
-    void sendAnswers(List<NormalAnswer> answers);
-
-    /**
-     * Player can doubt an answer of another player.
-     * @param doubtedAnswer object of DoubtedAnswer
-     * @return              list of entries
-     */
-    List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
-
 
     /**
      * Gets the current points of a player
@@ -116,12 +72,4 @@ public interface Lobby {
      * @return true if game has started
      */
     boolean hasGameStarted();
-
-
-    /**
-     * Gets the configuration of the game
-     *
-     * @return the config
-     */
-    GameConfigs getGameConfiguration();
 }
