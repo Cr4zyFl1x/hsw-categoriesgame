@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -34,6 +35,9 @@ public class GameclientApplication {
 
     @Getter
     private static ProxyFactory proxyFactory;
+
+    @Getter
+    private static CategorieGame remoteGame;
 
     static {
         mySideServer = new SocketRemoteServer(new DomainRegistry());
@@ -90,6 +94,7 @@ public class GameclientApplication {
                 Integer.parseInt(getConfig().getString("remote-server.port"))
         );
         proxyFactory = new RememberableProxyFactory(connectionDetails, mySideServer);
+        remoteGame = proxyFactory.createProxy(CategorieGame.class);
     }
 
 

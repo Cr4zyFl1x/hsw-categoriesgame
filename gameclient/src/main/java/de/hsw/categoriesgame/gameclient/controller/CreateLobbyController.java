@@ -149,7 +149,6 @@ public class CreateLobbyController {
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
         int amountCategories = gameModel.getCategoriesCount();
-        int amountsNeededCounts = (int) view.getDoubtsNeededSpinner().getValue();
 
         return maxPlayers >= 2 && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
     }
@@ -157,8 +156,16 @@ public class CreateLobbyController {
     /**
      * Method triggers the addition of a new category including adding it to the model
      */
-    private void addNewCategory(final String newCategory) {
+    private void addNewCategory(String newCategory) {
+        newCategory = newCategory.trim();
         JButton categoryButton = new JButton();
+
+        // Already exists?
+        String finalNewCategory = newCategory;
+        if (view.getCategoryButtons().stream().map(j -> j.getText().trim()).anyMatch(j -> j.equals(finalNewCategory))) {
+            view.throwErrorDialog("Diese Kategorie existiert bereits!");
+            return;
+        }
 
         for (int i = 0; i < view.getCategoryButtons().size(); i++) {
             if (view.getCategoryButtons().get(i).getText().equals(newCategory)) {

@@ -2,9 +2,7 @@ package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
-import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
-import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
@@ -21,29 +19,32 @@ import java.util.List;
  */
 public class GameModel implements AdvancedObservable<ObservableCategory> {
 
+    /**
+     * The lobby (REMOTE use little!)
+     */
     @Setter
     @Getter
     private Lobby lobby;
 
-    @Setter
-    @Getter
+    /**
+     * The represented client / player (REMOTE use little)
+     */
+    @Setter @Getter
     private Client localClient;
 
-    private char currentLetter;
-
-    private int amountRounds;
-
-    private int currentRoundNumber;
-  
-    private final List<String> categories;
-    private final List<PlayerBean> playerBeans;
-    private List<Pair<String, Boolean>> answersDoubted;
-
-    private List<String> answers;
-
+    /**
+     * Players in the game
+     */
     @Getter
-    @Setter
-    private RoundState roundState;
+    private List<PlayerBean> playerBeans;
+
+
+    private char currentLetter;
+    private int amountRounds;
+    private int currentRoundNumber;
+    private final List<String> categories;
+
+    private List<Pair<String, Boolean>> answersDoubted;
 
     /**
      * Constructor
@@ -51,30 +52,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public GameModel() {
         categories = new ArrayList<>();
         playerBeans = new ArrayList<>();
-        answers = new ArrayList<>();
     }
-
-    // tmp
-    public void startNewGame() {
-        lobby.startGame(new GameConfigs(3, 5));
-    }
-
-    public void startNewRound() {
-        lobby.startNewRound();
-        this.currentLetter = lobby.getCurrentLetter();
-    }
-
-    public void sendAnswers() {
-        List<NormalAnswer> normalAnswers = new ArrayList<>();
-        for (int i = 0; i < categories.size(); i++) {
-            var category = categories.get(i);
-            var answer = answers.get(i);
-            normalAnswers.add(new NormalAnswer(localClient.getUUID(), category, answer));
-        }
-        lobby.sendAnswers(normalAnswers);
-    }
-
-
     //TODO: Lobby Methode aufrufen (sendAnsw)
     //TODO: "" evaluateAnswers aufrufen
     /**
@@ -116,6 +94,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public List<String> getCategories() {
         return categories;
     }
+
     //TODO: Bekommt man vom Server
     //TODO: SetCategories erstellen
     /**
@@ -133,6 +112,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     public void addCategory(String category) {
         categories.add(category);
     }
+
     //TODO: Bekommt man vom Server
     /**
      * removes a category from the category list
@@ -142,21 +122,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         categories.remove(category);
     }
 
-    /**
-     * clears the complete category list
-     */
-    public void clearCategories() {
-        categories.clear();
-    }
 
-    /**
-     * Returns the list including all players
-     * @return  list of players
-     */
-    public List<PlayerBean> getPlayerBeans() {
-        return playerBeans;
-    }
-    //TODO: Bekommt man vom Server -> von Lobby
     /**
      * returns the amount of players
      * @return  amount of players
@@ -165,32 +131,6 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         return playerBeans.size();
     }
 
-    /**
-     * adds a new player to the player list
-     * @param playerBean    new player to be added
-     */
-    public void addPlayer(PlayerBean playerBean) {
-        playerBeans.add(playerBean);
-    }
-
-    /**
-     * removes a certain player from the player list
-     * @param playerBean    player to be removed
-     */
-    public void removePlayer(PlayerBean playerBean) {
-        playerBeans.remove(playerBean);
-    }
-
-    /**
-     * clears the complete player list
-     */
-    public void clearPlayers() {
-        playerBeans.clear();
-    }
-
-    public void setAnswers(List<String> answers) {
-        this.answers = answers;
-    }
 
     /**
      * Returns the current active letter
@@ -218,6 +158,28 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     public List<Pair<String, Boolean>> getAnswersDoubted() {
         return answersDoubted;
+    }
+
+
+    public void leave() throws IllegalStateException
+    {
+        if (localClient == null && lobby != null) {
+            throw new IllegalStateException("A lobby is existing but no LocalPlayer. WRONG STATE!");
+        }
+
+        // TODO:
+    }
+
+
+    /**
+     * Reads the userlist from remote and notifies views/controller
+     */
+    public void updatePlayers()
+    {
+        this.playerBeans = lobby.getPlayers();
+
+        // Notification required in WaitingList
+        sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
     }
 
 
