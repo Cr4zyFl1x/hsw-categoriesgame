@@ -85,5 +85,6 @@ public class LobbyWaitingController implements AdvancedObserver {
     {
         log.debug("Lobby has changed! Processing change.");
         updateJoinedPlayers();
+        isStartGameButtonVisible();
     }
 }
