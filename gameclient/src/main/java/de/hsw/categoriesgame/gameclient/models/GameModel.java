@@ -222,7 +222,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
             return;
         }
 
-        for (ObservableCategory cat : category) {
+        for (ObservableCategory cat : observers.keySet()) {
             observers.get(cat).forEach(AdvancedObserver::receiveNotification);
         }
     }

@@ -41,6 +41,9 @@ public class CategoriesGameImpl implements CategorieGame {
     public Lobby joinLobby(String lobbyCode, Client client) throws LobbyNotFoundException {
         Lobby lobby = getLobby(lobbyCode);
         lobby.joinClient(client);
+
+        lobby.getClients().forEach(Client::notifyPlayerAboutLobbyState);
+
         return lobby;
     }
 
