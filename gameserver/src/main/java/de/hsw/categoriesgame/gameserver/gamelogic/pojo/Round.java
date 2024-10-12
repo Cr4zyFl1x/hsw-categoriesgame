@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameserver.gamelogic.pojo;
 
 import de.hsw.categoriesgame.gameapi.api.Player;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 public class Round {
 
     @Getter
+    @Setter
     private char letter;
 
     @Getter

@@ -75,7 +75,7 @@ class GameTest {
     void updateRoundNumber() {
         game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
-        game.updateRoundNumber();
+        game.startNewRound();
         assertEquals(2, game.getRoundNumber());
     }
 
@@ -83,7 +83,7 @@ class GameTest {
     void evaluateAnswers() {
         game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
-        ((GameImpl) game).setCurrentLetter('A');
+        game.startNewRound();
         game.setCategories(List.of(category1, category2, category3));
 
         var answersPlayer1 = List.of(
@@ -91,9 +91,7 @@ class GameTest {
                 new NormalAnswer(player1.getUUID(), category2, a2),
                 new NormalAnswer(player1.getUUID(), category3, a3));
         game.sendAnswers(answersPlayer1);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player1));
 
         var answersPlayer2 = List.of(
@@ -101,9 +99,7 @@ class GameTest {
                 new NormalAnswer(player2.getUUID(), category2, a5),
                 new NormalAnswer(player2.getUUID(), category3, a6));
         game.sendAnswers(answersPlayer2);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player2));
 
         var answersPlayer3 = List.of(
@@ -111,9 +107,7 @@ class GameTest {
                 new NormalAnswer(player3.getUUID(), category2, a8),
                 new NormalAnswer(player3.getUUID(), category3, a9));
         game.sendAnswers(answersPlayer3);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player3));
 
         var answersPlayer4 = List.of(
@@ -121,14 +115,11 @@ class GameTest {
                 new NormalAnswer(player4.getUUID(), category2, a11),
                 new NormalAnswer(player4.getUUID(), category3, a12));
         game.sendAnswers(answersPlayer4);
-        game.evaluateAnswers();
 
-        assertTrue(game.haveAllPlayersAnswered());
         assertFalse(game.answersWereDoubted());
 
-        //game.setAnswersWereDoubted(true);
 
-        game.evaluateAnswers();
+        //game.setAnswersWereDoubted(true);
 
 
         assertAll(
@@ -142,17 +133,17 @@ class GameTest {
     void doubtedOnce() {
         game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
-        ((GameImpl) game).setCurrentLetter('A');
         game.setCategories(List.of(category1, category2, category3));
+
+        game.startNewRound();
+        ((GameImpl) game).setCurrentLetter();
 
         var answersPlayer1 = List.of(
                 new NormalAnswer(player1.getUUID(), category1, a1),
                 new NormalAnswer(player1.getUUID(), category2, a2),
                 new NormalAnswer(player1.getUUID(), category3, a3));
         game.sendAnswers(answersPlayer1);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player1));
 
         var answersPlayer2 = List.of(
@@ -160,9 +151,7 @@ class GameTest {
                 new NormalAnswer(player2.getUUID(), category2, a5),
                 new NormalAnswer(player2.getUUID(), category3, a6));
         game.sendAnswers(answersPlayer2);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player2));
 
         var answersPlayer3 = List.of(
@@ -170,9 +159,7 @@ class GameTest {
                 new NormalAnswer(player3.getUUID(), category2, a8),
                 new NormalAnswer(player3.getUUID(), category3, a9));
         game.sendAnswers(answersPlayer3);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player3));
 
         var answersPlayer4 = List.of(
@@ -180,10 +167,10 @@ class GameTest {
                 new NormalAnswer(player4.getUUID(), category2, a11),
                 new NormalAnswer(player4.getUUID(), category3, a12));
         game.sendAnswers(answersPlayer4);
-        game.evaluateAnswers();
 
-        assertTrue(game.haveAllPlayersAnswered());
         assertFalse(game.answersWereDoubted());
+
+        //game.startDoubtingRound();
 
         game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player4.getUUID()));
         game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player2.getUUID()));
@@ -224,9 +211,7 @@ class GameTest {
 
         game.setAnswersWereDoubted(true);
 
-        var actual = game.evaluateAnswers();
-
-        assertIterableEquals(expected, actual);
+        game.closeDoubtingRound();
 
         assertAll(
                 () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(player1)),
@@ -239,17 +224,18 @@ class GameTest {
     void doubtedTwice() {
         game = new GameImpl(List.of(player1, player2, player3, player4), new GameConfigs(3, 5));
 
-        ((GameImpl) game).setCurrentLetter('A');
         game.setCategories(List.of(category1, category2, category3));
+
+        game.startNewRound();
+        ((GameImpl) game).setCurrentLetter();
+
 
         var answersPlayer1 = List.of(
                 new NormalAnswer(player1.getUUID(), category1, a1),
                 new NormalAnswer(player1.getUUID(), category2, a2),
                 new NormalAnswer(player1.getUUID(), category3, a3));
         game.sendAnswers(answersPlayer1);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player1));
 
         var answersPlayer2 = List.of(
@@ -257,9 +243,7 @@ class GameTest {
                 new NormalAnswer(player2.getUUID(), category2, a5),
                 new NormalAnswer(player2.getUUID(), category3, a6));
         game.sendAnswers(answersPlayer2);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player2));
 
         var answersPlayer3 = List.of(
@@ -267,9 +251,7 @@ class GameTest {
                 new NormalAnswer(player3.getUUID(), category2, a8),
                 new NormalAnswer(player3.getUUID(), category3, a9));
         game.sendAnswers(answersPlayer3);
-        game.evaluateAnswers();
 
-        assertFalse(game.haveAllPlayersAnswered());
         assertEquals(0, game.getCurrentPointsOfPlayer(player3));
 
         var answersPlayer4 = List.of(
@@ -277,10 +259,10 @@ class GameTest {
                 new NormalAnswer(player4.getUUID(), category2, a11),
                 new NormalAnswer(player4.getUUID(), category3, a12));
         game.sendAnswers(answersPlayer4);
-        game.evaluateAnswers();
 
-        assertTrue(game.haveAllPlayersAnswered());
         assertFalse(game.answersWereDoubted());
+
+
 
         game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player4.getUUID()));
         game.doubtAnswer(new DoubtedAnswer(player1.getUUID(), category2, a2, player2.getUUID()));
@@ -321,9 +303,7 @@ class GameTest {
 
         game.setAnswersWereDoubted(true);
 
-        var actual = game.evaluateAnswers();
-
-        assertIterableEquals(expected, actual);
+        game.closeDoubtingRound();
 
         assertAll(
                 () -> assertEquals(5 + 0 + 0, game.getCurrentPointsOfPlayer(player1)),

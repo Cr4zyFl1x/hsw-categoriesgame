@@ -1,9 +1,11 @@
 package de.hsw.categoriesgame.gameserver.gamelogic.services.impl;
 
 import de.hsw.categoriesgame.gameapi.api.Player;
+import de.hsw.categoriesgame.gameapi.exception.AnsweringException;
 import de.hsw.categoriesgame.gameapi.pojo.DoubtedAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
+import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.Round;
 import de.hsw.categoriesgame.gameserver.gamelogic.pojo.RoundEntry;
 import de.hsw.categoriesgame.gameserver.gamelogic.rules.PointRules;
@@ -13,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,15 +27,15 @@ public class GameImpl implements Game {
     @Getter
     private int roundNumber;
 
-    @Getter
-    private char currentLetter;
-
     private final List<Player> players;
 
     @Getter
     private final List<String> categories;
 
-    private final Round round;
+    @Getter
+    private Round round;
+
+    private RoundState roundState;
 
     @Setter
     private boolean answersWereDoubted;
@@ -42,17 +45,42 @@ public class GameImpl implements Game {
         this.categories = new ArrayList<>();
         this.gameConfigs = gameConfigs;
 
-        this.round = new Round(currentLetter);
+        //this.round = new Round(currentLetter);
 
         resetPoints();
         resetRoundNumber();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void updateRoundNumber() {
+    public void startNewRound() {
+        resetHasAnswered();
+        this.updateRoundNumber();
+        this.round = new Round(generateRandomLetter());
+
+        this.roundState = RoundState.ANSWERING_OPEN;
+        this.notifyPlayersOfState();
+    }
+
+    @Override
+    public void closeAnsweringRound() {
+        this.roundState = RoundState.ANSWERING_OPEN;
+        this.notifyPlayersOfState();
+    }
+
+    @Override
+    public void startDoubtingRound() {
+
+    }
+
+    @Override
+    public void closeDoubtingRound() {
+        this.roundState = RoundState.DOUBTING_CLOSED;
+        this.notifyPlayersOfState();
+        evaluateAnswers();
+    }
+
+
+    private void updateRoundNumber() {
         this.roundNumber += 1;
     }
 
@@ -60,11 +88,8 @@ public class GameImpl implements Game {
         this.roundNumber = 1;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void addPointsForPlayer(Player player, PointRules pointRule) {
+
+    private void addPointsForPlayer(Player player, PointRules pointRule) {
         var withAddedPoints = player.getPoints() + pointRule.getPoints();
         player.setPoints(withAddedPoints);
     }
@@ -81,24 +106,62 @@ public class GameImpl implements Game {
         this.categories.addAll(categories);
     }
 
+
+    boolean noTimeoutActionNecessary = false;
     /**
      * {@inheritDoc}
      */
     @Override
     public void sendAnswers(List<NormalAnswer> normalAnswers) {
-        normalAnswers.forEach(normalAnswer -> {
-            var category = normalAnswer.category();
-            var player = getPlayerByUUID(normalAnswer.playerUUID());
-            var answer = normalAnswer.answer();
+        if (this.roundState == RoundState.ANSWERING_OPEN || this.roundState == RoundState.ANSWERING_CLOSED) {
 
-            round.addEntry(category, player, answer);
-            player.setHasAnswered(true);
-        });
+            normalAnswers.forEach(normalAnswer -> {
+                var category = normalAnswer.category();
+                var player = getPlayerByUUID(normalAnswer.playerUUID());
+                var answer = normalAnswer.answer();
 
+                round.addEntry(category, player, answer);
+                player.setHasAnswered(true);
+            });
+
+            if (this.isFirstPlayer()) {
+                this.roundState = RoundState.ANSWERING_CLOSED;
+                this.notifyPlayersOfState();
+
+                var thread = new Thread(() -> {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ignored) {}
+                    if (!noTimeoutActionNecessary) {
+                        this.roundState = RoundState.DOUBTING_OPEN;
+                        this.notifyPlayersOfState();
+                        noTimeoutActionNecessary = false;
+                    }
+                });
+                thread.start();
+            }
+        }
+//        normalAnswers.forEach(normalAnswer -> {
+//            var category = normalAnswer.category();
+//            var player = getPlayerByUUID(normalAnswer.playerUUID());
+//            var answer = normalAnswer.answer();
+//
+//            round.addEntry(category, player, answer);
+//            player.setHasAnswered(true);
+//        });
+        // wenn der erste, dann close und timer start (wenn gültige antwort und noch offen war)
+        if (this.haveAllPlayersAnswered()) {
+            this.roundState = RoundState.DOUBTING_OPEN;
+            this.notifyPlayersOfState();
+            noTimeoutActionNecessary = true;
+        }
     }
 
     @Override
     public List<RoundEntry> doubtAnswer(DoubtedAnswer doubtedAnswer) {
+        if (this.roundState != RoundState.DOUBTING_OPEN) {
+            return round.getRoundEntries();
+        }
         var playerOfAnswerUUID = doubtedAnswer.playerOfAnswerUUID();
         var player = getPlayerByUUID(playerOfAnswerUUID);
         var category = doubtedAnswer.category();
@@ -106,16 +169,22 @@ public class GameImpl implements Game {
 
         var entry = round.getEntry(player, category);
         entry.doubtAnswer(doubtedBy);
+        this.notifyPlayersOfState(RoundState.DOUBTING_UPDATE_NEEDED);
         return round.getRoundEntries();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public List<RoundEntry> evaluateAnswers() {
-        if (!this.haveAllPlayersAnswered() || !this.answersWereDoubted) {
-            return round.getRoundEntries();
+    public char getCurrentLetter() {
+        return round.getLetter();
+    }
+
+    public void setCurrentLetter() {
+        round.setLetter('A');
+    }
+
+    private void evaluateAnswers() {
+        if (this.roundState != RoundState.DOUBTING_CLOSED) {
+            return;
         }
 
         categories.forEach(category -> {
@@ -138,10 +207,7 @@ public class GameImpl implements Game {
                 PointRules pointRules = getPointRules(players.size(), amountOfAnswers, numberOfBlanks, roundEntry.getAnswer(), roundEntry.getDoubtedBy().size());
                 this.addPointsForPlayer(roundEntry.getPlayer(), pointRules);
             });
-
         });
-        resetHasAnswered();
-        return round.getRoundEntries();
     }
 
     private PointRules getPointRules(int amountOfPlayers, Map<String, Long> amountOfAnswers, long numberOfBlanks, String answer, int amountOfDoubted) {
@@ -164,36 +230,19 @@ public class GameImpl implements Game {
     }
 
     private boolean validInput(String inputString) {
-        return inputString.startsWith(String.valueOf(this.currentLetter));
+        return inputString.startsWith(String.valueOf(this.round.getLetter()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public char generateRandomLetter() {
-        currentLetter = RandomLetterUtil.getRandomLetter();
-        return currentLetter;
+    private char generateRandomLetter() {
+        return RandomLetterUtil.getRandomLetter();
     }
 
-    public void setCurrentLetter(char currentLetter) {
-        this.currentLetter = currentLetter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean haveAllPlayersAnswered() {
+    private boolean haveAllPlayersAnswered() {
         var answered = players.stream().filter(Player::hasAnswered).toList();
         return players.size() == answered.size();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void resetHasAnswered() {
+    private void resetHasAnswered() {
         players.forEach(player -> player.setHasAnswered(false));
     }
 
@@ -210,6 +259,19 @@ public class GameImpl implements Game {
     private Player getPlayerByUUID(UUID uuid) {
         var optionalPlayer = players.stream().filter(player -> player.getUUID().equals(uuid)).findFirst();
         return optionalPlayer.orElse(null);
+    }
+
+    private boolean isFirstPlayer() {
+        var answered = players.stream().filter(Player::hasAnswered).toList();
+        return answered.size() == 1;
+    }
+
+    private void notifyPlayersOfState() {
+        players.forEach(player -> player.notifyPlayer(this.roundState));
+    }
+
+    private void notifyPlayersOfState(RoundState roundState) {
+        players.forEach(player -> player.notifyPlayer(roundState));
     }
 
 }
