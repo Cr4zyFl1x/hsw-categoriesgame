@@ -3,6 +3,7 @@ package de.hsw.categoriesgame.gameclient.controller;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.views.GameRoundView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
@@ -36,6 +37,8 @@ public class GameRoundController implements AdvancedObserver {
         this.model = model;
 
         model.startNewRound();
+
+        model.register(ObservableCategory.GAME_ROUND_CONTROLLER, this);
 
         // register listeners
         registerListener();
