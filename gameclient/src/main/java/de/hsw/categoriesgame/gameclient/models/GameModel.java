@@ -1,6 +1,8 @@
 package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.pojos.Player;
 
 import java.util.ArrayList;
@@ -10,7 +12,9 @@ import java.util.List;
 /**
  * This class contains all necessary data while the game is running
  */
-public class GameModel {
+public class GameModel implements AdvancedObservable<ObservableCategory> {
+
+
     private char currentLetter;
     private int amountRounds;
     private int currentRoundNumber;
@@ -154,6 +158,38 @@ public class GameModel {
     //TODO: PAssiert durch start new game
     public void setCurrentLetter(char currentLetter) {
         this.currentLetter = currentLetter;
+    }
+
+
+
+
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+
+    final HashMap<ObservableCategory, List<AdvancedObserver>> observers = new HashMap<>();
+
+    @Override
+    public void register(ObservableCategory category, AdvancedObserver observer)
+    {
+        if (!observers.containsKey(category))
+            observers.put(category, new ArrayList<>());
+        observers.get(category).add(observer);
+    }
+
+
+    @Override
+    public void sendNotification(ObservableCategory... category)
+    {
+        if (category == null || category.length == 0) {
+            for (List<AdvancedObserver> observers : observers.values()) {
+                observers.forEach(AdvancedObserver::receiveNotification);
+            }
+            return;
+        }
+
+        for (ObservableCategory cat : category) {
+            observers.get(cat).forEach(AdvancedObserver::receiveNotification);
+        }
     }
 
     public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
