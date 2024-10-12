@@ -80,6 +80,11 @@ public class JoinLobbyController {
 
             final CategorieGame remoteGame = viewManager.getProxyFactory().createProxy(CategorieGame.class);
             final Lobby l = remoteGame.getLobby(lobbyCode);
+
+            if (!l.hasGameStarted()) {
+                view.throwErrorDialog("Der Lobby konnte nicht beigetreten werden!\nDas Spiel läuft bereits.");
+            }
+
             gameModel.setLobby(l);
             remoteGame.joinLobby(code, client);
             gameModel.setLocalClient(client);

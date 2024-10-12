@@ -74,7 +74,7 @@ public class CreateLobbyController {
 
     private void loadLobbyCode()
     {
-        view.getLobbyCodeInput().setText(RandomStringUtil.generate(RandomStringUtil.Type.CAPITAL_DIGITS, 6));
+        view.getLobbyCodeInput().setText(RandomStringUtil.generate(RandomStringUtil.Type.CAPITAL_DIGITS, 4));
     }
 
 

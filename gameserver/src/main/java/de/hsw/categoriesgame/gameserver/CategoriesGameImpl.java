@@ -42,7 +42,10 @@ public class CategoriesGameImpl implements CategorieGame {
         Lobby lobby = getLobby(lobbyCode);
         lobby.joinClient(client);
 
-        lobby.getClients().forEach(Client::notifyPlayerAboutLobbyState);
+        // Notify
+        lobby.getClients().stream()
+                .filter(j -> j != client)
+                .forEach(Client::notifyPlayerAboutLobbyState);
 
         return lobby;
     }
@@ -125,6 +128,11 @@ public class CategoriesGameImpl implements CategorieGame {
             this.deleteLobby(lobby);
             return;
         }
+
+        // Notify
+        lobby.getClients().stream()
+                .filter(j -> j != client)
+                .forEach(Client::notifyPlayerAboutLobbyState);
     }
 
     /**
