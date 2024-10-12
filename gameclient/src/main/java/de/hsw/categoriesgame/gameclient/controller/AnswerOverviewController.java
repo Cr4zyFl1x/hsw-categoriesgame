@@ -113,7 +113,6 @@ public class AnswerOverviewController {
      * Updating the answers and the status (doubted / not doubted) in the game model
      */
     private void updateAnswersInGameModel() {
-        // TODO: Irgendwie anders umsetzen... HashMap schwierig
         List<Pair<String, Boolean>> answers = new ArrayList<>();
 
         for (int i = 0; i < view.getCategoryAnswerLabels().size(); i++) {
