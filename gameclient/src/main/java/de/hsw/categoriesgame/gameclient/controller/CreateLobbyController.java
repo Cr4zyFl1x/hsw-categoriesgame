@@ -173,6 +173,12 @@ public class CreateLobbyController {
         newCategory = newCategory.trim();
         JButton categoryButton = new JButton();
 
+        // Max of 5 reached?
+        if (view.getCategoryButtons().size() >= 5) {
+            view.throwErrorDialog("Es können maximal fünf Kategorien hinzugefügt werden!");
+            return;
+        }
+
         // Already exists?
         String finalNewCategory = newCategory;
         if (view.getCategoryButtons().stream().map(j -> j.getText().trim()).anyMatch(j -> j.equals(finalNewCategory))) {
