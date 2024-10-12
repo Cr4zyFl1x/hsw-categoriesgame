@@ -4,9 +4,11 @@ import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
+@Slf4j
 public class ClientImpl implements Client {
 
     private final GameModel currentGame;
@@ -54,7 +56,6 @@ public class ClientImpl implements Client {
      */
     @Override
     public String getName() {
-        System.out.println(name);
         return name;
     }
 
@@ -104,6 +105,7 @@ public class ClientImpl implements Client {
     @Override
     public void notifyPlayerAboutLobbyState()
     {
+        log.debug("Player got notified");
         currentGame.sendNotification(ObservableCategory.LOBBY_WAIT_CONTROLLER);
     }
 }
