@@ -174,6 +174,16 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
+    public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
+        this.answersDoubted = answersDoubted;
+    }
+
+
+    public List<Pair<String, Boolean>> getAnswersDoubted() {
+        return answersDoubted;
+    }
+
+
     public void reset()
     {
         this.currentLetter = 0;
