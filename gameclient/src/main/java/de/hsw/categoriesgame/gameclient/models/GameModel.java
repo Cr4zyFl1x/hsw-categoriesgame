@@ -1,14 +1,19 @@
 package de.hsw.categoriesgame.gameclient.models;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameclient.GameclientApplication;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +23,11 @@ import java.util.List;
  * This class contains all necessary data while the game is running
  */
 public class GameModel implements AdvancedObservable<ObservableCategory> {
+
+    /**
+     * Logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(GameModel.class);
 
     /**
      * The lobby (REMOTE use little!)
@@ -161,13 +171,27 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
+    /**
+     * If the user/client is currently in a lobby/game it leaves from it.
+     *
+     * @throws IllegalStateException if user is not existing or not in lobby etc.
+     */
     public void leave() throws IllegalStateException
     {
         if (localClient == null && lobby != null) {
             throw new IllegalStateException("A lobby is existing but no LocalPlayer. WRONG STATE!");
         }
 
-        // TODO:
+        try {
+            CategorieGame game = GameclientApplication.getRemoteGame();
+            game.leaveLobby(getLobby(), getLocalClient());
+        } catch (UserNotInLobbyException | LobbyNotFoundException e) {
+            log.error("Unable to leave user/client from lobby!", e);
+            throw new IllegalStateException("Unable to leave user/client from lobby!", e);
+        }
+
+        // Reset model to be ready for new game
+        this.reset();
     }
 
 
@@ -183,6 +207,9 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
+    /**
+     * Resets the whole model
+     */
     public void reset()
     {
         this.currentLetter = 0;
