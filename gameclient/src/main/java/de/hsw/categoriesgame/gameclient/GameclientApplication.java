@@ -122,7 +122,7 @@ public class GameclientApplication {
 
         if (!NetUtil.isListening(hostname, port)) {
             JOptionPane.showMessageDialog(null,
-                    "Der RemoteServer konnte nicht erreicht werden!\nBitte prüfen Sie die Konfiguration.",
+                    "Der RemoteServer konnte nicht erreicht werden!\nBitte pr\u00E4fen Sie die Konfiguration.",
                     "Es ist ein Initialisierungsfehler aufgetreten!", JOptionPane.ERROR_MESSAGE);
 
             System.exit(2);
