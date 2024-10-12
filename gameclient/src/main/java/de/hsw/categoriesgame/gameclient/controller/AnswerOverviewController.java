@@ -1,6 +1,9 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.CategorieGame;
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
 import de.hsw.categoriesgame.gameclient.views.View;
@@ -9,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +20,7 @@ import java.util.List;
 /**
  * Controller class which enables logical operations can be made on AnswerOverviewView
  */
-public class AnswerOverviewController {
+public class AnswerOverviewController implements AdvancedObserver {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerOverviewController.class);
     private final ViewManager viewManager;
@@ -33,10 +37,14 @@ public class AnswerOverviewController {
      * @param view          referring view of the controller
      * @param model         model in which game data will be saved
      */
-    public AnswerOverviewController(ViewManager viewManager, AnswerOverviewView view, GameModel model) {
+    public AnswerOverviewController(ViewManager viewManager,
+                                    AnswerOverviewView view,
+                                    GameModel model) {
         this.viewManager = viewManager;
         this.view = view;
         this.model = model;
+
+        model.register(ObservableCategory.ANSWER_CONTROLLER, this);
 
         mockPlayers = new ArrayList<>();
 
@@ -131,4 +139,24 @@ public class AnswerOverviewController {
         System.out.println(model.getAnswersDoubted());
     }
 
+    private void updateAnswerColor() {
+        for (int i = 0; i < view.getCategoryAnswerLabels().size(); i++) {
+            for (int j = 0; j < view.getCategoryAnswerLabels().get(i).size(); j++) {
+                if (view.getDoubtAnswerCheckboxes().get(i).get(j).isSelected()) {
+                    view.getCategoryAnswerLabels().get(i).get(j).setForeground(Color.RED);
+                }
+            }
+        }
+    }
+
+
+    /////////////////////////////////////////
+    /////////////////////////////////////////
+
+
+    @Override
+    public void receiveNotification() {
+        log.debug("An Answer has been doubted! Processing change.");
+        updateAnswersInGameModel();
+    }
 }
