@@ -13,8 +13,8 @@ public class ViewManager {
 
     @Getter
     private final ProxyFactory proxyFactory;
+    private final GameModel gameModel;
     private JPanel currentPanel;
-    private GameModel gameModel;
 
     /**
      * Constructor for the ViewManager
