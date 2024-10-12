@@ -1,5 +1,7 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
+import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.pojos.Player;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.ResultView;
@@ -14,7 +16,7 @@ import java.util.List;
 /**
  * Controller class to control actions on the ResultView
  */
-public class ResultController {
+public class ResultController implements AdvancedObserver {
 
     private static final Logger log = LoggerFactory.getLogger(ResultController.class);
     private final ViewManager viewManager;
@@ -35,6 +37,8 @@ public class ResultController {
         this.viewManager = viewManager;
         this.view = view;
         this.model = model;
+
+        model.register(ObservableCategory.RESULT_CONTROLLER, this);
 
         mockPlayers = new ArrayList<>();
         mockPlayers.add(new Player("Jeff", 100));
@@ -68,6 +72,8 @@ public class ResultController {
         // reset round count
         model.setCurrentRoundNumber(0);
 
+        // TODO: 11.10.2024 start new round
+
         log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
@@ -76,11 +82,19 @@ public class ResultController {
      * Calculates the top 3 players of the game
      */
     private void calculatePlacements() {
+        // TODO: 11.10.2024 get current top three players from server
+
         mockPlayers.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
         ArrayList<Player> sortedList = new ArrayList<>(mockPlayers);
 
         view.getPlayer1Label().setText(sortedList.get(0).getName());
         view.getPlayer2Label().setText(sortedList.get(1).getName());
         view.getPlayer3Label().setText(sortedList.get(2).getName());
+    }
+
+    @Override
+    public void receiveNotification()
+    {
+        System.out.println("I GOT NOTIFIED!");
     }
 }
