@@ -1,13 +1,16 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameclient.models.GameModel;
+import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -69,9 +72,11 @@ public class AnswerOverviewController {
     private void goToResultOrGameRoundView() {
         if (isRoundAmountReached()) {
             log.info("GO TO RESULT VIEW");
+            this.updateAnswersInGameModel();
             viewManager.changeView(View.RESULTS);
         } else {
             log.info("GO TO GAME ROUND VIEW");
+            this.updateAnswersInGameModel();
             viewManager.changeView(View.GAME_ROUND);
         }
     }
@@ -102,6 +107,29 @@ public class AnswerOverviewController {
      */
     private void showPoints(List<String> players) {
         view.showPoints(players);
+    }
+
+    /**
+     * Updating the answers and the status (doubted / not doubted) in the game model
+     */
+    private void updateAnswersInGameModel() {
+        // TODO: Irgendwie anders umsetzen... HashMap schwierig
+        List<Pair<String, Boolean>> answers = new ArrayList<>();
+
+        for (int i = 0; i < view.getCategoryAnswerLabels().size(); i++) {
+            for (int j = 0; j < view.getCategoryAnswerLabels().get(i).size(); j++) {
+
+                String answer = view.getCategoryAnswerLabels().get(i).get(j).getText();
+                Boolean isDoubted = view.getDoubtAnswerCheckboxes().get(i).get(j).isSelected();
+
+                Pair<String, Boolean> pair = new Pair<>(answer, isDoubted);
+                answers.add(pair);
+            }
+        }
+
+        model.setAnswersDoubted(answers);
+
+        System.out.println(model.getAnswersDoubted());
     }
 
 }

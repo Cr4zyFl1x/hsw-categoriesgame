@@ -1,8 +1,10 @@
 package de.hsw.categoriesgame.gameclient.models;
 
+import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.pojos.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -14,6 +16,7 @@ public class GameModel {
     private int currentRoundNumber;
     private final List<String> categories;
     private final List<Player> players;
+    private List<Pair<String, Boolean>> answersDoubted;
 
     /**
      * Constructor
@@ -151,5 +154,13 @@ public class GameModel {
     //TODO: PAssiert durch start new game
     public void setCurrentLetter(char currentLetter) {
         this.currentLetter = currentLetter;
+    }
+
+    public void setAnswersDoubted(List<Pair<String, Boolean>> answersDoubted) {
+        this.answersDoubted = answersDoubted;
+    }
+
+    public List<Pair<String, Boolean>> getAnswersDoubted() {
+        return answersDoubted;
     }
 }
