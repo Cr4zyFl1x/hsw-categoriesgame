@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public interface CategorieGame {
      * @param lobbyCode string that identifies the lobby
      * @throws LobbyNotFoundException   if lobby is not found (e.g. not valid lobbyCode)
      */
-    void deleteLobby(String lobbyCode) throws LobbyNotFoundException;
+    void deleteLobby(String lobbyCode) throws LobbyNotFoundException, UserNotInLobbyException;
 
     /**
      * Deletes specified lobby.
@@ -64,7 +65,7 @@ public interface CategorieGame {
      * @param client    object of class Player
      * @throws LobbyNotFoundException if lobby is not found (e.g. not valid lobbyCode)
      */
-    void leaveLobby(String lobbyCode, Client client) throws LobbyNotFoundException;
+    void leaveLobby(String lobbyCode, Client client) throws LobbyNotFoundException, UserNotInLobbyException;
 
     /**
      * List of players leave the specified lobby.
@@ -72,19 +73,19 @@ public interface CategorieGame {
      * @param clients   list of players
      * @throws LobbyNotFoundException   if lobby is not found (e.g. not valid lobbyCode)
      */
-    void leaveLobby(String lobbyCode, List<Client> clients) throws LobbyNotFoundException;
+    void leaveLobby(String lobbyCode, List<Client> clients) throws LobbyNotFoundException, UserNotInLobbyException;
 
     /**
      * Specified player leaves the specified lobby.
      * @param lobby     object of class Lobby
      * @param client    object of class Player
      */
-    void leaveLobby(Lobby lobby, Client client) throws LobbyNotFoundException;
+    void leaveLobby(Lobby lobby, Client client) throws LobbyNotFoundException, UserNotInLobbyException;
 
     /**
      * Specified list of players leave the specified lobby.
      * @param lobby     object of class Lobby
      * @param clients   list of players
      */
-    void leaveLobby(Lobby lobby, List<Client> clients) throws LobbyNotFoundException;
+    void leaveLobby(Lobby lobby, List<Client> clients) throws LobbyNotFoundException, UserNotInLobbyException;
 }

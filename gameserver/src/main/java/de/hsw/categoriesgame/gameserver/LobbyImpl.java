@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.pojo.*;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.Game;
 import de.hsw.categoriesgame.gameserver.gamelogic.services.impl.GameImpl;
@@ -21,10 +22,14 @@ public class LobbyImpl implements Lobby {
 
     private Game game;
 
+    @Getter
+    private GameConfigs gameConfig;
+
     public LobbyImpl(String lobbyCode, GameConfigs gameConfigs)
     {
         this.lobbyCode = lobbyCode;
         this.clients = new ArrayList<>();
+        this.gameConfig = gameConfigs;
     }
 
 
@@ -42,8 +47,10 @@ public class LobbyImpl implements Lobby {
      * {@inheritDoc}
      */
     @Override
-    public void leaveClient(Client client) {
-        this.clients.remove(client);
+    public void leaveClient(Client client) throws UserNotInLobbyException {
+        if (!this.clients.remove(client)) {
+            throw new UserNotInLobbyException("User can not leave this lobby! User was not in lobby.");
+        }
         log.info("Client {} left lobby {}!", client.getName(), lobbyCode);
     }
 
@@ -82,9 +89,9 @@ public class LobbyImpl implements Lobby {
      * {@inheritDoc}
      */
     @Override
-    public void startGame(GameConfigs gameConfigs)
+    public void startGame()
     {
-        game = new GameImpl(getClients(), gameConfigs);
+        game = new GameImpl(getClients(), getGameConfig());
     }
 
 

@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameclient.models;
 
 import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObservable;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
@@ -157,6 +158,16 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
 
     public List<Pair<String, Boolean>> getAnswersDoubted() {
         return answersDoubted;
+    }
+
+
+    public void leave() throws IllegalStateException
+    {
+        if (localClient == null && lobby != null) {
+            throw new IllegalStateException("A lobby is existing but no LocalPlayer. WRONG STATE!");
+        }
+
+        // TODO:
     }
 
 
