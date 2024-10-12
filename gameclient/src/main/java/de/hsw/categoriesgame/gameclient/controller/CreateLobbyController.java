@@ -85,7 +85,7 @@ public class CreateLobbyController {
             gameModel.setAmountRounds((int) view.getAmountRoundsSpinner().getValue());
 
             // save the amount of rounds in model
-            gameModel.setDoubtsNeeded((int) view.getDoubtsNeededSpinner().getValue());
+//            gameModel.setDoubtsNeeded((int) view.getDoubtsNeededSpinner().getValue());
 
             // switch view
             log.info("GO TO GAME ROUND VIEW");
