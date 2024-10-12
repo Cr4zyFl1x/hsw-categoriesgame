@@ -1,6 +1,8 @@
 package de.hsw.categoriesgame.gameapi.rpc;
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -17,6 +19,8 @@ public final class ProxyException implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2L;
+
+    private static final Logger log = LoggerFactory.getLogger(ProxyException.class);
 
     /**
      * Type of the exception
@@ -91,6 +95,7 @@ public final class ProxyException implements Serializable {
     {
         Constructor<?> constructor;
         Exception exception;
+        log.trace(String.valueOf(exceptionClass));
         try {
             if (cause != null && message != null) {
                 constructor = exceptionClass.getConstructor(message.getClass(), Throwable.class);
@@ -101,6 +106,7 @@ public final class ProxyException implements Serializable {
             } else if (message != null) {
                 constructor = exceptionClass.getConstructor(message.getClass());
                 exception = (Exception) constructor.newInstance(message);
+
             } else {
                 constructor = exceptionClass.getConstructor();
                 exception = (Exception) constructor.newInstance();
