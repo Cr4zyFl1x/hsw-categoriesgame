@@ -151,7 +151,7 @@ public class GameImpl implements Game {
             pointRules = PointRules.NO_WORD;
         } else if (!validInput(answer)) {
             pointRules = PointRules.FALSE_WORD;
-        } else if (amountOfDoubted >= gameConfigs.getMinDoubtingPlayers()) {
+        } else if (amountOfDoubted >= amountOfPlayers / 2) {
             pointRules = PointRules.FALSE_WORD;
         } else if (amountOfAnswers.get(answer) > 1) {
             pointRules = PointRules.MULTIPLE_WORD;

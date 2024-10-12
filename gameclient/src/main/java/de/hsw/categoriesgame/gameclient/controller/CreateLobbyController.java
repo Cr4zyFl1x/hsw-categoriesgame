@@ -84,6 +84,9 @@ public class CreateLobbyController {
             // save the amount of rounds in model
             gameModel.setAmountRounds((int) view.getAmountRoundsSpinner().getValue());
 
+            // save the amount of rounds in model
+            gameModel.setDoubtsNeeded((int) view.getDoubtsNeededSpinner().getValue());
+
             // switch view
             log.info("GO TO GAME ROUND VIEW");
             viewManager.changeView(View.GAME_ROUND);
@@ -101,8 +104,9 @@ public class CreateLobbyController {
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
         int amountCategories = gameModel.getCategoriesCount();
+        int amountsNeededCounts = (int) view.getDoubtsNeededSpinner().getValue();
 
-        return maxPlayers >= mockPlayers.size() && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
+        return maxPlayers >= mockPlayers.size() && !lobbyCode.getText().isEmpty() && amountCategories >= 1 && amountsNeededCounts <= maxPlayers;
     }
 
     /**

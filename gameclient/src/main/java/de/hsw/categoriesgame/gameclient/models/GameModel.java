@@ -18,6 +18,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     private char currentLetter;
     private int amountRounds;
     private int currentRoundNumber;
+    private int doubtsNeeded;
     private final List<String> categories;
     private final List<Player> players;
     private List<Pair<String, Boolean>> answersDoubted;
@@ -161,10 +162,9 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
     }
 
 
-
-
     //////////////////////////////////////////////////////
     //////////////////////////////////////////////////////
+
 
     final HashMap<ObservableCategory, List<AdvancedObserver>> observers = new HashMap<>();
 
@@ -196,6 +196,7 @@ public class GameModel implements AdvancedObservable<ObservableCategory> {
         this.answersDoubted = answersDoubted;
     }
 
+    
     public List<Pair<String, Boolean>> getAnswersDoubted() {
         return answersDoubted;
     }
