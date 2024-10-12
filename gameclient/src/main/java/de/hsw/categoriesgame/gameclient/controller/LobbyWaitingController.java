@@ -83,6 +83,7 @@ public class LobbyWaitingController implements AdvancedObserver {
     @Override
     public void receiveNotification()
     {
+        log.debug("Lobby has changed! Processing change.");
         updateJoinedPlayers();
     }
 }

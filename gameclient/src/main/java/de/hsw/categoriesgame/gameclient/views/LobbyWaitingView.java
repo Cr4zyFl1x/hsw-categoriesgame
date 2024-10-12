@@ -101,6 +101,8 @@ public class LobbyWaitingView extends JPanel implements InitializableView {
             playerLabels.add(playerName);
             playerPanel.add(playerName, gbcPlayers);
         }
+        playerPanel.revalidate();
+        playerPanel.repaint();
     }
 
     public void isStartGameButtonVisible(boolean visible) {

@@ -125,9 +125,9 @@ public class CreateLobbyController {
 
             lobby = game.createLobby(view.getLobbyCodeInput().getText(), config);
             gameModel.setLobby(lobby);
+            game.joinLobby(lobby.getLobbyCode(), admin);
             gameModel.setLocalClient(admin);
 
-            game.joinLobby(lobby.getLobbyCode(), admin);
 
         } catch (Exception e) {
             log.error("Unable to create lobby", e);

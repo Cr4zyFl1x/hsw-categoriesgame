@@ -63,4 +63,13 @@ public class PlayerBean implements Serializable {
     public int hashCode() {
         return Objects.hashCode(uuid);
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("PlayerBean{");
+        sb.append("uuid=").append(uuid);
+        sb.append(", name='").append(name).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
