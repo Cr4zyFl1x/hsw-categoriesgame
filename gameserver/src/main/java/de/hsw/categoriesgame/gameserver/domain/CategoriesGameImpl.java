@@ -1,13 +1,12 @@
-package de.hsw.categoriesgame.gameserver;
+package de.hsw.categoriesgame.gameserver.domain;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyFullException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
-import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,12 +16,26 @@ import java.util.List;
 
 public class CategoriesGameImpl implements CategorieGame {
 
+    /**
+     * Logger
+     */
     private static final Logger log = LogManager.getLogger(CategoriesGameImpl.class);
+
+    /**
+     * Map of saved/existing lobbies
+     */
     private final Hashtable<String, Lobby> lobbies;
 
-    public CategoriesGameImpl() {
+
+
+    /**
+     * Constructor
+     */
+    public CategoriesGameImpl()
+    {
         lobbies = new Hashtable<>();
     }
+
 
 
     /**

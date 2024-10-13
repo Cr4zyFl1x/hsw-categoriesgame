@@ -55,6 +55,17 @@ public class RoundResults implements Serializable {
         return playerResults.values().stream().toList();
     }
 
+    public PlayerResult getResult(final PlayerBean player)
+    {
+        if (player == null) {
+            throw new IllegalArgumentException("Player cannot be null");
+        }
+        if (!playerResults.containsKey(player)) {
+            throw new IllegalArgumentException("Player " + player + " not answered for this round!");
+        }
+        return playerResults.get(player);
+    }
+
     public void calculatePointsForRound() {
         if (playerResults.isEmpty()) {
             return; // Keine Spieler haben geantwortet

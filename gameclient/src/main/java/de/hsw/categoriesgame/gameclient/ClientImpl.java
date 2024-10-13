@@ -14,6 +14,9 @@ import java.util.UUID;
 @Slf4j
 public class ClientImpl implements Client {
 
+    /**
+     * The current game managed by this client
+     */
     private final GameModel currentGame;
 
     /**
@@ -33,6 +36,9 @@ public class ClientImpl implements Client {
 
 
 
+    /**
+     * Constructor
+     */
     public ClientImpl(final GameModel currentGame, final String name) {
         uuid = UUID.randomUUID();
         this.name = name;
@@ -75,6 +81,12 @@ public class ClientImpl implements Client {
     public void setPoints(int points) {
         this.points = points;
     }
+
+
+
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+
 
 
     /**

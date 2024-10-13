@@ -1,14 +1,14 @@
 package de.hsw.categoriesgame.gameclient.views;
-import de.hsw.categoriesgame.gameapi.api.PlayerResult;
+
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class which builds the view for the answer overview
@@ -16,13 +16,24 @@ import java.util.Map;
 public class AnswerOverviewView extends JPanel implements InitializableView {
 
     private JLabel header;
+
+    @Getter
     private JButton continueButton;
+
+    @Getter
     private JButton cancelButton;
+
     private JPanel answerPanel;
+
     private JPanel pointsPanel;
+
     private List<JLabel> playerNameLabels;
+
     private List<List<JLabel>> categoryAnswerLabels;
+
     private List<JLabel> playerPointsLabels;
+
+
 
     /**
      * Constructor
@@ -32,53 +43,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         buildView();
     }
 
-    /**
-     * Returns the JLabel header
-     * @return  JLabel
-     */
-    public JLabel getHeader() {
-        return header;
-    }
 
-    /**
-     * Returns the continue button
-     * @return  JButton
-     */
-    public JButton getContinueButton() {
-        return continueButton;
-    }
-
-    /**
-     * Returns the cancel Button
-     * @return  JButton
-     */
-    public JButton getCancelButton() {
-        return cancelButton;
-    }
-
-    /**
-     * Returns a list of all player Labels
-     * @return  List<JLabel>
-     */
-    public List<JLabel> getPlayerNameLabels() {
-        return playerNameLabels;
-    }
-
-    /**
-     * Returns a nested list of the answers of players to every category
-     * @return  List<List<JLabel>>
-     */
-    public List<List<JLabel>> getCategoryAnswerLabels() {
-        return categoryAnswerLabels;
-    }
-
-    /**
-     * Returns a list of player labels for the point overview
-     * @return  List<JLabel>
-     */
-    public List<JLabel> getPlayerPointsLabels() {
-        return playerPointsLabels;
-    }
 
     /**
      * Initializing all components needed

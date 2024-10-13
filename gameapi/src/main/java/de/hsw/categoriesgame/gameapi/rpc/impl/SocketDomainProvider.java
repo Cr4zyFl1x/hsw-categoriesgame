@@ -127,7 +127,6 @@ public final class SocketDomainProvider implements DomainProvider {
             try {
                 result = method.invoke(this.domain, deserializedArguments);
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
                 final Throwable targetException = e.getTargetException();
                 result = new ProxyException(
                         targetException.getClass(),

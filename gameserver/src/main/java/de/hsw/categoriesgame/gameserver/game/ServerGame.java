@@ -1,4 +1,4 @@
-package de.hsw.categoriesgame.gameserver.gamelogic;
+package de.hsw.categoriesgame.gameserver.game;
 
 import de.hsw.categoriesgame.gameapi.api.*;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
@@ -16,8 +16,14 @@ import java.util.*;
 @Slf4j
 public class ServerGame {
 
+    /**
+     * Random generator to generate letters for game
+     */
     private SecureRandom random = new SecureRandom();
 
+    /**
+     * The GameConfiguration
+     */
     @Getter
     private final GameConfigs gameConfigs;
 
@@ -26,14 +32,16 @@ public class ServerGame {
      */
     private final List<Client> clients;
 
-
     /**
      * The results per round
      */
     private final HashMap<Integer, RoundResults> roundResults = new HashMap<>();
 
 
-    // ÄNDERBARE RUNDEN ZUSTÄNDE
+    //
+    //// ÄNDERBARE RUNDEN ZUSTÄNDE
+    //
+
 
     /**
      * Defines if game has started
@@ -58,11 +66,20 @@ public class ServerGame {
      */
     private GameRoundState currentRoundState;
 
+    /**
+     * Cached calculated points per player
+     * <p>
+     *     To avoid calculating it for every client request
+     * </p>
+     */
     @Getter
-    private HashMap<Integer, List<PlayerBean>> calculatedPointsBeans = new HashMap<>();
+    private final HashMap<Integer, List<PlayerBean>> calculatedPointsBeans = new HashMap<>();
 
 
 
+    /**
+     * Constructor
+     */
     public ServerGame(List<Client> clients, GameConfigs gameConfigs)
     {
         if (clients == null || gameConfigs == null) {
@@ -72,6 +89,7 @@ public class ServerGame {
         this.clients = Collections.synchronizedList(clients);
         this.currentRoundState = GameRoundState.PREPARING;
     }
+
 
 
     /**
@@ -85,6 +103,7 @@ public class ServerGame {
 
         startRound();
     }
+
 
 
     /**
@@ -120,13 +139,8 @@ public class ServerGame {
      * Receive Answers for this round!
      * @param playerResult The result
      */
-    public void receivePlayerAnswer(final PlayerResult playerResult) {
-
-        // Is state ANSWERS_OPENED / ANSWERS_CLOSE
-//        if (!(currentRoundState.equals(GameRoundState.ANSWERS_OPEN) || currentRoundState.equals(GameRoundState.ANSWERS_CLOSED))) {
-//            throw new IllegalStateException("ILLEGAL STATE - Server is not in state to receive answers. - Server is in state [" + currentRoundState + "]");
-//        }
-
+    public void receivePlayerAnswer(final PlayerResult playerResult)
+    {
         // Is this player the first?
         if (!existAnswersForCurrentRound()) {
             roundResults.put(currentRoundNumber, new RoundResults(currentRoundNumber));
@@ -171,7 +185,16 @@ public class ServerGame {
         }
     }
 
-    public int getPointsForPlayer(final PlayerBean player)
+
+    /**
+     * Gets the points for a specific player
+     *
+     * @param player    the player to get the points for
+     * @return          the points for the player
+     *
+     * @throws IllegalStateException if the game has not yet been started or the player is not part in player results
+     */
+    public int getPointsForPlayer(final PlayerBean player) throws IllegalStateException
     {
         if (!isStarted()) {
             throw new IllegalStateException("Game has not been started yet!");
@@ -188,12 +211,22 @@ public class ServerGame {
         return points;
     }
 
-    public List<PlayerBean> getUpdatedPlayerPoints()
+
+    /**
+     * Gets the updated play points inside the PlayerBean pojo
+     *
+     * @return  the player beans containing the points
+     *
+     * @throws IllegalStateException if the game has not yet been started
+     */
+    public List<PlayerBean> getUpdatedPlayerPoints() throws IllegalStateException
     {
+        // Check if is already calculated -> then return cached
         if (getCalculatedPointsBeans().containsKey(getCurrentRoundNumber())) {
             return getCalculatedPointsBeans().get(getCurrentRoundNumber());
         }
 
+        // Otherwise calculate
         List<PlayerBean> beans = new ArrayList<>();
         for (Client client : getClients()) {
             final PlayerBean bean = Mapper.map(client);
@@ -201,11 +234,12 @@ public class ServerGame {
             beans.add(bean);
         }
 
+        // Cache for later use
         getCalculatedPointsBeans().put(getCurrentRoundNumber(), beans);
 
+        // Return
         return beans;
     }
-
 
 
     /**
@@ -242,14 +276,16 @@ public class ServerGame {
         return roundResults.containsKey(currentRoundNumber);
     }
 
+
     /**
      * Client leave
-     * @param client
+     * @param client the cleint to leave
      */
     public void leaveClient(Client client)
     {
         this.clients.remove(client);
 
+        // Notify last player that game ended because penultimate player has left the game
         if (getClients().size() == 1) {
             updateRoundState(GameRoundState.PENULTIMATE_PLAYER_LEFT);
         }
@@ -259,9 +295,11 @@ public class ServerGame {
     /**
      * Updates the RoundState
      *
-     * @param newRoundState
+     * @param newRoundState the new game (round) state
+     *
+     * @throws IllegalStateException if new state matches current state
      */
-    private void updateRoundState(final GameRoundState newRoundState)
+    private void updateRoundState(final GameRoundState newRoundState) throws IllegalStateException
     {
         // Is same as current?
         if (currentRoundState == newRoundState)
@@ -280,6 +318,10 @@ public class ServerGame {
         }
     }
 
+
+    /**
+     * Gets a list of clients in the game
+     */
     private synchronized List<Client> getClients()
     {
         return Collections.synchronizedList(new ArrayList<>(clients));

@@ -23,6 +23,14 @@ public class RandomStringUtil {
     }
 
 
+    /**
+     * Generates a new string of the given type
+     *
+     * @param type      Type
+     * @param length    Length
+     *
+     * @return      the random string
+     */
     public static String generate(final Type type, final int length)
     {
         final StringBuilder result = new StringBuilder(length);

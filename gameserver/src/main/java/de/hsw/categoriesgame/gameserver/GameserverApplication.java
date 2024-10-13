@@ -1,9 +1,9 @@
 package de.hsw.categoriesgame.gameserver;
 
-import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
+import de.hsw.categoriesgame.gameserver.domain.CategoriesGameImpl;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +18,22 @@ import java.util.ResourceBundle;
  */
 public class GameserverApplication {
 
+    /**
+     * Logger
+     */
     private final static Logger log = LoggerFactory.getLogger(GameserverApplication.class);
 
+    /**
+     * Client connection configuration
+     */
     @Getter
     private static ResourceBundle config;
 
 
+
+    /**
+     * Entrypoint
+     */
     public static void main(String[] args) throws IOException
     {
         readConfig();
@@ -38,7 +48,9 @@ public class GameserverApplication {
     }
 
 
-
+    /**
+     * Read application.properties from classpath
+     */
     private static void readConfig()
     {
         try (InputStream inputStream = GameserverApplication.class.getClassLoader().getResourceAsStream("application.properties")) {

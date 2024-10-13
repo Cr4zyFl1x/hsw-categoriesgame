@@ -22,6 +22,7 @@ public class ResultController {
     private final GameModel model;
 
 
+
     /**
      * Constructor
      * @param viewManager   ViewManager to be able to navigate between views
@@ -63,6 +64,7 @@ public class ResultController {
         viewManager.changeView(View.START);
     }
 
+
     /**
      * Navigates into a new game round
      */
@@ -70,11 +72,10 @@ public class ResultController {
         // reset round count
         model.setCurrentRoundNumber(0);
 
-        // TODO: 11.10.2024 start new round
-
         log.info("GO TO GAME ROUND VIEW");
         viewManager.changeView(View.GAME_ROUND);
     }
+
 
     /**
      * Calculates the top 3 players of the game

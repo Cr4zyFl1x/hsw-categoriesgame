@@ -1,7 +1,8 @@
 package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
-import de.hsw.categoriesgame.gameapi.pojo.*;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 
 import java.util.List;
 

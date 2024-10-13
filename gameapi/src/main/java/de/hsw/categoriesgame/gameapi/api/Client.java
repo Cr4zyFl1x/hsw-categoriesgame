@@ -1,7 +1,6 @@
 package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 
 import java.util.List;
 import java.util.UUID;

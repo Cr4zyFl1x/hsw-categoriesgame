@@ -22,6 +22,8 @@ public class StartView extends JPanel implements InitializableView {
     @Getter
     private JLabel headerLabel;
 
+
+
     /**
      * Constructor
      */
@@ -34,6 +36,8 @@ public class StartView extends JPanel implements InitializableView {
         initializeComponents();
         buildView();
     }
+
+
 
     /**
      * Initializes all components needed
@@ -52,6 +56,7 @@ public class StartView extends JPanel implements InitializableView {
         joinLobbyButton = new JButton("Join Lobby");
         joinLobbyButton.setPreferredSize(new Dimension(150, 40));
     }
+
 
     /**
      * Builds the final view

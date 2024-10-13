@@ -1,4 +1,4 @@
-package de.hsw.categoriesgame.gameserver;
+package de.hsw.categoriesgame.gameserver.domain;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
@@ -8,7 +8,7 @@ import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
-import de.hsw.categoriesgame.gameserver.gamelogic.ServerGame;
+import de.hsw.categoriesgame.gameserver.game.ServerGame;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,12 +42,17 @@ public class LobbyImpl implements Lobby {
     private final GameConfigs gameConfiguration;
 
 
+
+    /**
+     * Constructs a new Lobby
+     */
     public LobbyImpl(String lobbyCode, GameConfigs gameConfigs)
     {
         this.lobbyCode = lobbyCode;
         this.clients = new ArrayList<>();
         this.gameConfiguration = gameConfigs;
     }
+
 
 
     /**
@@ -166,7 +171,9 @@ public class LobbyImpl implements Lobby {
     }
 
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void receivePlayerAnswer(PlayerResult playerResult) {
         if (playerResult == null)
@@ -179,6 +186,9 @@ public class LobbyImpl implements Lobby {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RoundResults getCurrentRoundResults()
     {
@@ -188,6 +198,10 @@ public class LobbyImpl implements Lobby {
         return game.getCurrentRoundResults();
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PlayerBean> getActualPlayers()
     {
@@ -195,21 +209,14 @@ public class LobbyImpl implements Lobby {
     }
 
 
-    // ----------------------------------------
-    // ----------------------------------------
-
-
-    private Client map(PlayerBean playerBean)
-    {
-        return clients.stream().filter(p -> p.getUUID().equals(playerBean.getUUID())).findFirst()
-                .orElseThrow(() -> new IllegalStateException("This player is does not exist in lobby!"));
-    }
-
 
     ///////////////////////////////////////////
     ///////////////////////////////////////////
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -219,6 +226,9 @@ public class LobbyImpl implements Lobby {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hashCode(lobbyCode);

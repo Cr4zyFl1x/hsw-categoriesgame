@@ -1,4 +1,4 @@
-package de.hsw.categoriesgame.gameserver;
+package de.hsw.categoriesgame.gameserver.domain;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.api.GameData;

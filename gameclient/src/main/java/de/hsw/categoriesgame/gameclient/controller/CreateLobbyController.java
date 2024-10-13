@@ -1,8 +1,8 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.util.RandomStringUtil;
 import de.hsw.categoriesgame.gameclient.ClientImpl;
@@ -152,18 +152,20 @@ public class CreateLobbyController {
         viewManager.changeView(View.WAITING);
     }
 
+
     /**
      * Validates if all input is given correctly, so the player can continue
      * @return  true - conditions are met / false - conditions are not met
      */
-    private boolean validateInputs() {
-        // TODO: 11.10.2024 vergleichen mit GameConfigs aus lobby
+    private boolean validateInputs()
+    {
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
         int amountCategories = view.getCategoryButtons().size();
 
         return maxPlayers >= 2 && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
     }
+
 
     /**
      * Method triggers the addition of a new category including adding it to the model
@@ -203,6 +205,7 @@ public class CreateLobbyController {
             view.getNewCategoryInput().setText("");
         }
     }
+
 
     /**
      * Removes a certain category

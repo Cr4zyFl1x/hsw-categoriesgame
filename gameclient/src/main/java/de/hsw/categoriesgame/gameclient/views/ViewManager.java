@@ -1,7 +1,5 @@
 package de.hsw.categoriesgame.gameclient.views;
 
-import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
 import de.hsw.categoriesgame.gameclient.controller.*;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
@@ -84,19 +82,24 @@ public class ViewManager {
     }
 
 
-    private void initListeners() {
+    /**
+     * Leave lobby if frame is being closed
+     */
+    private void initListeners()
+    {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 log.trace("Window closing event started ...");
                 if (gameModel.getLocalClient() != null && gameModel.getLobby() != null) {
                     log.debug("Player is in lobby. Leaving game...");
+
                     try {
-                        proxyFactory.createProxy(CategorieGame.class)
-                                .leaveLobby(gameModel.getLobby(), gameModel.getLocalClient());
-                        log.debug("Player left game!");
+                        gameModel.leave();
+                        log.info("Left lobby successfully!");
                     } catch (Exception ex) {
-                        log.error("Unable to leave lobby!", ex);
+                        // Log error but go back to start
+                        log.error("Error during leave of lobby!", ex);
                     }
                 }
             }

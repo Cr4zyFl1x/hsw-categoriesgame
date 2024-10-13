@@ -12,6 +12,7 @@ import java.awt.*;
 public class ResultView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
+
     private JLabel resultHeader;
 
     @Getter
@@ -23,13 +24,26 @@ public class ResultView extends JPanel implements InitializableView {
     @Getter
     private JLabel thirdPlaceLabel;
 
+    @Getter
     private JLabel player1Label;
+
+    @Getter
     private JLabel player2Label;
+
+    @Getter
     private JLabel player3Label;
+
+    @Getter
     private JButton leaveButton;
+
+    @Getter
     private JButton startAgainButton;
-    JPanel placementPanel;
-    JPanel buttonPanel;
+
+    private JPanel placementPanel;
+
+    private JPanel buttonPanel;
+
+
 
     /**
      * Constructor
@@ -42,54 +56,7 @@ public class ResultView extends JPanel implements InitializableView {
         buildView();
     }
 
-    /**
-     * Returns the button to leave a lobby
-     * @return  JButton
-     */
-    public JButton getLeaveButton() {
-        return leaveButton;
-    }
 
-    /**
-     * returns the button to restart a game in a lobby
-     * @return  JButton
-     */
-    public JButton getStartAgainButton() {
-        return startAgainButton;
-    }
-
-    /**
-     * Returns the JLabel header
-     * @return  JLabel
-     */
-    public JLabel getResultHeader() {
-        return resultHeader;
-    }
-
-
-    /**
-     * Returns the label of the name of the first placed player
-     * @return  JLabel
-     */
-    public JLabel getPlayer1Label() {
-        return player1Label;
-    }
-
-    /**
-     * Returns the label of the name of the second placed player
-     * @return  JLabel
-     */
-    public JLabel getPlayer2Label() {
-        return player2Label;
-    }
-
-    /**
-     * Returns the label of the name of the thrid placed player
-     * @return  JLabel
-     */
-    public JLabel getPlayer3Label() {
-        return player3Label;
-    }
 
     /**
      * Initializes all components needed
