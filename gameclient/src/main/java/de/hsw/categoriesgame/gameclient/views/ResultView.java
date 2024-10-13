@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +13,16 @@ public class ResultView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
     private JLabel resultHeader;
+
+    @Getter
     private JLabel firstPlaceLabel;
+
+    @Getter
     private JLabel secondPlaceLabel;
+
+    @Getter
     private JLabel thirdPlaceLabel;
+
     private JLabel player1Label;
     private JLabel player2Label;
     private JLabel player3Label;
@@ -58,29 +66,6 @@ public class ResultView extends JPanel implements InitializableView {
         return resultHeader;
     }
 
-    /**
-     * Returns the label for the first place
-     * @return  JLabel
-     */
-    public JLabel getFirstPlaceLabel() {
-        return firstPlaceLabel;
-    }
-
-    /**
-     * Returns the label for the second place
-     * @return  JLabel
-     */
-    public JLabel getSecondPlaceLabel() {
-        return secondPlaceLabel;
-    }
-
-    /**
-     * Returns the label for third place
-     * @return  JLabel
-     */
-    public JLabel getThirdPlaceLabel() {
-        return thirdPlaceLabel;
-    }
 
     /**
      * Returns the label of the name of the first placed player

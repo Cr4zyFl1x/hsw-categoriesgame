@@ -81,12 +81,15 @@ public class ResultController {
             view.getPlayer2Label().setText(sortedList.get(1).getName());
         } else {
             view.getPlayer2Label().setVisible(false);
+            view.getSecondPlaceLabel().setVisible(false);
         }
 
         if (sortedList.size() > 2) {
             view.getPlayer3Label().setText(sortedList.get(2).getName());
         } else {
+
             view.getPlayer3Label().setVisible(false);
+            view.getThirdPlaceLabel().setVisible(false);
         }
     }
 }
