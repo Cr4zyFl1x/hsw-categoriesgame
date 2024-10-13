@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
@@ -47,7 +48,7 @@ public class AnswerOverviewController {
 
         registerListener();
         //createAnswerOverview(mockPlayers, model.getCategories());
-        showPoints(mockPlayers);
+        showPoints(model.getPlayerBeans());
 
     }
 
@@ -106,7 +107,7 @@ public class AnswerOverviewController {
      * Builds the point overview according to the amount of players
      * @param players     players
      */
-    private void showPoints(List<String> players) {
+    private void showPoints(List<PlayerBean> players) {
         view.showPoints(players);
     }
 

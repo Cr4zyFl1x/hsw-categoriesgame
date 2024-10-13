@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 import de.hsw.categoriesgame.gameapi.api.PlayerResult;
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
@@ -245,7 +246,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
      * Creates an overview of the points based on the amount of players
      * @param players     players
      */
-    public void showPoints(List<String> players) {
+    public void showPoints(List<PlayerBean> players) {
         // check if pointsPanel is not null
         if (pointsPanel != null) {
             remove(pointsPanel);
@@ -264,12 +265,12 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
             gbcPoints.gridx = 0;
             gbcPoints.gridy = p;
             gbcPoints.gridwidth = 1;
-            JLabel playerNameLabel = new JLabel(players.get(p), JLabel.LEFT);
+            JLabel playerNameLabel = new JLabel(players.get(p).getName(), JLabel.LEFT);
             pointsPanel.add(playerNameLabel, gbcPoints);
 
             // Points
             gbcPoints.gridx = 1;
-            JLabel pointsLabel = new JLabel("0", JLabel.LEFT);
+            JLabel pointsLabel = new JLabel(String.valueOf(players.get(p).getPoints()), JLabel.LEFT);
             pointsPanel.add(pointsLabel, gbcPoints);
             playerPointsLabels.add(pointsLabel);
         }
