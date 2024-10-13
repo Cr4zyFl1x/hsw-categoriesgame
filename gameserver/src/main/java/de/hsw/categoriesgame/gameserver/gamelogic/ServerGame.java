@@ -58,6 +58,9 @@ public class ServerGame {
      */
     private GameRoundState currentRoundState;
 
+    @Getter
+    private HashMap<Integer, List<PlayerBean>> calculatedPointsBeans = new HashMap<>();
+
 
 
     public ServerGame(List<Client> clients, GameConfigs gameConfigs)
@@ -168,7 +171,6 @@ public class ServerGame {
         }
     }
 
-
     public int getPointsForPlayer(final PlayerBean player)
     {
         if (!isStarted()) {
@@ -178,7 +180,26 @@ public class ServerGame {
         for (RoundResults roundResults : roundResults.values()) {
             points += roundResults.getPlayers().stream().filter(j -> j.getUUID().equals(player.getUUID())).findFirst().get().getPoints();
         }
+        player.setPoints(points);
         return points;
+    }
+
+    public List<PlayerBean> getUpdatedPlayerPoints()
+    {
+        if (getCalculatedPointsBeans().containsKey(getCurrentRoundNumber())) {
+            return getCalculatedPointsBeans().get(getCurrentRoundNumber());
+        }
+
+        List<PlayerBean> beans = new ArrayList<>();
+        for (Client client : getClients()) {
+            final PlayerBean bean = Mapper.map(client);
+            bean.setPoints(getPointsForPlayer(bean));
+            beans.add(bean);
+        }
+
+        getCalculatedPointsBeans().put(getCurrentRoundNumber(), beans);
+
+        return beans;
     }
 
 

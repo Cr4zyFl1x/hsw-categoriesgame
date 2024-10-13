@@ -59,7 +59,7 @@ public class AnswerOverviewController {
                 model.getCategories(),
                 model.getLobby().getCurrentRoundResults());
 
-        showPoints(model.getPlayerBeans());
+        showPoints(model.getLobby().getActualPlayers());
 
     }
 
@@ -87,13 +87,6 @@ public class AnswerOverviewController {
         model.startRound();
     }
 
-    /**
-     * Checks if the selected amount of rounds was reached
-     * @return  true - the amount of rounds was reached / false - the amount is not reached yet
-     */
-    private boolean isRoundAmountReached() {
-        return model.getGameConfiguration().getMaxRounds() == model.getCurrentRoundNumber();
-    }
 
     /**
      * Builds the overall answer overview according to the amount of players and categories

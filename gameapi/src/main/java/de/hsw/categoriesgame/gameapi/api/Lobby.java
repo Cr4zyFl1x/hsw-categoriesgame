@@ -96,4 +96,6 @@ public interface Lobby {
      * @return
      */
     RoundResults getCurrentRoundResults();
+
+    List<PlayerBean> getActualPlayers();
 }

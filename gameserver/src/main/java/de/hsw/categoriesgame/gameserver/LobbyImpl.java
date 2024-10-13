@@ -185,6 +185,12 @@ public class LobbyImpl implements Lobby {
         return game.getCurrentRoundResults();
     }
 
+    @Override
+    public List<PlayerBean> getActualPlayers()
+    {
+        return game.getUpdatedPlayerPoints();
+    }
+
 
     // ----------------------------------------
     // ----------------------------------------
