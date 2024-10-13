@@ -29,8 +29,6 @@ public class GameRoundController {
     private final GameRoundView view;
     private final GameModel model;
 
-    private boolean answered = false;
-
 
     /**
      * Constructor
