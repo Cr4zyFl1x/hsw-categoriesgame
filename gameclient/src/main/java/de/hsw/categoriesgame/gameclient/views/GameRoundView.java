@@ -228,8 +228,8 @@ public class GameRoundView extends JPanel implements InitializableView {
 
     public void throwErrorDialog() {
         JOptionPane.showMessageDialog(null, """
-                        Überprüfe bitte folgende Punkte:\s
-                        - Sind alle Felder ausgefüllt?\s
+                        \u00DCberpr\u00FCfe bitte folgende Punkte:\s
+                        - Sind alle Felder ausgef\u00FCllt?\s
                         - Beginnen alle deine Eingaben mit dem aktiven Buchstaben?""",
                 "Runde kann nicht beendet werden!", JOptionPane.ERROR_MESSAGE);
     }

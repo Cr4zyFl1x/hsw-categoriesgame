@@ -16,7 +16,6 @@ import java.util.Map;
 public class AnswerOverviewView extends JPanel implements InitializableView {
 
     private JLabel header;
-    private JButton doubtButton;
     private JButton continueButton;
     private JButton cancelButton;
     private JPanel answerPanel;
@@ -24,7 +23,6 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
     private List<JLabel> playerNameLabels;
     private List<List<JLabel>> categoryAnswerLabels;
     private List<JLabel> playerPointsLabels;
-    private List<List<JCheckBox>> doubtAnswerCheckboxes;
 
     /**
      * Constructor
@@ -40,14 +38,6 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
      */
     public JLabel getHeader() {
         return header;
-    }
-
-    /**
-     * Returns the doubt button
-     * @return  JButton
-     */
-    public JButton getDoubtButton() {
-        return doubtButton;
     }
 
     /**
@@ -90,10 +80,6 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         return playerPointsLabels;
     }
 
-    public List<List<JCheckBox>> getDoubtAnswerCheckboxes() {
-        return doubtAnswerCheckboxes;
-    }
-
     /**
      * Initializing all components needed
      */
@@ -102,7 +88,6 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         // Lists for dynamic overviews
         playerNameLabels = new ArrayList<>();
         categoryAnswerLabels = new ArrayList<>();
-        doubtAnswerCheckboxes = new ArrayList<>();
         playerPointsLabels = new ArrayList<>();
 
         // Header
@@ -191,9 +176,9 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
 
         // Adding category labels in first row
         for (int c = 0; c < categories.size(); c++) {
-            gbcPanel.gridx = c * 2 + 1;
+            gbcPanel.gridx = c + 1;
             gbcPanel.gridy = 0;
-            gbcPanel.gridwidth = 2; // Adjust for label and checkbox
+            gbcPanel.gridwidth = 1; // Adjust for label and checkbox
             gbcPanel.weightx = 1.0;
             JLabel categoryLabel = new JLabel(categories.get(c), JLabel.CENTER);
             answerPanel.add(categoryLabel, gbcPanel);
@@ -202,7 +187,6 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         // Adding players rows including their answers and checkboxes
         for (int p = 0; p < players.size(); p++) {
             List<JLabel> answerLabels = new ArrayList<>();
-            List<JCheckBox> checkboxes = new ArrayList<>();
 
             // Adding player names
             gbcPanel.gridx = 0;
@@ -225,19 +209,10 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
                 JLabel answerLabel = new JLabel(playerAnswers.get(categoryIndex), JLabel.CENTER);
                 answerPanel.add(answerLabel, gbcPanel);
                 answerLabels.add(answerLabel);
-
-                // Adding checkboxes
-                gbcPanel.gridx = categoryIndex * 2 + 2;
-                gbcPanel.gridy = p + 1;
-                gbcPanel.weightx = 0.1;
-                JCheckBox doubtCheckbox = new JCheckBox();
-                checkboxes.add(doubtCheckbox);
-                answerPanel.add(doubtCheckbox, gbcPanel);
             }
 
             // Adding answer labels to list
             categoryAnswerLabels.add(answerLabels);
-            doubtAnswerCheckboxes.add(checkboxes);
         }
 
         // revalidate and repaint the answer panel

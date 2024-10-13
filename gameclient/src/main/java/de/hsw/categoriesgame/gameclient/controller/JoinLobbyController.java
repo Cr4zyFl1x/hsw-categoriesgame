@@ -72,7 +72,7 @@ public class JoinLobbyController {
     private void joinButtonPressed()
     {
         if (!validateInputs()) {
-            view.throwErrorDialog("Bitte füllen Sie die Felder \"Name\" und \"Code\" aus.");
+            view.throwErrorDialog("Bitte f\u00FCllen Sie die Felder \"Name\" und \"Code\" aus.");
             return;
         }
 
@@ -86,7 +86,7 @@ public class JoinLobbyController {
             final Lobby l = remoteGame.getLobby(lobbyCode);
 
             if (l.hasGameStarted()) {
-                view.throwErrorDialog("Der Lobby konnte nicht beigetreten werden!\nDas Spiel läuft bereits.");
+                view.throwErrorDialog("Der Lobby konnte nicht beigetreten werden!\nDas Spiel l\u00E4uft bereits.");
                 return;
             }
 
@@ -109,7 +109,7 @@ public class JoinLobbyController {
             return;
         } catch (Exception e) {
             log.error("Error while joining a Lobby!", e);
-            view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nBitte schauen Sie im Protokoll für weitere Informationen.");
+            view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nBitte schauen Sie im Protokoll f\u00FCr weitere Informationen.");
             gameModel.reset();
             return;
         } finally {

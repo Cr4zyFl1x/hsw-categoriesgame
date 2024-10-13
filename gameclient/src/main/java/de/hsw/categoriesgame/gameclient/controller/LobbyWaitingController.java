@@ -87,7 +87,7 @@ public class LobbyWaitingController {
     {
         // At least 2 players in lobby
         if (gameModel.getPlayerBeans().size() < 2) {
-            view.throwErrorDialog("Es müssen mindestens zwei Spieler der Lobby beigetreten sein!");
+            view.throwErrorDialog("Es m\u00FCssen mindestens zwei Spieler der Lobby beigetreten sein!");
             return;
         }
 
