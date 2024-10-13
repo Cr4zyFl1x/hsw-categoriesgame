@@ -89,4 +89,11 @@ public interface Lobby {
      * @param playerResult  the result
      */
     void receivePlayerAnswer(final PlayerResult playerResult);
+
+
+    /**
+     * Gets the Results of the current round
+     * @return
+     */
+    RoundResults getCurrentRoundResults();
 }

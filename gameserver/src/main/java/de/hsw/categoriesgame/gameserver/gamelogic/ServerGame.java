@@ -1,7 +1,9 @@
 package de.hsw.categoriesgame.gameserver.gamelogic;
 
 import de.hsw.categoriesgame.gameapi.api.*;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -118,9 +120,9 @@ public class ServerGame {
     public void receivePlayerAnswer(final PlayerResult playerResult) {
 
         // Is state ANSWERS_OPENED / ANSWERS_CLOSE
-        if (!(currentRoundState.equals(GameRoundState.ANSWERS_OPEN) || currentRoundState.equals(GameRoundState.ANSWERS_CLOSED))) {
-            throw new IllegalStateException("ILLEGAL STATE - Server is not in state to receive answers. - Server is in state [" + currentRoundState + "]");
-        }
+//        if (!(currentRoundState.equals(GameRoundState.ANSWERS_OPEN) || currentRoundState.equals(GameRoundState.ANSWERS_CLOSED))) {
+//            throw new IllegalStateException("ILLEGAL STATE - Server is not in state to receive answers. - Server is in state [" + currentRoundState + "]");
+//        }
 
         // Is this player the first?
         if (!existAnswersForCurrentRound()) {
@@ -134,6 +136,7 @@ public class ServerGame {
 
             // Send ANSWERS_CLOSED to the clients that they send their answers
             log.info("Player {} has answered as first. Answering time is up!", playerResult.getPlayerBean().getName());
+            log.debug("Results {}", roundResults);
             updateRoundState(GameRoundState.ANSWERS_CLOSED);
 
             return;
@@ -158,9 +161,26 @@ public class ServerGame {
         // If all have answered -> Show answers
         if (haveAllAnswered()) {
             log.info("All players have answered!");
+
+            log.debug("Calculating points per Player for round {}", currentRoundNumber);
+            getCurrentRoundResults().calculatePointsForRound();
             updateRoundState(GameRoundState.SHOW_ROUND_ANSWERS);
         }
     }
+
+
+    public int getPointsForPlayer(final PlayerBean player)
+    {
+        if (!isStarted()) {
+            throw new IllegalStateException("Game has not been started yet!");
+        }
+        int points = 0;
+        for (RoundResults roundResults : roundResults.values()) {
+            points += roundResults.getPlayers().stream().filter(j -> j.getUUID().equals(player.getUUID())).findFirst().get().getPoints();
+        }
+        return points;
+    }
+
 
 
     /**
@@ -179,7 +199,7 @@ public class ServerGame {
      *
      * @return The results for the current round
      */
-    private RoundResults getCurrentRoundResults()
+    public RoundResults getCurrentRoundResults()
     {
         if (!existAnswersForCurrentRound())
             throw new IllegalStateException("There are no results for current round " + currentRoundNumber + "!");

@@ -1,5 +1,8 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.PlayerResult;
+import de.hsw.categoriesgame.gameapi.api.RoundResults;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
@@ -47,7 +50,12 @@ public class AnswerOverviewController {
         mockPlayers.add("Andy");
 
         registerListener();
-        //createAnswerOverview(mockPlayers, model.getCategories());
+        createAnswerOverview(
+                model.getPlayerBeans().stream().map(PlayerBean::getName).toList(),
+                model.getCategories(),
+                model.getLobby().getCurrentRoundResults());
+
+        showPoints(mockPlayers);
         showPoints(model.getPlayerBeans());
 
     }
