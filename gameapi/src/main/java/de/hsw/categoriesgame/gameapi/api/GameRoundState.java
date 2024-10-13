@@ -30,5 +30,10 @@ public enum GameRoundState {
     /**
      * Players have to show the final results
      */
-    FINAL_RESULTS
+    FINAL_RESULTS,
+
+    /**
+     * When the penultimate player left is round over
+     */
+    PENULTIMATE_PLAYER_LEFT
 }

@@ -242,6 +242,19 @@ public class ServerGame {
         return roundResults.containsKey(currentRoundNumber);
     }
 
+    /**
+     * Client leave
+     * @param client
+     */
+    public void leaveClient(Client client)
+    {
+        this.clients.remove(client);
+
+        if (getClients().size() == 1) {
+            updateRoundState(GameRoundState.PENULTIMATE_PLAYER_LEFT);
+        }
+    }
+
 
     /**
      * Updates the RoundState

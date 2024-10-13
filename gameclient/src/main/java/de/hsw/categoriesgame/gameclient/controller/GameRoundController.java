@@ -101,10 +101,7 @@ public class GameRoundController {
      */
     private void finishButtonPressed()
     {
-        // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
-
         if (validateInputs()) {
-
             updateAnswersInModel();
             model.sendMyAnswer();
         } else {
@@ -137,8 +134,18 @@ public class GameRoundController {
      */
     private void leaveButtonPressed()
     {
-        // TODO: Leave model.leave
-        viewManager.changeView(View.START);
+        try {
+            model.leave();
+        } catch (Exception e) {
+            // Log error but go back to start
+            log.error(e.getMessage(), e);
+        }
+
+        log.info("LEAVE LOBBY AND GO TO START VIEW");
+
+        if (model.getPlayerBeans().size() > 1) {
+            viewManager.changeView(View.START);
+        }
     }
 
     /**
@@ -175,6 +182,11 @@ public class GameRoundController {
         if (GameRoundState.SHOW_ROUND_ANSWERS.equals(state)) {
             log.info("Got state {} from server. Switching to answer overview", state);
             SwingUtilities.invokeLater(() -> viewManager.changeView(View.ANSWERS));
+            return;
+        }
+
+        if (GameRoundState.PENULTIMATE_PLAYER_LEFT.equals(state)) {
+            SwingUtilities.invokeLater(() -> viewManager.changeView(View.RESULTS));
             return;
         }
     }

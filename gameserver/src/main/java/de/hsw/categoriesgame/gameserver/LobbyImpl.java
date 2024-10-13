@@ -68,6 +68,9 @@ public class LobbyImpl implements Lobby {
         if (!this.clients.remove(client)) {
             throw new UserNotInLobbyException("User can not leave this lobby! User was not in lobby.");
         }
+        if (hasGameStarted()) {
+            game.leaveClient(client);
+        }
         log.info("Client {} left lobby {}!", client.getName(), lobbyCode);
     }
 
