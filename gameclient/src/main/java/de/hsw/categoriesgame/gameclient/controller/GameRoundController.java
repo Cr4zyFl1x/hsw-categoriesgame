@@ -142,10 +142,8 @@ public class GameRoundController {
         }
 
         log.info("LEAVE LOBBY AND GO TO START VIEW");
-
-        if (!model.getPlayerBeans().isEmpty()) {
-            viewManager.changeView(View.START);
-        }
+        
+        viewManager.changeView(View.START);
     }
 
     /**
