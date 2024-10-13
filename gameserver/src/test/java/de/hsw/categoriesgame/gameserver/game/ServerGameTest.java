@@ -18,8 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Florian J. Kleine-Vorholt
@@ -76,6 +75,21 @@ public class ServerGameTest {
         assertTrue(t.getMessage().contains("already been started"));
     }
 
+    @Test
+    void testStartRound() {
+
+        // Start Game
+        serverGame.startGame();
+
+        // Check if server has started
+        assertTrue(serverGame.isStarted());
+
+        // Check if players were notified that game has begun
+        verify(client1, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+        verify(client2, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+        verify(client3, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+        verify(client4, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+    }
 
     @Test
     void testSendAnswers()
@@ -98,5 +112,65 @@ public class ServerGameTest {
         verify(client2, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
         verify(client3, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
         verify(client4, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+    }
+
+    @Test
+    void testReceivePlayerAnswer() {
+
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("", "", "")
+        )));
+
+        // first closing answering
+        verify(client1, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+        verify(client2, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+        verify(client3, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+        verify(client4, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+    }
+
+    @Test
+    void testReceivePlayerAnswerSecEx() {
+
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+
+        // first closing answering
+        verify(client1, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+        verify(client2, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+        verify(client3, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+        verify(client4, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+    }
+
+    @Test
+    void testGetPointsForPlayer() {
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        PlayerBean bean = new PlayerBean("Max");
+
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                bean, List.of("Emsdetten", "Emsland", "Ems")
+        )));
+
+        assertEquals(0, serverGame.getPointsForPlayer(bean));
     }
 }
