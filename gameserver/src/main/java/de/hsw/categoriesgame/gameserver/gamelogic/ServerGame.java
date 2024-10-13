@@ -8,6 +8,7 @@ import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import lombok.Getter;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
@@ -206,11 +207,17 @@ public class ServerGame {
         this.currentRoundState = newRoundState;
 
         // Notify clients about new state
-        synchronized (clients) {
-            for (Client client : clients)
+        final List<Client> clients1 = getClients();
+        synchronized (clients1) {
+            for (Client client : clients1)
             {
                 client.notifyRoundState(newRoundState, new GameData(getCurrentChar(), getCurrentRoundNumber()));
             }
         }
+    }
+
+    private synchronized List<Client> getClients()
+    {
+        return Collections.synchronizedList(new ArrayList<>(clients));
     }
 }

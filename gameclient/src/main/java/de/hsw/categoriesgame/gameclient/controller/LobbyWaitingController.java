@@ -14,6 +14,7 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.util.Arrays;
 
 public class LobbyWaitingController {
@@ -120,7 +121,7 @@ public class LobbyWaitingController {
         final GameRoundState state = gameModel.getGameRoundState();
 
         if (state.equals(GameRoundState.ANSWERS_OPEN)) {
-            viewManager.changeView(View.GAME_ROUND);
+            SwingUtilities.invokeLater(() -> viewManager.changeView(View.GAME_ROUND));
         }
     }
 }
