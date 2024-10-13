@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Controller class to control actions on the ResultView
  */
-public class ResultController {
+public final class ResultController {
 
     private static final Logger log = LoggerFactory.getLogger(ResultController.class);
     private final ViewManager viewManager;

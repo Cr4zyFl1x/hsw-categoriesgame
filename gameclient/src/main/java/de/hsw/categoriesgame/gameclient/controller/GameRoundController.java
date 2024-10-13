@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Controller class of the GameRoundView to handle logical operations
  */
-public class GameRoundController {
+public final class GameRoundController {
 
     private static final Logger log = LoggerFactory.getLogger(GameRoundController.class);
     private final ViewManager viewManager;

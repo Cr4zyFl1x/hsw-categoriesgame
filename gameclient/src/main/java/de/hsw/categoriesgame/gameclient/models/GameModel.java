@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * This class contains all necessary data while the game is running
  */
-public class GameModel implements RunnableExecutor<ExecutorCategory> {
+public final class GameModel implements RunnableExecutor<ExecutorCategory> {
 
     /**
      * Logger

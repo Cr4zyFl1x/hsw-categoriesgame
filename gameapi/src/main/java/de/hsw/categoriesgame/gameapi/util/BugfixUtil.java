@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class BugfixUtil {
+public final class BugfixUtil {
 
     /**
      * Creates a list with a defined number of empty strings

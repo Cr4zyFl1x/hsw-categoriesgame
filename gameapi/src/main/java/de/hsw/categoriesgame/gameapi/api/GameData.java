@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class GameData implements Serializable {
+public final class GameData implements Serializable {
 
     @Getter
     private final char  currentLetter;

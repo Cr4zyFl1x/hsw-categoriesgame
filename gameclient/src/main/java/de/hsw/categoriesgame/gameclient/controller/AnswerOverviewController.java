@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Controller class which enables logical operations can be made on AnswerOverviewView
  */
-public class AnswerOverviewController {
+public final class AnswerOverviewController {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerOverviewController.class);
     private final ViewManager viewManager;

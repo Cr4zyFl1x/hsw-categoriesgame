@@ -5,7 +5,6 @@ import de.hsw.categoriesgame.gameapi.perf.RuntimeMeasurer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyDataSerializer;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyException;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
-import de.hsw.categoriesgame.gameapi.rpc.SocketInvocationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +18,12 @@ import java.util.UUID;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public final class DynamicSocketInvocationHandler implements SocketInvocationHandler {
+public final class SocketInvocationHandler implements de.hsw.categoriesgame.gameapi.rpc.SocketInvocationHandler {
 
     /**
      * Logger
      */
-    private static final Logger log = LoggerFactory.getLogger(DynamicSocketInvocationHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(SocketInvocationHandler.class);
 
     /**
      * The connection details with remote information
@@ -44,15 +43,15 @@ public final class DynamicSocketInvocationHandler implements SocketInvocationHan
 
 
     /**
-     * Creates a new {@link DynamicSocketInvocationHandler}
+     * Creates a new {@link SocketInvocationHandler}
      *
      * @param remoteConnectionDetails   the connection details the socket will be established to.
      * @param localServer               the local server
      * @param domainUUID                the domain uuid to contact by default
      */
-    public DynamicSocketInvocationHandler(final ConnectionDetails remoteConnectionDetails,
-                                          final RemoteServer localServer,
-                                          final UUID domainUUID)
+    public SocketInvocationHandler(final ConnectionDetails remoteConnectionDetails,
+                                   final RemoteServer localServer,
+                                   final UUID domainUUID)
     {
         if (remoteConnectionDetails == null || localServer == null) {
             throw new IllegalArgumentException("The connection details cannot be null!");

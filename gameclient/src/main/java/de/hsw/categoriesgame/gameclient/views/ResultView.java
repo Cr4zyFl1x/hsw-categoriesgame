@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * View class to build the view for the result overview
  */
-public class ResultView extends JPanel implements InitializableView {
+public final class ResultView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
 

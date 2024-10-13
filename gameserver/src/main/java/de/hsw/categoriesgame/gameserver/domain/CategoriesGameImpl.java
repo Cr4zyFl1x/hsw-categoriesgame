@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Hashtable;
 import java.util.List;
 
-public class CategoriesGameImpl implements CategorieGame {
+public final class CategoriesGameImpl implements CategorieGame {
 
     /**
      * Logger

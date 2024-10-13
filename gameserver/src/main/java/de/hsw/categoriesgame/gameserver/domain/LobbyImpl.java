@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class LobbyImpl implements Lobby {
+public final class LobbyImpl implements Lobby {
 
     /**
      * The code of the lobby

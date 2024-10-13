@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  *  Class in which the view of the start screen is being built
  */
-public class StartView extends JPanel implements InitializableView {
+public final class StartView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
 

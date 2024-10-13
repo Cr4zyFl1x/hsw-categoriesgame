@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class GameserverApplication {
+public final class GameserverApplication {
 
     /**
      * Logger

@@ -14,7 +14,7 @@ import java.util.*;
  * @author Florian J. Kleine-Vorholt
  */
 @Slf4j
-public class ServerGame {
+public final class ServerGame {
 
     /**
      * Random generator to generate letters for game

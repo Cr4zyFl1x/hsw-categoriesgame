@@ -11,7 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 @Slf4j
-public class ViewManager {
+public final class ViewManager {
 
     private final JFrame frame;
 

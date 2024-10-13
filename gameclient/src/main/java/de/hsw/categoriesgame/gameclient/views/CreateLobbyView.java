@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Class in which the view of creating a lobby is being built
  */
-public class CreateLobbyView extends JPanel implements InitializableView {
+public final class CreateLobbyView extends JPanel implements InitializableView {
 
     private JLabel adminUsernameLabel;
 

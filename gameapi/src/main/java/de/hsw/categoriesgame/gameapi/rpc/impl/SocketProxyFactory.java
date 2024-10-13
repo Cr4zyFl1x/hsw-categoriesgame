@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * @author Florian J. Kleine-Vorholt
  */
-public final class RememberableProxyFactory implements ProxyFactory {
+public final class SocketProxyFactory implements ProxyFactory {
 
     /**
      * The registry of created proxies to enable reuse of them
@@ -34,9 +34,9 @@ public final class RememberableProxyFactory implements ProxyFactory {
 
 
     /**
-     * Creates a new {@code RememberableProxyFactory}.
+     * Creates a new {@code SocketProxyFactory}.
      */
-    public RememberableProxyFactory(final ConnectionDetails remoteConnection, RemoteServer localConnection)
+    public SocketProxyFactory(final ConnectionDetails remoteConnection, RemoteServer localConnection)
     {
         if (remoteConnection == null) {
             throw new IllegalArgumentException("Connection details cannot be null");
@@ -72,7 +72,7 @@ public final class RememberableProxyFactory implements ProxyFactory {
         final Proxy proxy = (Proxy) Proxy.newProxyInstance(
                 clazz.getClassLoader(),
                 new Class[]{clazz},
-                new DynamicSocketInvocationHandler(
+                new SocketInvocationHandler(
                         remoteConnection,
                         localConnection,
                         domainUUID == null ? null : UUID.fromString(domainUUID))

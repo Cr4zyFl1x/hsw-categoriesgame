@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
-public class LobbyWaitingController {
+public final class LobbyWaitingController {
 
     private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
     private final ViewManager viewManager;

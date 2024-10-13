@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class ReflectionUtil {
+public final class ReflectionUtil {
 
     private ReflectionUtil() {}
 

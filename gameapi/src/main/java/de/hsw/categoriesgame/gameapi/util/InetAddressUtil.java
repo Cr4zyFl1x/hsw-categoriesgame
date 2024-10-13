@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class InetAddressUtil {
+public final class InetAddressUtil {
 
     /**
      * Gets the long version of an IP-Adress.

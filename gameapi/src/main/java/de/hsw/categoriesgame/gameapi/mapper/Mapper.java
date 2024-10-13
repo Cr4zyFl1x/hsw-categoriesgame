@@ -8,7 +8,7 @@ import java.util.HashMap;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class Mapper {
+public final class Mapper {
 
     private static final HashMap<Client, PlayerBean> clients = new HashMap<>();
 

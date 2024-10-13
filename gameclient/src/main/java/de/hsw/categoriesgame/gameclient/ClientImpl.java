@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-public class ClientImpl implements Client {
+public final class ClientImpl implements Client {
 
     /**
      * The current game managed by this client

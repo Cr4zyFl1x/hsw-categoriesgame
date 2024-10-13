@@ -20,7 +20,7 @@ import java.awt.event.KeyEvent;
 /**
  * Controller class for CreateLobbyView to make operations possible
  */
-public class CreateLobbyController {
+public final class CreateLobbyController {
 
     private static final Logger log = LoggerFactory.getLogger(CreateLobbyController.class);
     private final ViewManager viewManager;

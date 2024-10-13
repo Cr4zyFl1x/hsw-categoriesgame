@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * pojo class for players
  */
-public class PlayerBean implements Serializable {
+public final class PlayerBean implements Serializable {
 
     private final UUID uuid;
 

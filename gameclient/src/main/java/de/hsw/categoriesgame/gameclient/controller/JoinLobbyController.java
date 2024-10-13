@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller class for JoinLobbyView to enable doing actions
  */
-public class JoinLobbyController {
+public final class JoinLobbyController {
 
     private static final Logger log = LoggerFactory.getLogger(JoinLobbyController.class);
 

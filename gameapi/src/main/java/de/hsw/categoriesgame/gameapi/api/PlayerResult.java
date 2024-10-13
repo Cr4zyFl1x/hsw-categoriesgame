@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class PlayerResult implements Serializable {
+public final class PlayerResult implements Serializable {
 
     @Getter
     private final PlayerBean playerBean;

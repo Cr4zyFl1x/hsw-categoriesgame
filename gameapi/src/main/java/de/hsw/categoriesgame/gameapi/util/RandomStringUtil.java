@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class RandomStringUtil {
+public final class RandomStringUtil {
 
     public enum Type {
         CAPITAL_DIGITS  ("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),

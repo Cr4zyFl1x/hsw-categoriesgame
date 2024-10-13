@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Class which builds the view for the answer overview
  */
-public class AnswerOverviewView extends JPanel implements InitializableView {
+public final class AnswerOverviewView extends JPanel implements InitializableView {
 
     private JLabel header;
 

@@ -5,7 +5,7 @@ import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
-import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.impl.SocketProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 import de.hsw.categoriesgame.gameapi.util.NetUtil;
@@ -23,7 +23,7 @@ import java.util.PropertyResourceBundle;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class GameclientApplication {
+public final class GameclientApplication {
 
     private static final Logger log = LoggerFactory.getLogger(GameclientApplication.class);
 
@@ -96,7 +96,7 @@ public class GameclientApplication {
                 getConfig().getString("remote-server.hostname"),
                 Integer.parseInt(getConfig().getString("remote-server.port"))
         );
-        proxyFactory = new RememberableProxyFactory(connectionDetails, mySideServer);
+        proxyFactory = new SocketProxyFactory(connectionDetails, mySideServer);
         remoteGame = proxyFactory.createProxy(CategorieGame.class);
     }
 

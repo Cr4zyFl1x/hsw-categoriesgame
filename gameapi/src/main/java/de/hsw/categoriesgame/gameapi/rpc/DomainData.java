@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 @Getter
 @AllArgsConstructor
-public class DomainData implements Serializable {
+public final class DomainData implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
