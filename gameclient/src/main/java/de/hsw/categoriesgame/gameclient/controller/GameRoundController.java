@@ -41,7 +41,7 @@ public class GameRoundController {
         this.view = view;
         this.model = model;
 
-        model.register(ExecutorCategory.ROUND_STATE_CHANGE, this::onRoundStateChange);
+        model.register(ExecutorCategory.ROUND_STATE_CHANGE.name(), this::onRoundStateChange);
 
         // register listeners
         registerListener();

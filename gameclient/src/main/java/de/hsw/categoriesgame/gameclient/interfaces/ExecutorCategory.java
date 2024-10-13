@@ -6,5 +6,10 @@ package de.hsw.categoriesgame.gameclient.interfaces;
 public enum ExecutorCategory {
 
     PLAYER_JOIN_LEAVE,
-    ROUND_STATE_CHANGE
+    ROUND_STATE_CHANGE;
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

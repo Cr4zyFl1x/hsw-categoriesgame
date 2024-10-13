@@ -95,7 +95,7 @@ public class ClientImpl implements Client {
         this.currentGame.setCurrentLetter(gameData.getCurrentLetter());
 
         // Notify Runnables to handle round state change
-        this.currentGame.callRunnable(ExecutorCategory.ROUND_STATE_CHANGE);
+        this.currentGame.callRunnable(ExecutorCategory.ROUND_STATE_CHANGE.name());
     }
 
 
@@ -109,6 +109,6 @@ public class ClientImpl implements Client {
         log.debug("notifyPlayerJoinLeave was called with {} players", players.size());
         currentGame.setPlayerBeans(players);
 
-        this.currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE);
+        this.currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE.name());
     }
 }

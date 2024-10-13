@@ -192,10 +192,10 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
     //////////////////////////////////////////
     //////////////////////////////////////////
 
-    final HashMap<ExecutorCategory, List<Runnable>> runnables = new HashMap<>();
+    final HashMap<String, List<Runnable>> runnables = new HashMap<>();
 
     @Override
-    public void register(ExecutorCategory category, Runnable runnable)
+    public void register(String category, Runnable runnable)
     {
         if (!runnables.containsKey(category))
             runnables.put(category, new ArrayList<>());
@@ -204,16 +204,13 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
     }
 
     @Override
-    public void callRunnable(ExecutorCategory... category) {
-        if (category == null || category.length == 0) {
-            for (List<Runnable> rbls : runnables.values()) {
-                rbls.forEach(Runnable::run);
-            }
-            return;
-        }
+    public void callRunnable(String category) {
+        List<Runnable> runnableList = runnables.get(category);
 
-        for (ExecutorCategory cat : runnables.keySet()) {
-            runnables.get(cat).forEach(Runnable::run);
+        if (runnableList != null) {
+            for (Runnable runnable : runnableList) {
+                runnable.run();
+            }
         }
     }
 }

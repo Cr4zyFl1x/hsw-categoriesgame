@@ -5,7 +5,7 @@ package de.hsw.categoriesgame.gameclient.interfaces;
  */
 public interface RunnableExecutor<T> {
 
-    void register(T category, Runnable runnable);
+    void register(String category, Runnable runnable);
 
-    void callRunnable(T... category);
+    void callRunnable(String category);
 }

@@ -32,8 +32,8 @@ public class LobbyWaitingController {
         this.gameModel = model;
 
 
-        gameModel.register(ExecutorCategory.PLAYER_JOIN_LEAVE, this::onPlayerJoinLeave);
-        gameModel.register(ExecutorCategory.ROUND_STATE_CHANGE, this::onGameRoundStateChange);
+        gameModel.register(ExecutorCategory.PLAYER_JOIN_LEAVE.name(), this::onPlayerJoinLeave);
+        gameModel.register(ExecutorCategory.ROUND_STATE_CHANGE.name(), this::onGameRoundStateChange);
 
 
         registerListener();
