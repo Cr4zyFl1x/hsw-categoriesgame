@@ -91,7 +91,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
 
     @Getter
     @Setter
-    private List<String> temporaryAnswers = new ArrayList<>();
+    private List<String> temporaryAnswers = List.of("", "", "");
 
     @Getter
     @Setter
@@ -202,7 +202,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         this.runnables.clear();
         this.gameRoundState = GameRoundState.PREPARING;
         this.localPlayerAnswered = false;
-        this.temporaryAnswers = new ArrayList<>();
+        this.temporaryAnswers = List.of("", "", "");
         this.gameStarted = false;
     }
 
