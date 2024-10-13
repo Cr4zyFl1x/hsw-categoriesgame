@@ -1,10 +1,13 @@
 package de.hsw.categoriesgame.gameclient.views;
+import de.hsw.categoriesgame.gameapi.api.PlayerResult;
+import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class which builds the view for the answer overview
@@ -173,7 +176,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
      * @param players           players
      * @param categories        selected categories
      */
-    public void createAnswerOverview(List<String> players, List<String> categories) {
+    public void createAnswerOverview(List<String> players, List<String> categories, RoundResults roundResults) {
         // clearing the panel and lists
         answerPanel.removeAll();
         playerNameLabels.clear();
@@ -208,12 +211,14 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
             answerPanel.add(playerNameLabel, gbcPanel);
             playerNameLabels.add(playerNameLabel);
 
+            List<String> playerAnswers = roundResults.getPlayerResults().get(p).getAnswers();
+
             // Adding answers including checkboxes
             for (int categoryIndex = 0; categoryIndex < categories.size(); categoryIndex++) {
                 gbcPanel.gridx = categoryIndex * 2 + 1;
                 gbcPanel.gridy = p + 1;
                 gbcPanel.weightx = 1.0;
-                JLabel answerLabel = new JLabel("Answer " + (categoryIndex + 1), JLabel.CENTER);
+                JLabel answerLabel = new JLabel(playerAnswers.get(categoryIndex), JLabel.CENTER);
                 answerPanel.add(answerLabel, gbcPanel);
                 answerLabels.add(answerLabel);
 

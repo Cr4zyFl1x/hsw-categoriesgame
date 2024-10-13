@@ -1,5 +1,6 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
@@ -45,7 +46,7 @@ public class AnswerOverviewController {
         mockPlayers.add("Andy");
 
         registerListener();
-        createAnswerOverview(mockPlayers, model.getCategories());
+        //createAnswerOverview(mockPlayers, model.getCategories());
         showPoints(mockPlayers);
 
     }
@@ -94,11 +95,11 @@ public class AnswerOverviewController {
      * @param players           amount of players
      * @param categories        selected categories
      */
-    private void createAnswerOverview(List<String> players, List<String> categories) {
+    private void createAnswerOverview(List<String> players, List<String> categories, RoundResults roundResults) {
         // TODO: 11.10.2024 get answers as List<RoundEntry>  (update bei jedem anzweifeln)
         // TODO: Antworten sind mit Platzhaltern belegt -> Antworten der Spieler anzeigen!
 
-        view.createAnswerOverview(players, categories);
+        view.createAnswerOverview(players, categories, roundResults);
     }
 
     /**

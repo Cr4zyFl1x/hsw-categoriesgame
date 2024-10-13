@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import lombok.Getter;
 
 import java.util.HashMap;
 
@@ -10,6 +11,7 @@ import java.util.HashMap;
 public class RoundResults {
 
     private final int round;
+    @Getter
     private final HashMap<PlayerBean, PlayerResult> playerResults = new HashMap<>();
 
 
