@@ -76,6 +76,21 @@ public class ServerGameTest {
         assertTrue(t.getMessage().contains("already been started"));
     }
 
+    @Test
+    void testStartRound() {
+
+        // Start Game
+        serverGame.startGame();
+
+        // Check if server has started
+        assertTrue(serverGame.isStarted());
+
+        // Check if players were notified that game has begun
+        verify(client1, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+        verify(client2, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+        verify(client3, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+        verify(client4, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_OPEN), any());
+    }
 
     @Test
     void testSendAnswers()
@@ -99,4 +114,70 @@ public class ServerGameTest {
         verify(client3, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
         verify(client4, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
     }
+
+    @Test
+    void testReceivePlayerAnswer() {
+
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("", "", "")
+        )));
+
+        // first closing answering
+        verify(client1, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+        verify(client2, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+        verify(client3, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+        verify(client4, times(1)).notifyRoundState(eq(GameRoundState.ANSWERS_CLOSED), any());
+    }
+
+    @Test
+    void testReceivePlayerAnswerSecEx() {
+
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+
+        // first closing answering
+        verify(client1, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+        verify(client2, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+        verify(client3, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+        verify(client4, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
+    }
+
+    @Test
+    void testGetPointsForPlayer() {
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        PlayerBean bean = new PlayerBean("Max");
+
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                bean, List.of("Emsdetten", "Emsland", "Ems")
+        )));
+
+        assertEquals(0, serverGame.getPointsForPlayer(bean));
+    }
+
+    @Test
+    void testGetUpdatedPlayerPoints() {
+        serverGame.startGame();
+
+        assertTrue(serverGame.isStarted());
+
+        PlayerBean bean1 = new PlayerBean("Max");
+        PlayerBean bean2 = new PlayerBean("Tobias");
+        PlayerBean bean3 = new PlayerBean("Rudolph");
+        PlayerBean bean4 = new PlayerBean("Silke");
+
+
+    }
+
 }
