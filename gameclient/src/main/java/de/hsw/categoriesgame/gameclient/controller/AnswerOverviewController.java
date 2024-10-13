@@ -54,12 +54,12 @@ public class AnswerOverviewController {
         mockPlayers.add("Andy");
 
         registerListener();
-//        createAnswerOverview(
-//                model.getPlayerBeans(),
-//                model.getCategories(),
-//                model.getLobby().getCurrentRoundResults());
-//
-//        showPoints(model.getLobby().getActualPlayers());
+        createAnswerOverview(
+                model.getPlayerBeans(),
+                model.getCategories(),
+                model.getLobby().getCurrentRoundResults());
+
+        showPoints(model.getLobby().getActualPlayers());
 
     }
 

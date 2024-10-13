@@ -92,10 +92,6 @@ public class ClientImpl implements Client {
             currentGame.setLocalPlayerAnswered(false);
         }
 
-        if (!roundState.equals(GameRoundState.PREPARING)) {
-            this.currentGame.setGameStarted(true);
-        }
-
         this.currentGame.setGameRoundState(roundState);
         this.currentGame.setCurrentRoundNumber(gameData.getCurrentRound());
         this.currentGame.setCurrentLetter(gameData.getCurrentLetter());
