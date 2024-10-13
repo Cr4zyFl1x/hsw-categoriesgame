@@ -84,7 +84,7 @@ public class AnswerOverviewController {
 
         log.info("LEAVE LOBBY AND GO TO START VIEW");
 
-        if (model.getPlayerBeans().size() > 1) {
+        if (!model.getPlayerBeans().isEmpty()) {
             viewManager.changeView(View.START);
         }
     }
