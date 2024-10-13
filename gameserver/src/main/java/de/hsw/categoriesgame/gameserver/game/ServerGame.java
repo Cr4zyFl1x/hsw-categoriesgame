@@ -138,9 +138,15 @@ public class ServerGame {
     /**
      * Receive Answers for this round!
      * @param playerResult The result
+     *
+     * @throws IllegalStateException if the game has not been started
      */
-    public void receivePlayerAnswer(final PlayerResult playerResult)
+    public void receivePlayerAnswer(final PlayerResult playerResult) throws IllegalStateException
     {
+        if (!isStarted()) {
+            throw new IllegalStateException("Game has not been started yet!");
+        }
+
         // Is this player the first?
         if (!existAnswersForCurrentRound()) {
             roundResults.put(currentRoundNumber, new RoundResults(currentRoundNumber));
