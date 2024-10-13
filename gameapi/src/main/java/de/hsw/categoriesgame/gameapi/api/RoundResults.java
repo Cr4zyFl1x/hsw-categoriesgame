@@ -24,6 +24,8 @@ public class RoundResults {
 
         if (playerResults.containsKey(result.getPlayerBean()))
             throw new IllegalArgumentException("Player " + result.getPlayerBean() + " already answered for this round!");
+
+        playerResults.put(result.getPlayerBean(), result);
     }
 
     public boolean hasAnswered(PlayerBean player)

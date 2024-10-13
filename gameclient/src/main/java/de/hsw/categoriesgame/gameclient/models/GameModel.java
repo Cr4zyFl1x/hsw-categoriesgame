@@ -168,6 +168,8 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
 
         // Send Answer to server
         lobby.receivePlayerAnswer(roundResult);
+
+        log.info("My Answer was sent!");
     }
 
 

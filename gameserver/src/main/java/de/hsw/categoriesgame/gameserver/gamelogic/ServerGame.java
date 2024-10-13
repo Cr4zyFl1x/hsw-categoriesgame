@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Florian J. Kleine-Vorholt
@@ -31,7 +28,7 @@ public class ServerGame {
     /**
      * The results per round
      */
-    private final Hashtable<Integer, RoundResults> roundResults = new Hashtable<>();
+    private final HashMap<Integer, RoundResults> roundResults = new HashMap<>();
 
 
     // ÄNDERBARE RUNDEN ZUSTÄNDE
@@ -118,7 +115,12 @@ public class ServerGame {
      * Receive Answers for this round!
      * @param playerResult The result
      */
-    public synchronized void receivePlayerAnswer(final PlayerResult playerResult) {
+    public void receivePlayerAnswer(final PlayerResult playerResult) {
+
+        // Is state ANSWERS_OPENED / ANSWERS_CLOSE
+        if (!(currentRoundState.equals(GameRoundState.ANSWERS_OPEN) || currentRoundState.equals(GameRoundState.ANSWERS_CLOSED))) {
+            throw new IllegalStateException("ILLEGAL STATE - Server is not in state to receive answers.");
+        }
 
         // Is this player the first?
         if (!existAnswersForCurrentRound()) {
@@ -151,6 +153,7 @@ public class ServerGame {
         // Otherwise set result
         roundResults.addResult(playerResult);
 
+        log.info("{} Players have answered now!", roundResults.getAmountOfAnswers());
 
         // If all have answered -> Show answers
         if (haveAllAnswered()) {

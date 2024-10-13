@@ -177,5 +177,11 @@ public class GameRoundController {
             }
             return;
         }
+
+        if (GameRoundState.SHOW_ROUND_ANSWERS.equals(state)) {
+            log.info("Got state {} from server. Switching to answer overview", state);
+            SwingUtilities.invokeLater(() -> viewManager.changeView(View.ANSWERS));
+            return;
+        }
     }
 }
