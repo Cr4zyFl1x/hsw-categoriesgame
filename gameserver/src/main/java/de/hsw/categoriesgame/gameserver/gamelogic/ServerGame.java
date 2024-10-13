@@ -8,6 +8,7 @@ import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import lombok.Getter;
 
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class ServerGame {
             throw new IllegalArgumentException("Params must not be null!");
         }
         this.gameConfigs = gameConfigs;
-        this.clients = clients;
+        this.clients = Collections.synchronizedList(clients);
         this.currentRoundState = GameRoundState.PREPARING;
     }
 
@@ -205,9 +206,11 @@ public class ServerGame {
         this.currentRoundState = newRoundState;
 
         // Notify clients about new state
-        for (Client client : clients)
-        {
-            client.notifyRoundState(newRoundState, new GameData(getCurrentChar(), getCurrentRoundNumber()));
+        synchronized (clients) {
+            for (Client client : clients)
+            {
+                client.notifyRoundState(newRoundState, new GameData(getCurrentChar(), getCurrentRoundNumber()));
+            }
         }
     }
 }
