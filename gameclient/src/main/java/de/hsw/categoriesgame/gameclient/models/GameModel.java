@@ -169,6 +169,8 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         // Send Answer to server
         lobby.receivePlayerAnswer(roundResult);
 
+        localPlayerAnswered = true;
+
         log.info("My Answer was sent!");
     }
 

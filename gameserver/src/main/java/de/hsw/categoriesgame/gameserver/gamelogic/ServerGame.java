@@ -119,7 +119,7 @@ public class ServerGame {
 
         // Is state ANSWERS_OPENED / ANSWERS_CLOSE
         if (!(currentRoundState.equals(GameRoundState.ANSWERS_OPEN) || currentRoundState.equals(GameRoundState.ANSWERS_CLOSED))) {
-            throw new IllegalStateException("ILLEGAL STATE - Server is not in state to receive answers.");
+            throw new IllegalStateException("ILLEGAL STATE - Server is not in state to receive answers. - Server is in state [" + currentRoundState + "]");
         }
 
         // Is this player the first?
