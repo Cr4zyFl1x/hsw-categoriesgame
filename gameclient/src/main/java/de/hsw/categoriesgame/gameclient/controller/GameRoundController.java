@@ -130,7 +130,7 @@ public class GameRoundController {
             String input = field.getText().trim();
 
             // Check if the input field is empty and if the input is unequal to the current letter of the round
-            if (input.isEmpty() || input.charAt(0) != currentLetter) {
+            if (input.isEmpty() || Character.toUpperCase(input.charAt(0)) != currentLetter) {
                 return false;
             }
         }
