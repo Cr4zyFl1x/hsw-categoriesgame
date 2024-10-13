@@ -18,8 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Florian J. Kleine-Vorholt
@@ -143,6 +142,15 @@ public class ServerGameTest {
         assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
                 new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
         )));
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
+        assertDoesNotThrow(() -> serverGame.receivePlayerAnswer(new PlayerResult(
+                new PlayerBean("Max"), List.of("Emsdetten", "Emsland", "Ems")
+        )));
 
         // first closing answering
         verify(client1, times(1)).notifyRoundState(eq(GameRoundState.SHOW_ROUND_ANSWERS), any());
@@ -165,19 +173,4 @@ public class ServerGameTest {
 
         assertEquals(0, serverGame.getPointsForPlayer(bean));
     }
-
-    @Test
-    void testGetUpdatedPlayerPoints() {
-        serverGame.startGame();
-
-        assertTrue(serverGame.isStarted());
-
-        PlayerBean bean1 = new PlayerBean("Max");
-        PlayerBean bean2 = new PlayerBean("Tobias");
-        PlayerBean bean3 = new PlayerBean("Rudolph");
-        PlayerBean bean4 = new PlayerBean("Silke");
-
-
-    }
-
 }
