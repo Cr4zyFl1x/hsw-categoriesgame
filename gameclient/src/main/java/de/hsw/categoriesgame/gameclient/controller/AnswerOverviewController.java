@@ -55,7 +55,6 @@ public class AnswerOverviewController {
                 model.getCategories(),
                 model.getLobby().getCurrentRoundResults());
 
-        showPoints(mockPlayers);
         showPoints(model.getPlayerBeans());
 
     }
