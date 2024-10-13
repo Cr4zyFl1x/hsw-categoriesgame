@@ -172,6 +172,7 @@ public class GameRoundController {
 
             // Send my answer if i haven't answered yet
             if (!model.isLocalPlayerAnswered()) {
+                log.debug("Sending my answer ...");
                 model.sendMyAnswer();
             }
             return;

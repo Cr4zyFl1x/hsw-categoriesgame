@@ -118,7 +118,7 @@ public class ServerGame {
      * Receive Answers for this round!
      * @param playerResult The result
      */
-    public void receivePlayerAnswer(final PlayerResult playerResult) {
+    public synchronized void receivePlayerAnswer(final PlayerResult playerResult) {
 
         // Is this player the first?
         if (!existAnswersForCurrentRound()) {
@@ -130,6 +130,8 @@ public class ServerGame {
             // Add first result
             roundResults.addResult(playerResult);
 
+            // Send ANSWERS_CLOSED to the clients that they send their answers
+            log.info("Player {} has answered as first. Answering time is up!", playerResult.getPlayerBean().getName());
             updateRoundState(GameRoundState.ANSWERS_CLOSED);
 
             return;

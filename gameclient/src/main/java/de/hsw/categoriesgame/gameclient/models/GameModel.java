@@ -186,7 +186,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         this.runnables.clear();
         this.gameRoundState = GameRoundState.PREPARING;
         this.localPlayerAnswered = false;
-        this.temporaryAnswers.clear();
+        this.temporaryAnswers = new ArrayList<>();
     }
 
 
