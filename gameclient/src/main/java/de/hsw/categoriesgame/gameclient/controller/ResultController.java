@@ -76,9 +76,14 @@ public class ResultController {
         ArrayList<PlayerBean> sortedList = new ArrayList<>(players);
 
         view.getPlayer1Label().setText(sortedList.get(0).getName());
-        view.getPlayer2Label().setText(sortedList.get(1).getName());
 
-        if (sortedList.size() < 3) {
+        if (sortedList.size() > 1) {
+            view.getPlayer2Label().setText(sortedList.get(1).getName());
+        } else {
+            view.getPlayer2Label().setVisible(false);
+        }
+
+        if (sortedList.size() > 2) {
             view.getPlayer3Label().setVisible(false);
         } else {
             view.getPlayer3Label().setText(sortedList.get(2).getName());
