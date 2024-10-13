@@ -70,7 +70,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
 
 
     //
-    //// RUNDENABHÄNGIGE VARIABLEN
+    //// DYNAMIC VARIABLES FOR ROUNDS
     //
 
 

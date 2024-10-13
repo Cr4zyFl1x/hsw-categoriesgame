@@ -39,7 +39,7 @@ public class ServerGame {
 
 
     //
-    //// ÄNDERBARE RUNDEN ZUSTÄNDE
+    //// CHANGEABLE STATES
     //
 
 
