@@ -201,9 +201,9 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
                     .filter(j -> j.getPlayerBean().getUUID().equals(players.get(finalP).getUUID()))
                     .findFirst().get().getAnswers();
 
-            // Adding answers including checkboxes
+            // Adding answers
             for (int categoryIndex = 0; categoryIndex < categories.size(); categoryIndex++) {
-                gbcPanel.gridx = categoryIndex * 2 + 1;
+                gbcPanel.gridx = categoryIndex + 1;
                 gbcPanel.gridy = p + 1;
                 gbcPanel.weightx = 1.0;
                 JLabel answerLabel = new JLabel(playerAnswers.get(categoryIndex), JLabel.CENTER);

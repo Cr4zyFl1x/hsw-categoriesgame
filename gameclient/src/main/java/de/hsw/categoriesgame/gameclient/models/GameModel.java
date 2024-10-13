@@ -183,7 +183,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         var answers = getTemporaryAnswers();
 
         return answers.stream()
-                .map(s -> s.toUpperCase().startsWith(String.valueOf(currentLetter)) ? s : "")
+                .map(s -> s.toUpperCase().trim().startsWith(String.valueOf(currentLetter)) ? s : "")
                 .toList();
     }
 
