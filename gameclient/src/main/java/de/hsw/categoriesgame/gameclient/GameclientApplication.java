@@ -46,7 +46,6 @@ public final class GameclientApplication {
     {
         setupTheme();
         readConfig();
-        connectivityCheck();
         setupServerAndProxyFactory();
 
         SwingUtilities.invokeLater(GameclientApplication::createViewManager);
@@ -114,24 +113,6 @@ public final class GameclientApplication {
         } catch (Exception e) {
             log.error("Error reading application.properties", e);
             System.exit(1);
-        }
-    }
-
-
-    /**
-     * Checks if the configured RemoteServer is reachable
-     */
-    private static void connectivityCheck()
-    {
-        final String hostname   = getConfig().getString("remote-server.hostname");
-        final int port          = Integer.parseInt(getConfig().getString("remote-server.port"));
-
-        if (!NetUtil.isListening(hostname, port)) {
-            JOptionPane.showMessageDialog(null,
-                    "Der RemoteServer konnte nicht erreicht werden!\nBitte pr\u00FCfen Sie die Konfiguration.",
-                    "Es ist ein Initialisierungsfehler aufgetreten!", JOptionPane.ERROR_MESSAGE);
-
-            System.exit(2);
         }
     }
 }
