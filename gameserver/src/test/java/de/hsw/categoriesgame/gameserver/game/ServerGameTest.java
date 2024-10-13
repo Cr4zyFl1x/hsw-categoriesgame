@@ -73,7 +73,7 @@ public class ServerGameTest {
 
         // Check that game cannot be started again
         Throwable t = assertThrows(IllegalStateException.class, () -> serverGame.startGame());
-        assertTrue(t.getMessage().contains("already started"));
+        assertTrue(t.getMessage().contains("already been started"));
     }
 
 
