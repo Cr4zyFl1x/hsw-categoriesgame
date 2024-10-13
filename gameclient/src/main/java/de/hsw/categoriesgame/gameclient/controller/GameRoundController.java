@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
@@ -66,17 +67,11 @@ public class GameRoundController {
 
     private void registerKeyListeners()
     {
-        view.getCategoryInputFields().forEach(inputField -> inputField.addKeyListener(new KeyListener() {
+        view.getCategoryInputFields().forEach(inputField -> inputField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 updateAnswersInModel();
             }
-
-            @Override
-            public void keyPressed(KeyEvent e) {}
-
-            @Override
-            public void keyReleased(KeyEvent e) {}
         }));
     }
 
@@ -171,6 +166,7 @@ public class GameRoundController {
             // Send my answer if i haven't answered yet
             if (!model.isLocalPlayerAnswered()) {
                 log.debug("Sending my answer ...");
+                updateAnswersInModel();
                 model.sendMyAnswer();
             }
             return;
