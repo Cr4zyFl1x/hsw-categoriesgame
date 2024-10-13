@@ -166,6 +166,15 @@ public class GameRoundController {
     public void onRoundStateChange()
     {
         final GameRoundState state = model.getGameRoundState();
-        System.out.println("New state " + state);
+
+        if (GameRoundState.ANSWERS_CLOSED.equals(state)) {
+            log.info("Got state {} from server. Collecting answers ...", state);
+
+            // Send my answer if i haven't answered yet
+            if (!model.isLocalPlayerAnswered()) {
+                model.sendMyAnswer();
+            }
+            return;
+        }
     }
 }

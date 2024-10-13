@@ -152,6 +152,7 @@ public class ServerGame {
 
         // If all have answered -> Show answers
         if (haveAllAnswered()) {
+            log.info("All players have answered!");
             updateRoundState(GameRoundState.SHOW_ROUND_ANSWERS);
         }
     }

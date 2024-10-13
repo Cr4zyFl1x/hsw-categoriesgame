@@ -3,12 +3,13 @@ package de.hsw.categoriesgame.gameapi.api;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class PlayerResult {
+public class PlayerResult implements Serializable {
 
     @Getter
     private final PlayerBean playerBean;
