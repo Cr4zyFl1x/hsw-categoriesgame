@@ -137,6 +137,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
         this.localClient = null;
         this.runnables.clear();
         this.observers.clear();
+        this.gameRoundState = GameRoundState.PREPARING;
     }
 
 

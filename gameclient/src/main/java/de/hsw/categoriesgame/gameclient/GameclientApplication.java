@@ -52,6 +52,11 @@ public class GameclientApplication {
         connectivityCheck();
         setupServerAndProxyFactory();
 
+
+
+
+
+
         SwingUtilities.invokeLater(GameclientApplication::createViewManager);
     }
 

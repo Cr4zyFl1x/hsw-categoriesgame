@@ -108,6 +108,7 @@ public class ClientImpl implements Client {
     {
         log.debug("notifyPlayerJoinLeave was called with {} players", players.size());
         currentGame.setPlayerBeans(players);
-        currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE);
+
+        this.currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE);
     }
 }

@@ -14,6 +14,8 @@ import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class LobbyWaitingController {
 
     private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
@@ -114,6 +116,7 @@ public class LobbyWaitingController {
 
     public void onGameRoundStateChange()
     {
+        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
         final GameRoundState state = gameModel.getGameRoundState();
 
         if (state.equals(GameRoundState.ANSWERS_OPEN)) {

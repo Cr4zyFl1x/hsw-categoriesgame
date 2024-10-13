@@ -4,7 +4,6 @@ import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.api.GameData;
 import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
