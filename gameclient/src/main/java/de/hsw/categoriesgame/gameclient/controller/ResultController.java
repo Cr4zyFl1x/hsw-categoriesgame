@@ -33,6 +33,8 @@ public class ResultController {
         this.view = view;
         this.model = model;
 
+        view.getStartAgainButton().setVisible(false);
+
         registerListener();
         calculatePlacements();
     }
@@ -41,14 +43,22 @@ public class ResultController {
      * Register all ActionListeners
      */
     private void registerListener() {
-        view.getLeaveButton().addActionListener(e -> goToStartView());
+        view.getLeaveButton().addActionListener(e -> leaveButtonPressed());
         view.getStartAgainButton().addActionListener(e -> goToGameRoundView());
     }
 
     /**
      * Navigates to start screen
      */
-    private void goToStartView() {
+    private void leaveButtonPressed() {
+
+        try {
+            model.leave();
+        } catch (Exception e) {
+            // Log error but go back to start
+            log.error(e.getMessage(), e);
+        }
+
         log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }

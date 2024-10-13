@@ -142,7 +142,7 @@ public class GameRoundController {
         }
 
         log.info("LEAVE LOBBY AND GO TO START VIEW");
-        
+
         viewManager.changeView(View.START);
     }
 
