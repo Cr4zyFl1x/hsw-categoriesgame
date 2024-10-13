@@ -164,7 +164,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
 
         // Build answer POJO
         final PlayerBean localPlayer = Mapper.map(getLocalClient());
-        final PlayerResult roundResult = new PlayerResult(localPlayer, getTemporaryAnswers());
+        final PlayerResult roundResult = new PlayerResult(localPlayer, validatedTemporaryAnswers());
 
         // Send Answer to server
         lobby.receivePlayerAnswer(roundResult);
@@ -174,6 +174,14 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         log.info("My Answer was sent!");
     }
 
+
+    private List<String> validatedTemporaryAnswers() {
+        var answers = getTemporaryAnswers();
+
+        return answers.stream()
+                .map(s -> s.toUpperCase().startsWith(String.valueOf(currentLetter)) ? s : "")
+                .toList();
+    }
 
 
     /**
