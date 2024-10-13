@@ -117,7 +117,7 @@ public class AnswerOverviewController {
     {
         final GameRoundState state = model.getGameRoundState();
 
-        if (GameRoundState.ANSWERS_OPEN.equals(state) && model.isGameStarted())
+        if (GameRoundState.ANSWERS_OPEN.equals(state))
         {
             SwingUtilities.invokeLater(() -> viewManager.changeView(View.GAME_ROUND));
         }
