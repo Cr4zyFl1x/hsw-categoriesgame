@@ -73,6 +73,7 @@ public final class JoinLobbyController {
     {
         if (!validateInputs()) {
             view.throwErrorDialog("Bitte f\u00FCllen Sie die Felder \"Name\" und \"Code\" aus.");
+            view.getJoinButton().setEnabled(true);
             return;
         }
 
