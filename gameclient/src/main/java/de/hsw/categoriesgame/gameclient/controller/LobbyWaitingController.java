@@ -119,7 +119,7 @@ public class LobbyWaitingController {
     {
         final GameRoundState state = gameModel.getGameRoundState();
 
-        if (state.equals(GameRoundState.ANSWERS_OPEN)) {
+        if (state.equals(GameRoundState.ANSWERS_OPEN) && !gameModel.isGameStarted()) {
             SwingUtilities.invokeLater(() -> viewManager.changeView(View.GAME_ROUND));
         }
     }

@@ -31,10 +31,6 @@ public class ClientImpl implements Client {
      */
     private int points;
 
-    // Kann das weg?
-    @Deprecated
-    private boolean hasAnswered;
-
 
 
     public ClientImpl(final GameModel currentGame, final String name) {
@@ -94,6 +90,10 @@ public class ClientImpl implements Client {
         // If is new round player has not answered
         if (roundState.equals(GameRoundState.ANSWERS_OPEN)) {
             currentGame.setLocalPlayerAnswered(false);
+        }
+
+        if (!roundState.equals(GameRoundState.PREPARING)) {
+            this.currentGame.setGameStarted(true);
         }
 
         this.currentGame.setGameRoundState(roundState);

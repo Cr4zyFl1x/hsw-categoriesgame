@@ -1,6 +1,7 @@
 package de.hsw.categoriesgame.gameclient.views;
 import de.hsw.categoriesgame.gameapi.api.PlayerResult;
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
 
 import javax.swing.*;
@@ -176,7 +177,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
      * @param players           players
      * @param categories        selected categories
      */
-    public void createAnswerOverview(List<String> players, List<String> categories, RoundResults roundResults) {
+    public void createAnswerOverview(List<PlayerBean> players, List<String> categories, RoundResults roundResults) {
         // clearing the panel and lists
         answerPanel.removeAll();
         playerNameLabels.clear();
@@ -207,11 +208,14 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
             gbcPanel.gridx = 0;
             gbcPanel.gridy = p + 1;
             gbcPanel.gridwidth = 1;
-            JLabel playerNameLabel = new JLabel(players.get(p), JLabel.LEFT);
+            JLabel playerNameLabel = new JLabel(players.get(p).getName(), JLabel.LEFT);
             answerPanel.add(playerNameLabel, gbcPanel);
             playerNameLabels.add(playerNameLabel);
 
-            List<String> playerAnswers = roundResults.getPlayerResults().get(p).getAnswers();
+            int finalP = p;
+            List<String> playerAnswers = roundResults.getPlayerResults().values().stream().toList().stream()
+                    .filter(j -> j.getPlayerBean().getUUID().equals(players.get(finalP).getUUID()))
+                    .findFirst().get().getAnswers();
 
             // Adding answers including checkboxes
             for (int categoryIndex = 0; categoryIndex < categories.size(); categoryIndex++) {

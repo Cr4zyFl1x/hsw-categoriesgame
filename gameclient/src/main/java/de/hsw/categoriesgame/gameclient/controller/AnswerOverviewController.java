@@ -1,11 +1,10 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
-import de.hsw.categoriesgame.gameapi.api.PlayerResult;
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
-import de.hsw.categoriesgame.gameapi.api.RoundResults;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
-import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +40,9 @@ public class AnswerOverviewController {
         this.view = view;
         this.model = model;
 
+
+        model.register(ExecutorCategory.ROUND_STATE_CHANGE.name(), this::onGameRoundStateChanged);
+
         mockPlayers = new ArrayList<>();
 
         mockPlayers.add("SwaggerBoi33");
@@ -50,7 +51,7 @@ public class AnswerOverviewController {
 
         registerListener();
         createAnswerOverview(
-                model.getPlayerBeans().stream().map(PlayerBean::getName).toList(),
+                model.getPlayerBeans(),
                 model.getCategories(),
                 model.getLobby().getCurrentRoundResults());
 
@@ -62,14 +63,14 @@ public class AnswerOverviewController {
      * registers all ActionListeners
      */
     private void registerListener() {
-        view.getCancelButton().addActionListener(e -> goToStartView());
-        view.getContinueButton().addActionListener(e -> goToResultOrGameRoundView());
+        view.getCancelButton().addActionListener(e -> leaveButtonPressed());
+        view.getContinueButton().addActionListener(e -> continueButtonPressed());
     }
 
     /**
      * Navigates to the start screen
      */
-    private void goToStartView() {
+    private void leaveButtonPressed() {
         log.info("GO TO START VIEW");
         viewManager.changeView(View.START);
     }
@@ -77,16 +78,9 @@ public class AnswerOverviewController {
     /**
      * Navigates to the result or next game round view
      */
-    private void goToResultOrGameRoundView() {
-        if (isRoundAmountReached()) {
-            log.info("GO TO RESULT VIEW");
-            this.updateAnswersInGameModel();
-            viewManager.changeView(View.RESULTS);
-        } else {
-            log.info("GO TO GAME ROUND VIEW");
-            this.updateAnswersInGameModel();
-            viewManager.changeView(View.GAME_ROUND);
-        }
+    private void continueButtonPressed() {
+
+        model.startRound();
     }
 
     /**
@@ -102,7 +96,7 @@ public class AnswerOverviewController {
      * @param players           amount of players
      * @param categories        selected categories
      */
-    private void createAnswerOverview(List<String> players, List<String> categories, RoundResults roundResults) {
+    private void createAnswerOverview(List<PlayerBean> players, List<String> categories, RoundResults roundResults) {
         view.createAnswerOverview(players, categories, roundResults);
     }
 
@@ -114,21 +108,18 @@ public class AnswerOverviewController {
         view.showPoints(players);
     }
 
-    /**
-     * Updating the answers and the status (doubted / not doubted) in the game model
-     */
-    private void updateAnswersInGameModel() {
-        List<Pair<String, Boolean>> answers = new ArrayList<>();
 
-        for (int i = 0; i < view.getCategoryAnswerLabels().size(); i++) {
-            for (int j = 0; j < view.getCategoryAnswerLabels().get(i).size(); j++) {
 
-                String answer = view.getCategoryAnswerLabels().get(i).get(j).getText();
-                Boolean isDoubted = view.getDoubtAnswerCheckboxes().get(i).get(j).isSelected();
+    ////////////////////////////////////
+    ////////////////////////////////////
 
-                Pair<String, Boolean> pair = new Pair<>(answer, isDoubted);
-                answers.add(pair);
-            }
+    public void onGameRoundStateChanged()
+    {
+        final GameRoundState state = model.getGameRoundState();
+
+        if (GameRoundState.ANSWERS_OPEN.equals(state) && model.isGameStarted())
+        {
+            SwingUtilities.invokeLater(() -> viewManager.changeView(View.GAME_ROUND));
         }
     }
 }

@@ -93,6 +93,10 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
     @Setter
     private List<String> temporaryAnswers = new ArrayList<>();
 
+    @Getter
+    @Setter
+    private boolean gameStarted;
+
 
 
     /**
@@ -191,6 +195,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         this.gameRoundState = GameRoundState.PREPARING;
         this.localPlayerAnswered = false;
         this.temporaryAnswers = new ArrayList<>();
+        this.gameStarted = false;
     }
 
 
@@ -208,25 +213,21 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
     //////////////////////////////////////////////////////
 
 
-    final HashMap<String, List<Runnable>> runnables = new HashMap<>();
+    final HashMap<String, Runnable> runnables = new HashMap<>();
 
     @Override
     public void register(String category, Runnable runnable)
     {
-        if (!runnables.containsKey(category))
-            runnables.put(category, new ArrayList<>());
-
-        runnables.get(category).add(runnable);
+            runnables.put(category, runnable);
     }
 
     @Override
     public void callRunnable(String category) {
-        List<Runnable> runnableList = runnables.get(category);
 
-        if (runnableList != null) {
-            for (Runnable runnable : runnableList) {
-                runnable.run();
-            }
+        final Runnable runnable = runnables.get(category);
+
+        if (runnable != null) {
+            runnable.run();
         }
     }
 }
