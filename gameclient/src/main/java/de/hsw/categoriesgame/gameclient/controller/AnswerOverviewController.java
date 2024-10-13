@@ -26,13 +26,10 @@ public class AnswerOverviewController {
     private final AnswerOverviewView view;
     private final  GameModel model;
 
-    // TODO: mockPlayers ersetzen durch model.getPlayers()!!!
-
-    List<String> mockPlayers;
 
     /**
      * Constructor
-     * @param viewManager   View Manager to enable navigation between different views
+     * @param viewManager   View Manager to enable na vigation between different views
      * @param view          referring view of the controller
      * @param model         model in which game data will be saved
      */
@@ -45,11 +42,7 @@ public class AnswerOverviewController {
         model.register(ExecutorCategory.ROUND_STATE_CHANGE.name(), this::onGameRoundStateChanged);
         model.register(ExecutorCategory.PLAYER_JOIN_LEAVE.name(), this::onPlayerJoinLeave);
 
-        mockPlayers = new ArrayList<>();
-
-        mockPlayers.add("SwaggerBoi33");
-        mockPlayers.add("StadtBanause12");
-        mockPlayers.add("Andy");
+        isContinueButtonVisible();
 
         registerListener();
         createAnswerOverview(
