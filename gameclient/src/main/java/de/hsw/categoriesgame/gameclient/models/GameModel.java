@@ -7,6 +7,7 @@ import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameapi.util.BugfixUtil;
 import de.hsw.categoriesgame.gameclient.GameclientApplication;
 import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.interfaces.RunnableExecutor;
@@ -202,7 +203,7 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         this.runnables.clear();
         this.gameRoundState = GameRoundState.PREPARING;
         this.localPlayerAnswered = false;
-        this.temporaryAnswers = List.of("", "", "");
+        this.temporaryAnswers = List.of("", "", "", "", "");
         this.gameStarted = false;
     }
 
@@ -214,6 +215,8 @@ public class GameModel implements RunnableExecutor<ExecutorCategory> {
         this.playerBeans = lobby.getPlayers();
         this.lobbyCode = lobby.getLobbyCode();
         this.gameConfiguration = lobby.getGameConfigs();
+        this.gameRoundState = GameRoundState.PREPARING;
+        this.temporaryAnswers = BugfixUtil.getListWithEmptyStrings(gameConfiguration.getCategories().size());
     }
 
   
