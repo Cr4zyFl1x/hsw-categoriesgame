@@ -84,9 +84,9 @@ public class ResultController {
         }
 
         if (sortedList.size() > 2) {
-            view.getPlayer3Label().setVisible(false);
-        } else {
             view.getPlayer3Label().setText(sortedList.get(2).getName());
+        } else {
+            view.getPlayer3Label().setVisible(false);
         }
     }
 }
