@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class RoundResults {
+public class RoundResults implements Serializable {
 
     @Getter
     private final int round;
