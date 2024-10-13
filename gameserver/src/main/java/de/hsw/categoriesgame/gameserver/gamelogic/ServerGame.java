@@ -1,11 +1,9 @@
 package de.hsw.categoriesgame.gameserver.gamelogic;
 
-import de.hsw.categoriesgame.gameapi.api.Client;
-import de.hsw.categoriesgame.gameapi.api.GameData;
-import de.hsw.categoriesgame.gameapi.api.GameRoundState;
-import de.hsw.categoriesgame.gameapi.mapper.Mapper;
+import de.hsw.categoriesgame.gameapi.api.*;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ import java.util.List;
 /**
  * @author Florian J. Kleine-Vorholt
  */
+@Slf4j
 public class ServerGame {
 
     private SecureRandom random = new SecureRandom();
@@ -143,6 +142,7 @@ public class ServerGame {
         // Has player already answered?
         final RoundResults roundResults = getCurrentRoundResults();
         if (roundResults.hasAnswered(playerResult.getPlayerBean())) {
+            log.warn("Player {} has already answered!", playerResult.getPlayerBean());
             return;
         }
 
@@ -150,9 +150,9 @@ public class ServerGame {
         roundResults.addResult(playerResult);
 
 
-        // If all have answered
+        // If all have answered -> Show answers
         if (haveAllAnswered()) {
-            updateRoundState(GameRoundState.DOUBTING_OPEN);
+            updateRoundState(GameRoundState.SHOW_ROUND_ANSWERS);
         }
     }
 

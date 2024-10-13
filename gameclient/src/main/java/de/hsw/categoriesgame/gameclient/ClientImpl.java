@@ -90,6 +90,12 @@ public class ClientImpl implements Client {
     public void notifyRoundState(GameRoundState roundState, GameData gameData)
     {
         log.debug("notifyRoundState was called with {}", roundState);
+
+        // If is new round player has not answered
+        if (roundState.equals(GameRoundState.ANSWERS_OPEN)) {
+            currentGame.setLocalPlayerAnswered(false);
+        }
+
         this.currentGame.setGameRoundState(roundState);
         this.currentGame.setCurrentRoundNumber(gameData.getCurrentRound());
         this.currentGame.setCurrentLetter(gameData.getCurrentLetter());

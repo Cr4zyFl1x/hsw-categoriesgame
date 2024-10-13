@@ -22,9 +22,10 @@ public enum GameRoundState {
     ANSWERS_CLOSED,
 
     /**
-     * Players can now see the answers from the others and can decide if they are correct or not
+     * Al players should switch to the answer overviews for the round
      */
-    DOUBTING_OPEN,
+    SHOW_ROUND_ANSWERS,
+
 
     /**
      * Players have to show the final results

@@ -2,6 +2,7 @@ package de.hsw.categoriesgame.gameserver;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.api.Lobby;
+import de.hsw.categoriesgame.gameapi.api.PlayerResult;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
@@ -131,6 +132,10 @@ public class LobbyImpl implements Lobby {
         return game != null && game.isStarted();
     }
 
+
+    /**
+     * Creates if necessary and starts it if not yet started
+     */
     @Override
     public void startGame() {
         if (game == null) {
@@ -141,6 +146,32 @@ public class LobbyImpl implements Lobby {
             return;
         }
         throw new IllegalStateException("Game already started!");
+    }
+
+
+    /**
+     * Starts a new round
+     */
+    @Override
+    public void startRound()
+    {
+        if (!hasGameStarted()) {
+            throw new IllegalStateException("Game hat not yet started!");
+        }
+        game.startRound();
+    }
+
+
+
+    @Override
+    public void receivePlayerAnswer(PlayerResult playerResult) {
+        if (playerResult == null)
+            throw new IllegalArgumentException("Player result is null!");
+
+        if (!hasGameStarted()) {
+            throw new IllegalStateException("Game has not yet started! Therefore no answers can be sent!");
+        }
+        game.receivePlayerAnswer(playerResult);
     }
 
 

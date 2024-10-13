@@ -77,4 +77,16 @@ public interface Lobby {
      * Starts the game
      */
     void startGame();
+
+
+    /**
+     *
+     */
+    void startRound();
+
+    /**
+     * Receives a {@link PlayerResult} POJO containing the answers for this round
+     * @param playerResult  the result
+     */
+    void receivePlayerAnswer(final PlayerResult playerResult);
 }

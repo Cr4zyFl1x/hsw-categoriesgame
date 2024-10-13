@@ -1,4 +1,4 @@
-package de.hsw.categoriesgame.gameserver.gamelogic;
+package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 

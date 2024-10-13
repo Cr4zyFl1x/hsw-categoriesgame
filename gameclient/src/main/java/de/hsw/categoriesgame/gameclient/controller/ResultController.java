@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Controller class to control actions on the ResultView
  */
-public class ResultController implements AdvancedObserver {
+public class ResultController {
 
     private static final Logger log = LoggerFactory.getLogger(ResultController.class);
     private final ViewManager viewManager;
@@ -37,8 +37,6 @@ public class ResultController implements AdvancedObserver {
         this.viewManager = viewManager;
         this.view = view;
         this.model = model;
-
-        model.register(ObservableCategory.RESULT_CONTROLLER, this);
 
         mockPlayerBeans = new ArrayList<>();
         mockPlayerBeans.add(new PlayerBean("Jeff"));
@@ -90,11 +88,5 @@ public class ResultController implements AdvancedObserver {
         view.getPlayer1Label().setText(sortedList.get(0).getName());
         view.getPlayer2Label().setText(sortedList.get(1).getName());
         view.getPlayer3Label().setText(sortedList.get(2).getName());
-    }
-
-    @Override
-    public void receiveNotification()
-    {
-        System.out.println("I GOT NOTIFIED!");
     }
 }

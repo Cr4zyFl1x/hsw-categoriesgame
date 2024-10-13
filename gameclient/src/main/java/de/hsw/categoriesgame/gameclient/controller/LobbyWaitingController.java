@@ -92,7 +92,7 @@ public class LobbyWaitingController {
         }
 
         log.debug("GO TO GAME ROUND VIEW");
-        gameModel.getLobby().startGame();
+        gameModel.startGame();
     }
 
 
@@ -117,7 +117,6 @@ public class LobbyWaitingController {
 
     public void onGameRoundStateChange()
     {
-        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
         final GameRoundState state = gameModel.getGameRoundState();
 
         if (state.equals(GameRoundState.ANSWERS_OPEN)) {

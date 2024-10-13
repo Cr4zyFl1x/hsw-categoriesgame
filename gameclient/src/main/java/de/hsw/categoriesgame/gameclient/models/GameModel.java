@@ -1,11 +1,9 @@
 package de.hsw.categoriesgame.gameclient.models;
 
-import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.api.GameRoundState;
-import de.hsw.categoriesgame.gameapi.api.Lobby;
-import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.*;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.pojo.NormalAnswer;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
@@ -29,7 +27,7 @@ import java.util.Optional;
 /**
  * This class contains all necessary data while the game is running
  */
-public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedObservable<ObservableCategory> {
+public class GameModel implements RunnableExecutor<ExecutorCategory> {
 
     /**
      * Logger
@@ -62,6 +60,25 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
 
     @Getter
     @Setter
+    private List<String> categories = new ArrayList<>();
+
+
+
+    @Getter
+    private GameConfigs gameConfiguration;
+
+
+    //
+    //// RUNDENABHÄNGIGE VARIABLEN
+    //
+
+
+    @Getter
+    @Setter
+    private GameRoundState gameRoundState;
+
+    @Getter
+    @Setter
     private char currentLetter;
 
     @Getter
@@ -70,14 +87,13 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
 
     @Getter
     @Setter
-    private List<String> categories = new ArrayList<>();
+    private boolean localPlayerAnswered;
 
     @Getter
     @Setter
-    private GameRoundState gameRoundState;
+    private List<String> temporaryAnswers = new ArrayList<>();
 
-    @Getter
-    private GameConfigs gameConfiguration;
+
 
     /**
      * Constructor
@@ -86,6 +102,10 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
         playerBeans = new ArrayList<>();
     }
 
+
+    //
+    //// ROUND / LOBBY CONTROL
+    //
 
 
 
@@ -114,14 +134,42 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
 
 
     /**
-     * Reads the userlist from remote and notifies views/controller
+     * Starts the game
      */
-    public void updatePlayers()
+    public void startGame()
     {
-        this.playerBeans = lobby.getPlayers();
-
-
+        lobby.startGame();
     }
+
+
+    /**
+     * Starts a new round
+     */
+    public void startRound()
+    {
+        lobby.startRound();
+        localPlayerAnswered = false;
+    }
+
+
+    /**
+     * Sends the locally temporary stored answers to the server
+     */
+    public void sendMyAnswer()
+    {
+        if (localPlayerAnswered) {
+            log.warn("This client has already answered!");
+            return;
+        }
+
+        // Build answer POJO
+        final PlayerBean localPlayer = Mapper.map(getLocalClient());
+        final PlayerResult roundResult = new PlayerResult(localPlayer, getTemporaryAnswers());
+
+        // Send Answer to server
+        lobby.receivePlayerAnswer(roundResult);
+    }
+
 
 
     /**
@@ -136,9 +184,11 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
         this.lobby = null;
         this.localClient = null;
         this.runnables.clear();
-        this.observers.clear();
         this.gameRoundState = GameRoundState.PREPARING;
+        this.localPlayerAnswered = false;
+        this.temporaryAnswers.clear();
     }
+
 
 
     public void initialize()
@@ -153,44 +203,6 @@ public class GameModel implements RunnableExecutor<ExecutorCategory>, AdvancedOb
     //////////////////////////////////////////////////////
     //////////////////////////////////////////////////////
 
-
-    final HashMap<ObservableCategory, List<AdvancedObserver>> observers = new HashMap<>();
-
-    @Override
-    public void register(ObservableCategory category, AdvancedObserver observer)
-    {
-        if (!observers.containsKey(category))
-            observers.put(category, new ArrayList<>());
-
-        final List<AdvancedObserver> catObservers = observers.get(category);
-        Optional<AdvancedObserver> existingOfType = catObservers.stream()
-                        .filter(j -> j.getClass().equals(observer.getClass()))
-                        .findFirst();
-
-        existingOfType.ifPresent(catObservers::remove);
-        catObservers.add(observer);
-
-//        observers.get(category).add(observer);
-    }
-
-
-    @Override
-    public void sendNotification(ObservableCategory... category)
-    {
-        if (category == null || category.length == 0) {
-            for (List<AdvancedObserver> observers : observers.values()) {
-                observers.forEach(AdvancedObserver::receiveNotification);
-            }
-            return;
-        }
-
-        for (ObservableCategory cat : observers.keySet()) {
-            observers.get(cat).forEach(AdvancedObserver::receiveNotification);
-        }
-    }
-
-    //////////////////////////////////////////
-    //////////////////////////////////////////
 
     final HashMap<String, List<Runnable>> runnables = new HashMap<>();
 

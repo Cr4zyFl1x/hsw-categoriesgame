@@ -1,6 +1,8 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.GameRoundState;
+import de.hsw.categoriesgame.gameapi.api.PlayerResult;
+import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.RoundState;
 import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
 import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
@@ -69,7 +71,7 @@ public class GameRoundController {
         view.getCategoryInputFields().forEach(inputField -> inputField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
+                updateAnswersInModel();
             }
 
             @Override
@@ -90,6 +92,17 @@ public class GameRoundController {
         view.getHeader().setText("Game Round #" + model.getCurrentRoundNumber());
     }
 
+
+    /**
+     *
+     */
+    private void updateAnswersInModel()
+    {
+        var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
+        model.setTemporaryAnswers(answers);
+    }
+
+
     /**
      * Navigate to answer overview
      */
@@ -98,9 +111,9 @@ public class GameRoundController {
         // TODO: 11.10.2024 create new NormalAnswer und sendAnswer und evaluate
 
         if (validateInputs()) {
-            log.info("GO TO ANSWER OVERVIEW VIEW");
-            var answers = view.getCategoryInputFields().stream().map(JTextField::getText).toList();
-            answered = true;
+
+            updateAnswersInModel();
+            model.sendMyAnswer();
         } else {
             view.throwErrorDialog();
         }
@@ -153,6 +166,6 @@ public class GameRoundController {
     public void onRoundStateChange()
     {
         final GameRoundState state = model.getGameRoundState();
-
+        System.out.println("New state " + state);
     }
 }
