@@ -29,7 +29,7 @@ public final class StartView extends JPanel implements InitializableView {
      */
     public StartView() {
         // Setting up background image
-        backgroundImage = new ImageIcon("gameclient/src/main/resources/background.jpg").getImage();
+        backgroundImage = new ImageIcon("gameclient/src/main/resources/heft.jpg").getImage();
         setPreferredSize(new Dimension(backgroundImage.getWidth(null), backgroundImage.getHeight(null)));
 
         // Final build of the view
