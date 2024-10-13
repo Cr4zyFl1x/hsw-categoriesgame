@@ -5,6 +5,7 @@ import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameapi.api.RoundResults;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.pojos.Pair;
 import de.hsw.categoriesgame.gameclient.views.AnswerOverviewView;
@@ -67,7 +68,7 @@ public class AnswerOverviewController {
      */
     private void registerListener() {
         view.getCancelButton().addActionListener(e -> goToStartView());
-        view.getContinueButton().addActionListener(e -> goToResultOrGameRoundView());
+        view.getContinueButton().addActionListener(e -> continueButtonPressed());
     }
 
     /**
