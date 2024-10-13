@@ -1,7 +1,7 @@
 package de.hsw.categoriesgame.gameapi.rpc;
 
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
-import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.impl.SocketProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
 import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 import de.hsw.categoriesgame.gameapi.rpc.testres.*;
@@ -33,7 +33,7 @@ public class GeneralProxyServerTest {
 
         final RemoteServer clientServer = new SocketRemoteServer(new DomainRegistry());
         clientServer.start();
-        proxyFactory = new RememberableProxyFactory(
+        proxyFactory = new SocketProxyFactory(
                 new ConnectionDetails("::1", 6444),
                 clientServer);
 

@@ -1,8 +1,8 @@
-package de.hsw.categoriesgame.gameserver;
+package de.hsw.categoriesgame.gameserver.domain;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.exception.LobbyAlreadyExistsException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyFullException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
@@ -14,14 +14,28 @@ import org.apache.logging.log4j.Logger;
 import java.util.Hashtable;
 import java.util.List;
 
-public class CategoriesGameImpl implements CategorieGame {
+public final class CategoriesGameImpl implements CategorieGame {
 
+    /**
+     * Logger
+     */
     private static final Logger log = LogManager.getLogger(CategoriesGameImpl.class);
+
+    /**
+     * Map of saved/existing lobbies
+     */
     private final Hashtable<String, Lobby> lobbies;
 
-    public CategoriesGameImpl() {
+
+
+    /**
+     * Constructor
+     */
+    public CategoriesGameImpl()
+    {
         lobbies = new Hashtable<>();
     }
+
 
 
     /**
@@ -45,7 +59,7 @@ public class CategoriesGameImpl implements CategorieGame {
     {
         Lobby lobby = getLobby(lobbyCode);
 
-        if (lobby.getPlayers().size() >= lobby.getGameConfiguration().getMaxPlayers()) {
+        if (lobby.getPlayers().size() >= lobby.getGameConfigs().getMaxPlayers()) {
             throw new LobbyFullException("Maximum number of players reached for this Lobby!");
         }
 
@@ -54,7 +68,7 @@ public class CategoriesGameImpl implements CategorieGame {
         // Notify
         lobby.getClients().stream()
                 .filter(j -> j != client)
-                .forEach(Client::notifyPlayerAboutLobbyState);
+                .forEach(j -> j.notifyPlayerJoinLeave(lobby.getPlayers()));
 
         return lobby;
     }
@@ -129,7 +143,7 @@ public class CategoriesGameImpl implements CategorieGame {
         // Notify
         lobby.getClients().stream()
                 .filter(j -> j != client)
-                .forEach(Client::notifyPlayerAboutLobbyState);
+                .forEach(j -> j.notifyPlayerJoinLeave(lobby.getPlayers()));
     }
 
 

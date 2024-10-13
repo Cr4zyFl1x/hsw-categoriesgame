@@ -3,7 +3,7 @@ package de.hsw.categoriesgame.gameapi.rpc.impl.registry;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
 import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
 import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
-import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.impl.SocketProxyFactory;
 
 /**
  * Global {@link ProxyFactoryRegistry} to store multiple {@link ProxyFactory} objects
@@ -66,6 +66,6 @@ public final class ProxyFactoryRegistry extends RegistryBase<ConnectionDetails, 
             return getRegistry().get(remote);
         }
 
-        return new RememberableProxyFactory(remote, localServer);
+        return new SocketProxyFactory(remote, localServer);
     }
 }

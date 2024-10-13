@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class RandomStringUtil {
+public final class RandomStringUtil {
 
     public enum Type {
         CAPITAL_DIGITS  ("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
@@ -23,6 +23,14 @@ public class RandomStringUtil {
     }
 
 
+    /**
+     * Generates a new string of the given type
+     *
+     * @param type      Type
+     * @param length    Length
+     *
+     * @return      the random string
+     */
     public static String generate(final Type type, final int length)
     {
         final StringBuilder result = new StringBuilder(length);

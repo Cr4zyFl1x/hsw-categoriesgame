@@ -1,8 +1,8 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.exception.LobbyFullException;
 import de.hsw.categoriesgame.gameapi.exception.LobbyNotFoundException;
 import de.hsw.categoriesgame.gameclient.ClientImpl;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller class for JoinLobbyView to enable doing actions
  */
-public class JoinLobbyController {
+public final class JoinLobbyController {
 
     private static final Logger log = LoggerFactory.getLogger(JoinLobbyController.class);
 
@@ -91,10 +91,10 @@ public class JoinLobbyController {
             }
 
             gameModel.setLobby(l);
-            remoteGame.joinLobby(code, client);
             gameModel.setLocalClient(client);
 
-            // Initialize GameModel
+            remoteGame.joinLobby(code, client);
+
             gameModel.initialize();
 
         } catch (LobbyNotFoundException e) {

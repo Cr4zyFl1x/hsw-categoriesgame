@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller class for StartView to handle logic operations
  */
-public class StartController {
+public final class StartController {
 
     private static final Logger log = LoggerFactory.getLogger(StartController.class);
 

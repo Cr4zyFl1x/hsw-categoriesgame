@@ -1,8 +1,8 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
-import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.api.Client;
+import de.hsw.categoriesgame.gameapi.api.Lobby;
 import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
 import de.hsw.categoriesgame.gameapi.util.RandomStringUtil;
 import de.hsw.categoriesgame.gameclient.ClientImpl;
@@ -20,7 +20,7 @@ import java.awt.event.KeyEvent;
 /**
  * Controller class for CreateLobbyView to make operations possible
  */
-public class CreateLobbyController {
+public final class CreateLobbyController {
 
     private static final Logger log = LoggerFactory.getLogger(CreateLobbyController.class);
     private final ViewManager viewManager;
@@ -124,7 +124,7 @@ public class CreateLobbyController {
         final GameConfigs config = new GameConfigs(
                 (Integer) view.getAmountRoundsSpinner().getValue(),
                 (Integer) view.getMaxPlayerSpinner().getValue());
-        config.setCategories(gameModel.getCategories());
+        config.setCategories(view.getCategoryButtons().stream().map(JButton::getText).toList());
 
 
         // Create Lobby
@@ -134,10 +134,10 @@ public class CreateLobbyController {
 
             lobby = game.createLobby(view.getLobbyCodeInput().getText(), config);
             gameModel.setLobby(lobby);
-            game.joinLobby(lobby.getLobbyCode(), admin);
             gameModel.setLocalClient(admin);
 
-            // Initialize Model
+            game.joinLobby(lobby.getLobbyCode(), admin);
+
             gameModel.initialize();
 
 
@@ -148,23 +148,24 @@ public class CreateLobbyController {
             return;
         }
 
-
         log.info("Created a new game lobby with code {}", lobby.getLobbyCode());
         viewManager.changeView(View.WAITING);
     }
+
 
     /**
      * Validates if all input is given correctly, so the player can continue
      * @return  true - conditions are met / false - conditions are not met
      */
-    private boolean validateInputs() {
-        // TODO: 11.10.2024 vergleichen mit GameConfigs aus lobby
+    private boolean validateInputs()
+    {
         int maxPlayers = (int) view.getMaxPlayerSpinner().getValue();
         JTextField lobbyCode = view.getLobbyCodeInput();
-        int amountCategories = gameModel.getCategoriesCount();
+        int amountCategories = view.getCategoryButtons().size();
 
         return maxPlayers >= 2 && !lobbyCode.getText().isEmpty() && amountCategories >= 1;
     }
+
 
     /**
      * Method triggers the addition of a new category including adding it to the model
@@ -200,13 +201,11 @@ public class CreateLobbyController {
             JButton finalCategoryButton = categoryButton;
             categoryButton.addActionListener(e -> removeCategory(finalCategoryButton));
 
-            // Adding category to model
-            gameModel.addCategory(newCategory);
-
             // Clear input
             view.getNewCategoryInput().setText("");
         }
     }
+
 
     /**
      * Removes a certain category
@@ -214,8 +213,5 @@ public class CreateLobbyController {
     private void removeCategory(JButton categoryButton) {
         // Removing the button component on the view
         view.removeCategory(categoryButton);
-
-        // Removing the category in the model
-        gameModel.removeCategory(categoryButton.getText());
     }
 }

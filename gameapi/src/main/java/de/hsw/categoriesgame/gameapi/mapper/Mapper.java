@@ -4,12 +4,11 @@ import de.hsw.categoriesgame.gameapi.api.Client;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class Mapper {
+public final class Mapper {
 
     private static final HashMap<Client, PlayerBean> clients = new HashMap<>();
 

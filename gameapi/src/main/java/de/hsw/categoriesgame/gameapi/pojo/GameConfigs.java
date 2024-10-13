@@ -7,15 +7,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameConfigs implements Serializable {
+@Getter
+public final class GameConfigs implements Serializable {
 
-    @Getter
     private final int maxRounds;
 
-    @Getter
     private final int maxPlayers;
 
-    @Getter
     @Setter
     private List<String> categories;
 

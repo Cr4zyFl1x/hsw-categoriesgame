@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LobbyWaitingView extends JPanel implements InitializableView {
+public final class LobbyWaitingView extends JPanel implements InitializableView {
 
     private JLabel waitingHeader;
 

@@ -1,16 +1,22 @@
 package de.hsw.categoriesgame.gameclient;
 
 import de.hsw.categoriesgame.gameapi.api.Client;
-import de.hsw.categoriesgame.gameapi.pojo.RoundState;
+import de.hsw.categoriesgame.gameapi.api.GameData;
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
-import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-public class ClientImpl implements Client {
+public final class ClientImpl implements Client {
 
+    /**
+     * The current game managed by this client
+     */
     private final GameModel currentGame;
 
     /**
@@ -28,12 +34,11 @@ public class ClientImpl implements Client {
      */
     private int points;
 
-    // Kann das weg?
-    @Deprecated
-    private boolean hasAnswered;
 
 
-
+    /**
+     * Constructor
+     */
     public ClientImpl(final GameModel currentGame, final String name) {
         uuid = UUID.randomUUID();
         this.name = name;
@@ -78,37 +83,46 @@ public class ClientImpl implements Client {
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasAnswered() {
-        return hasAnswered;
-    }
+
+    ///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+
 
 
     /**
-     * {@inheritDoc}
+     * Called when the round state changes
+     * @param roundState    the new round state
+     * @param gameData      the game data
      */
     @Override
-    public void setHasAnswered(boolean hasAnswered) {
-        this.hasAnswered = hasAnswered;
-    }
-
-
-    @Override
-    public void notifyPlayerAboutRoundState(RoundState roundState) {
-        System.out.println("Neuer State: " + roundState.name());
-    }
-
-
-    /**
-     * Called when lobby has changed e. g. Players in lobby
-     */
-    @Override
-    public void notifyPlayerAboutLobbyState()
+    public void notifyRoundState(GameRoundState roundState, GameData gameData)
     {
-        // Update Players in model
-        currentGame.updatePlayers();
+        log.debug("notifyRoundState was called with {}", roundState);
+
+        // If is new round player has not answered
+        if (roundState.equals(GameRoundState.ANSWERS_OPEN)) {
+            currentGame.setLocalPlayerAnswered(false);
+        }
+
+        this.currentGame.setGameRoundState(roundState);
+        this.currentGame.setCurrentRoundNumber(gameData.getCurrentRound());
+        this.currentGame.setCurrentLetter(gameData.getCurrentLetter());
+
+        // Notify Runnables to handle round state change
+        this.currentGame.callRunnable(ExecutorCategory.ROUND_STATE_CHANGE.name());
+    }
+
+
+    /**
+     * Called when player joins/leaves
+     * @param players   Actual list of players
+     */
+    @Override
+    public void notifyPlayerJoinLeave(List<PlayerBean> players)
+    {
+        log.debug("notifyPlayerJoinLeave was called with {} players", players.size());
+        currentGame.setPlayerBeans(players);
+
+        this.currentGame.callRunnable(ExecutorCategory.PLAYER_JOIN_LEAVE.name());
     }
 }

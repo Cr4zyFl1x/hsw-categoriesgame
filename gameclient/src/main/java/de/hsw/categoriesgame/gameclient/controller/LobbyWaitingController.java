@@ -1,17 +1,19 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
+import de.hsw.categoriesgame.gameapi.api.GameRoundState;
 import de.hsw.categoriesgame.gameapi.mapper.Mapper;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
-import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
+import de.hsw.categoriesgame.gameclient.interfaces.ExecutorCategory;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
-import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameclient.views.LobbyWaitingView;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LobbyWaitingController implements AdvancedObserver {
+import javax.swing.*;
+
+public final class LobbyWaitingController {
 
     private static final Logger log = LoggerFactory.getLogger(LobbyWaitingController.class);
     private final ViewManager viewManager;
@@ -26,7 +28,10 @@ public class LobbyWaitingController implements AdvancedObserver {
         this.view = view;
         this.gameModel = model;
 
-        gameModel.register(ObservableCategory.LOBBY_WAIT_CONTROLLER, this);
+
+        gameModel.register(ExecutorCategory.PLAYER_JOIN_LEAVE.name(), this::onPlayerJoinLeave);
+        gameModel.register(ExecutorCategory.ROUND_STATE_CHANGE.name(), this::onGameRoundStateChange);
+
 
         registerListener();
         updateJoinedPlayers();
@@ -76,14 +81,14 @@ public class LobbyWaitingController implements AdvancedObserver {
      */
     private void startGameButtonPressed()
     {
+        // At least 2 players in lobby
         if (gameModel.getPlayerBeans().size() < 2) {
             view.throwErrorDialog("Es m\u00FCssen mindestens zwei Spieler der Lobby beigetreten sein!");
             return;
         }
 
         log.debug("GO TO GAME ROUND VIEW");
-        gameModel.getLobby().startGame();
-        viewManager.changeView(View.GAME_ROUND);
+        gameModel.startGame();
     }
 
 
@@ -96,15 +101,22 @@ public class LobbyWaitingController implements AdvancedObserver {
     }
 
 
+
     /////////////////////////////////////////////
     /////////////////////////////////////////////
 
-
-    @Override
-    public void receiveNotification()
+    public void onPlayerJoinLeave()
     {
-        log.debug("Lobby has changed! Processing change.");
         updateJoinedPlayers();
         isStartGameButtonVisible();
+    }
+
+    public void onGameRoundStateChange()
+    {
+        final GameRoundState state = gameModel.getGameRoundState();
+
+        if (state.equals(GameRoundState.ANSWERS_OPEN)) {
+            SwingUtilities.invokeLater(() -> viewManager.changeView(View.GAME_ROUND));
+        }
     }
 }

@@ -1,7 +1,8 @@
 package de.hsw.categoriesgame.gameapi.api;
 
 import de.hsw.categoriesgame.gameapi.exception.UserNotInLobbyException;
-import de.hsw.categoriesgame.gameapi.pojo.*;
+import de.hsw.categoriesgame.gameapi.pojo.GameConfigs;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 
 import java.util.List;
 
@@ -25,58 +26,6 @@ public interface Lobby {
      * @param client    object of class Player
      */
     void leaveClient(Client client) throws UserNotInLobbyException;
-
-    /**
-     * Set the categories for the game/lobby.
-     * @param categories    list of categories (e.g. name, country, ...)
-     */
-    void setCategories(List<String> categories);
-
-    /**
-     * Get the categories of the game/lobby.
-     * @return  list of categories as strings
-     */
-    List<String> getCategories();
-
-    int getCurrentRoundNumber();
-
-
-    char getCurrentLetter();
-
-    /**
-     * Create new object of class Game with players in the lobby.
-     */
-    void startGame();
-
-    /**
-     * Start a new round, setup data structures and generate new random letter.
-     * @return  random letter for the new round
-     */
-    void startNewRound();
-    void closeAnswerRound();
-    void closeDoubtingRound();
-
-
-    /**
-     * Sends list of answers to server to save.
-     * @param answers   list of normal answers
-     */
-    void sendAnswers(List<NormalAnswer> answers);
-
-    /**
-     * Player can doubt an answer of another player.
-     * @param doubtedAnswer object of DoubtedAnswer
-     * @return              list of entries
-     */
-    List<Entry> doubtAnswer(DoubtedAnswer doubtedAnswer);
-
-
-    /**
-     * Gets the current points of a player
-     * @param player
-     * @return
-     */
-    int getPointsOfPlayer(PlayerBean player);
 
 
     /**
@@ -111,6 +60,13 @@ public interface Lobby {
 
 
     /**
+     * Gets the game configuration
+     *
+     * @return The game configuration
+     */
+    GameConfigs getGameConfigs();
+
+    /**
      * Checks if game has started
      *
      * @return true if game has started
@@ -119,9 +75,28 @@ public interface Lobby {
 
 
     /**
-     * Gets the configuration of the game
-     *
-     * @return the config
+     * Starts the game
      */
-    GameConfigs getGameConfiguration();
+    void startGame();
+
+
+    /**
+     *
+     */
+    void startRound();
+
+    /**
+     * Receives a {@link PlayerResult} POJO containing the answers for this round
+     * @param playerResult  the result
+     */
+    void receivePlayerAnswer(final PlayerResult playerResult);
+
+
+    /**
+     * Gets the Results of the current round
+     * @return
+     */
+    RoundResults getCurrentRoundResults();
+
+    List<PlayerBean> getActualPlayers();
 }

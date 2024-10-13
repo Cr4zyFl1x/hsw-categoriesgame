@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * View class which builds the view for joining a lobby
  */
-public class JoinLobbyView extends JPanel implements InitializableView {
+public final class JoinLobbyView extends JPanel implements InitializableView {
 
     private JLabel joinHeader;
 

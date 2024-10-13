@@ -11,31 +11,62 @@ import java.util.List;
 /**
  * Class in which the view of creating a lobby is being built
  */
-public class CreateLobbyView extends JPanel implements InitializableView {
+public final class CreateLobbyView extends JPanel implements InitializableView {
 
     private JLabel adminUsernameLabel;
+
     @Getter
     private JTextField adminUsernameInput;
+
     private JLabel newLobbyHeader;
+
     private JLabel configHeader;
+
+    @Getter
     private JTextField lobbyCodeInput;
+
     private JLabel lobbyCodeLabel;
+
     @Getter
     private JButton reloadLobbyCodeButton;
+
     private JLabel maxPlayerLabel;
+
+    @Getter
     private JSpinner maxPlayerSpinner;
+
     private JLabel amountRoundsLabel;
+
+    @Getter
     private JSpinner amountRoundsSpinner;
+
+    @Getter
     private JButton cancelButton;
+
+    @Getter
     private JButton createButton;
+
     private JLabel newCategoryLabel;
+
+    @Getter
     private JTextField newCategoryInput;
+
+    @Getter
     private JButton addCategoryButton;
+
     private JLabel activeCategoriesLabel;
+
     private JPanel activeCategoriesPanel;
+
+    @Getter
     private List<JButton> categoryButtons;
+
     private JSeparator separator;
+
+    @Getter
     public JButton categoryButton;
+
+
 
     /**
      * Constructor
@@ -44,134 +75,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         initializeComponents();
         buildView();
     }
-    // TODO: buttons mit Listener verbinden
-    /**
-     * Returns the JLabel header named "New Lobby"
-     * @return  JLabel header
-     */
-    public JLabel getNewLobbyHeader() {
-        return newLobbyHeader;
-    }
 
-    /**
-     * Returns the JLabel header named "Configurations"
-     * @return  JLabel header
-     */
-    public JLabel getConfigHeader() {
-        return configHeader;
-    }
-
-    /**
-     * Returns the input field for the lobby code
-     * @return  JTextfield
-     */
-    public JTextField getLobbyCodeInput() {
-        return lobbyCodeInput;
-    }
-
-    /**
-     * Returns the JLabel for the lobby code
-     * @return  JLabel
-     */
-    public JLabel getLobbyCodeLabel() {
-        return lobbyCodeLabel;
-    }
-
-    /**
-     * Returns the JLabel for the max amount of Players Spinner
-     * @return  JLabel
-     */
-    public JLabel getMaxPlayerLabel() {
-        return maxPlayerLabel;
-    }
-
-    /**
-     * Returns the cancel button
-     * @return  JButton
-     */
-    public JButton getCancelButton() {
-        return cancelButton;
-    }
-
-    /**
-     * Returns the creation button
-     * @return  JButton
-     */
-    public JButton getCreateButton() {
-        return createButton;
-    }
-
-    /**
-     * Returns the spinner to set the max amount of players
-     * @return  JSpinner
-     */
-    public JSpinner getMaxPlayerSpinner() {
-        return maxPlayerSpinner;
-    }
-
-    /**
-     * Returns the spinner to set the amount of rounds
-     * @return  JSpinner
-     */
-    public JSpinner getAmountRoundsSpinner() {
-        return amountRoundsSpinner;
-    }
-
-    /**
-     * Returns the button to add a category
-     * @return  JButton
-     */
-    public JButton getAddCategoryButton() {
-        return addCategoryButton;
-    }
-
-    /**
-     * Returns the input field to type in a new category
-     * @return  JTextfield
-     */
-    public JTextField getNewCategoryInput() {
-        return newCategoryInput;
-    }
-
-    /**
-     * Returns the panel where all active categories will be collected
-     * @return  JPanel
-     */
-    public JPanel getActiveCategoriesPanel() {
-        return activeCategoriesPanel;
-    }
-
-    /**
-     * Returns the button of a category
-     * @return  JButton
-     */
-    public JButton getCategoryButton() {
-        return categoryButton;
-    }
-
-    /**
-     * Returns the label for the active categories
-     * @return  JLabel
-     */
-    public JLabel getActiveCategoriesLabel() {
-        return activeCategoriesLabel;
-    }
-
-    /**
-     * Returns the label for the input of a new category
-     * @return  JLabel
-     */
-    public JLabel getCategoryLabel() {
-        return newCategoryLabel;
-    }
-
-    /**
-     * Returns the category buttons in form of a list
-     * @return  List<JButton>
-     */
-    public List<JButton> getCategoryButtons() {
-        return categoryButtons;
-    }
 
 
     /**
@@ -231,6 +135,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         // separate panel to keep the active categories
         activeCategoriesPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     }
+
 
     /**
      * Builds the final view
@@ -386,6 +291,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         add(buttonPanel, gbc);
     }
 
+
     /**
      * Adds a new category to the active ones
      * @param category  category to be added
@@ -407,6 +313,7 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         return categoryButton;
     }
 
+
     /**
      * removes a chosen category from the active ones
      * @param categoryButton    category which should be removed
@@ -421,6 +328,10 @@ public class CreateLobbyView extends JPanel implements InitializableView {
         activeCategoriesPanel.repaint();
     }
 
+    /**
+     * Shows a error message dialogue with a desired message
+     * @param msg   the message
+     */
     public void throwErrorDialog(final String msg) {
         JOptionPane.showMessageDialog(null, msg, "Es ist ein Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }

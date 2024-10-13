@@ -3,30 +3,27 @@ package de.hsw.categoriesgame.gameclient;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import de.hsw.categoriesgame.gameapi.api.CategorieGame;
 import de.hsw.categoriesgame.gameapi.net.ConnectionDetails;
-import de.hsw.categoriesgame.gameapi.rpc.impl.RememberableProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.impl.SocketProxyFactory;
+import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
+import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 import de.hsw.categoriesgame.gameapi.util.NetUtil;
 import de.hsw.categoriesgame.gameclient.views.View;
 import de.hsw.categoriesgame.gameclient.views.ViewManager;
-
-import javax.swing.*;
-import java.awt.*;
-
-import de.hsw.categoriesgame.gameapi.rpc.ProxyFactory;
-import de.hsw.categoriesgame.gameapi.rpc.RemoteServer;
-import de.hsw.categoriesgame.gameapi.rpc.impl.SocketRemoteServer;
-import de.hsw.categoriesgame.gameapi.rpc.impl.registry.DomainRegistry;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.InputStream;
-import java.net.Socket;
 import java.util.PropertyResourceBundle;
 
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class GameclientApplication {
+public final class GameclientApplication {
 
     private static final Logger log = LoggerFactory.getLogger(GameclientApplication.class);
 
@@ -88,6 +85,9 @@ public class GameclientApplication {
     }
 
 
+    /**
+     * Creates a ProxyFactory for client side communication
+     */
     private static void setupServerAndProxyFactory()
     {
         mySideServer.start();
@@ -96,11 +96,14 @@ public class GameclientApplication {
                 getConfig().getString("remote-server.hostname"),
                 Integer.parseInt(getConfig().getString("remote-server.port"))
         );
-        proxyFactory = new RememberableProxyFactory(connectionDetails, mySideServer);
+        proxyFactory = new SocketProxyFactory(connectionDetails, mySideServer);
         remoteGame = proxyFactory.createProxy(CategorieGame.class);
     }
 
 
+    /**
+     * Reads the config from classpath to memory
+     */
     private static void readConfig()
     {
         try (InputStream inputStream = GameclientApplication.class.getClassLoader().getResourceAsStream("application.properties")) {
@@ -115,6 +118,9 @@ public class GameclientApplication {
     }
 
 
+    /**
+     * Checks if the configured RemoteServer is reachable
+     */
     private static void connectivityCheck()
     {
         final String hostname   = getConfig().getString("remote-server.hostname");

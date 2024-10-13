@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  *  Class in which the view of the start screen is being built
  */
-public class StartView extends JPanel implements InitializableView {
+public final class StartView extends JPanel implements InitializableView {
 
     private final Image backgroundImage;
 
@@ -21,6 +21,8 @@ public class StartView extends JPanel implements InitializableView {
 
     @Getter
     private JLabel headerLabel;
+
+
 
     /**
      * Constructor
@@ -34,6 +36,8 @@ public class StartView extends JPanel implements InitializableView {
         initializeComponents();
         buildView();
     }
+
+
 
     /**
      * Initializes all components needed
@@ -52,6 +56,7 @@ public class StartView extends JPanel implements InitializableView {
         joinLobbyButton = new JButton("Join Lobby");
         joinLobbyButton.setPreferredSize(new Dimension(150, 40));
     }
+
 
     /**
      * Builds the final view

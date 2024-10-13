@@ -1,5 +1,9 @@
 package de.hsw.categoriesgame.gameclient.views;
+
+import de.hsw.categoriesgame.gameapi.api.RoundResults;
+import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.interfaces.InitializableView;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,16 +13,27 @@ import java.util.List;
 /**
  * Class which builds the view for the answer overview
  */
-public class AnswerOverviewView extends JPanel implements InitializableView {
+public final class AnswerOverviewView extends JPanel implements InitializableView {
 
     private JLabel header;
+
+    @Getter
     private JButton continueButton;
+
+    @Getter
     private JButton cancelButton;
+
     private JPanel answerPanel;
+
     private JPanel pointsPanel;
+
     private List<JLabel> playerNameLabels;
+
     private List<List<JLabel>> categoryAnswerLabels;
+
     private List<JLabel> playerPointsLabels;
+
+
 
     /**
      * Constructor
@@ -28,53 +43,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         buildView();
     }
 
-    /**
-     * Returns the JLabel header
-     * @return  JLabel
-     */
-    public JLabel getHeader() {
-        return header;
-    }
 
-    /**
-     * Returns the continue button
-     * @return  JButton
-     */
-    public JButton getContinueButton() {
-        return continueButton;
-    }
-
-    /**
-     * Returns the cancel Button
-     * @return  JButton
-     */
-    public JButton getCancelButton() {
-        return cancelButton;
-    }
-
-    /**
-     * Returns a list of all player Labels
-     * @return  List<JLabel>
-     */
-    public List<JLabel> getPlayerNameLabels() {
-        return playerNameLabels;
-    }
-
-    /**
-     * Returns a nested list of the answers of players to every category
-     * @return  List<List<JLabel>>
-     */
-    public List<List<JLabel>> getCategoryAnswerLabels() {
-        return categoryAnswerLabels;
-    }
-
-    /**
-     * Returns a list of player labels for the point overview
-     * @return  List<JLabel>
-     */
-    public List<JLabel> getPlayerPointsLabels() {
-        return playerPointsLabels;
-    }
 
     /**
      * Initializing all components needed
@@ -158,7 +127,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
      * @param players           players
      * @param categories        selected categories
      */
-    public void createAnswerOverview(List<String> players, List<String> categories) {
+    public void createAnswerOverview(List<PlayerBean> players, List<String> categories, RoundResults roundResults) {
         // clearing the panel and lists
         answerPanel.removeAll();
         playerNameLabels.clear();
@@ -188,16 +157,21 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
             gbcPanel.gridx = 0;
             gbcPanel.gridy = p + 1;
             gbcPanel.gridwidth = 1;
-            JLabel playerNameLabel = new JLabel(players.get(p), JLabel.LEFT);
+            JLabel playerNameLabel = new JLabel(players.get(p).getName(), JLabel.LEFT);
             answerPanel.add(playerNameLabel, gbcPanel);
             playerNameLabels.add(playerNameLabel);
 
-            // Adding answers including checkboxes
+            int finalP = p;
+            List<String> playerAnswers = roundResults.getPlayerResults().values().stream().toList().stream()
+                    .filter(j -> j.getPlayerBean().getUUID().equals(players.get(finalP).getUUID()))
+                    .findFirst().get().getAnswers();
+
+            // Adding answers
             for (int categoryIndex = 0; categoryIndex < categories.size(); categoryIndex++) {
-                gbcPanel.gridx = categoryIndex * 2 + 1;
+                gbcPanel.gridx = categoryIndex + 1;
                 gbcPanel.gridy = p + 1;
                 gbcPanel.weightx = 1.0;
-                JLabel answerLabel = new JLabel("Answer " + (categoryIndex + 1), JLabel.CENTER);
+                JLabel answerLabel = new JLabel(playerAnswers.get(categoryIndex), JLabel.CENTER);
                 answerPanel.add(answerLabel, gbcPanel);
                 answerLabels.add(answerLabel);
             }
@@ -215,7 +189,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
      * Creates an overview of the points based on the amount of players
      * @param players     players
      */
-    public void showPoints(List<String> players) {
+    public void showPoints(List<PlayerBean> players) {
         // check if pointsPanel is not null
         if (pointsPanel != null) {
             remove(pointsPanel);
@@ -234,12 +208,12 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
             gbcPoints.gridx = 0;
             gbcPoints.gridy = p;
             gbcPoints.gridwidth = 1;
-            JLabel playerNameLabel = new JLabel(players.get(p), JLabel.LEFT);
+            JLabel playerNameLabel = new JLabel(players.get(p).getName(), JLabel.LEFT);
             pointsPanel.add(playerNameLabel, gbcPoints);
 
             // Points
             gbcPoints.gridx = 1;
-            JLabel pointsLabel = new JLabel("0", JLabel.LEFT);
+            JLabel pointsLabel = new JLabel(String.valueOf(players.get(p).getPoints()), JLabel.LEFT);
             pointsPanel.add(pointsLabel, gbcPoints);
             playerPointsLabels.add(pointsLabel);
         }
@@ -254,7 +228,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         add(pointsPanel, gbc);
 
         // revalidate and repaint points panel
-        revalidate();
-        repaint();
+        pointsPanel.revalidate();
+        pointsPanel.repaint();
     }
 }

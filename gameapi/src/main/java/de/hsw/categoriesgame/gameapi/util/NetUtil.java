@@ -5,7 +5,7 @@ import java.net.Socket;
 /**
  * @author Florian J. Kleine-Vorholt
  */
-public class NetUtil {
+public final class NetUtil {
 
     /**
      * Checks if a Server is listening on a specific hostname and port
