@@ -115,7 +115,7 @@ public class CreateLobbyController {
         if (!validateInputs()) {
             log.error("Unable to create a new game lobby due to invalid game configuration");
             view.throwErrorDialog("Fehler in der Spielkonfiguration!\n" +
-                    "- Sind Kategorien hinzugefügt?");
+                    "- Sind Kategorien hinzugef\u00FCgt?");
             return;
         }
 
@@ -143,7 +143,7 @@ public class CreateLobbyController {
 
         } catch (Exception e) {
             log.error("Unable to create lobby", e);
-            view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nFür weitere Informationen sehen Sie bitte im Protokoll nach.");
+            view.throwErrorDialog("Es ist ein Fehler aufgetreten!\nF\u00FCr weitere Informationen sehen Sie bitte im Protokoll nach.");
             loadLobbyCode();
             return;
         }
@@ -175,7 +175,7 @@ public class CreateLobbyController {
 
         // Max of 5 reached?
         if (view.getCategoryButtons().size() >= 5) {
-            view.throwErrorDialog("Es können maximal fünf Kategorien hinzugefügt werden!");
+            view.throwErrorDialog("Es k\u00F6nnen maximal f\u00FCnf Kategorien hinzugef\u00FCgt werden!");
             return;
         }
 
