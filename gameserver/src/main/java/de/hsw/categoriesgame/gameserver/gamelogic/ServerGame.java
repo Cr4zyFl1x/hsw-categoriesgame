@@ -178,7 +178,11 @@ public class ServerGame {
         }
         int points = 0;
         for (RoundResults roundResults : roundResults.values()) {
-            points += roundResults.getPlayers().stream().filter(j -> j.getUUID().equals(player.getUUID())).findFirst().get().getPoints();
+
+            final Optional<PlayerResult> result = roundResults.getPlayerResults().values().stream()
+                    .filter(j -> j.getPlayerBean().equals(player)).findFirst();
+
+            points += result.orElseThrow(() -> new IllegalStateException("Player not found to get points in round " + roundResults.getRound())).getPoints();
         }
         player.setPoints(points);
         return points;

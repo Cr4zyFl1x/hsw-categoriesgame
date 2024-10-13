@@ -59,7 +59,8 @@ public class AnswerOverviewController {
                 model.getCategories(),
                 model.getLobby().getCurrentRoundResults());
 
-        showPoints(model.getLobby().getActualPlayers());
+        List<PlayerBean> beans = model.getLobby().getActualPlayers();
+        showPoints(beans);
 
     }
 
@@ -82,8 +83,8 @@ public class AnswerOverviewController {
     /**
      * Navigates to the result or next game round view
      */
-    private void continueButtonPressed() {
-
+    private void continueButtonPressed()
+    {
         model.startRound();
     }
 
@@ -117,6 +118,11 @@ public class AnswerOverviewController {
         if (GameRoundState.ANSWERS_OPEN.equals(state))
         {
             SwingUtilities.invokeLater(() -> viewManager.changeView(View.GAME_ROUND));
+            return;
+        }
+
+        if (GameRoundState.FINAL_RESULTS.equals(state)) {
+            SwingUtilities.invokeLater(() -> viewManager.changeView(View.RESULTS));
         }
     }
 }

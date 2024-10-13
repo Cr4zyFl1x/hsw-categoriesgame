@@ -1,7 +1,5 @@
 package de.hsw.categoriesgame.gameclient.controller;
 
-import de.hsw.categoriesgame.gameclient.interfaces.AdvancedObserver;
-import de.hsw.categoriesgame.gameclient.models.ObservableCategory;
 import de.hsw.categoriesgame.gameapi.pojo.PlayerBean;
 import de.hsw.categoriesgame.gameclient.models.GameModel;
 import de.hsw.categoriesgame.gameclient.views.ResultView;
@@ -23,9 +21,6 @@ public class ResultController {
     private final ResultView view;
     private final GameModel model;
 
-    // TODO: mockPlayers-Referenzen durch getter in model ersetzen
-
-    List<PlayerBean> mockPlayerBeans;
 
     /**
      * Constructor
@@ -37,11 +32,6 @@ public class ResultController {
         this.viewManager = viewManager;
         this.view = view;
         this.model = model;
-
-        mockPlayerBeans = new ArrayList<>();
-        mockPlayerBeans.add(new PlayerBean("Jeff"));
-        mockPlayerBeans.add(new PlayerBean("Kevin"));
-        mockPlayerBeans.add(new PlayerBean("Marc"));
 
         registerListener();
         calculatePlacements();
@@ -80,13 +70,16 @@ public class ResultController {
      * Calculates the top 3 players of the game
      */
     private void calculatePlacements() {
-        // TODO: 11.10.2024 get current top three players from server
+        List<PlayerBean> players = model.getLobby().getActualPlayers();
 
-        mockPlayerBeans.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
-        ArrayList<PlayerBean> sortedList = new ArrayList<>(mockPlayerBeans);
+        players.sort((e1, e2) -> e2.getPoints().compareTo(e1.getPoints()));
+        ArrayList<PlayerBean> sortedList = new ArrayList<>(players);
 
         view.getPlayer1Label().setText(sortedList.get(0).getName());
         view.getPlayer2Label().setText(sortedList.get(1).getName());
-        view.getPlayer3Label().setText(sortedList.get(2).getName());
+
+        if (sortedList.size() > 2) {
+            view.getPlayer3Label().setText(sortedList.get(2).getName());
+        }
     }
 }

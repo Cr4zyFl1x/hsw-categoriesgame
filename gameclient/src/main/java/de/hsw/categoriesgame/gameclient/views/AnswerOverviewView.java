@@ -263,7 +263,7 @@ public class AnswerOverviewView extends JPanel implements InitializableView {
         add(pointsPanel, gbc);
 
         // revalidate and repaint points panel
-        revalidate();
-        repaint();
+        pointsPanel.revalidate();
+        pointsPanel.repaint();
     }
 }
